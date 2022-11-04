@@ -1,4 +1,4 @@
-# Team *<enter team name here>* Small Group project
+# Team *Kangaroo* Small Group project
 
 ## Team members
 The members of the team are:
@@ -10,6 +10,7 @@ The members of the team are:
 
 ## Project structure
 The project is called `msms` (Music School Management System).  It currently consists of a single app `lessons` where all functionality resides.
+**A project description can be found in the `PROJECT.md` file.
 
 ## Deployed version of the application
 The deployed version of the application can be found at *<[enter URL here](URL)>*.
