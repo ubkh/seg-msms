@@ -10,6 +10,7 @@ The school has a director, one or more administrators (sometimes they work only 
 The music school employs the same academic calendar as the state school system in the UK. The school year starts at the beginning of September and ends in late July.  There are six terms in a school year.  For example, the terms for 2022/23 are as follows:
 
 | Term | Start Date | End date |
+| ------------- | ------------- | ------------- |
 | 1 | 1/9/22 | 21/10/22 |
 | 2 | 31/10/22 | 16/12/22 |
 | 3 | 3/1/23 | 10/2/23 |
