@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.validators import EmailValidator, RegexValidator
 
 # Create your models here.
 
@@ -31,8 +32,23 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """User model used for authentication."""
-    email = models.EmailField(max_length=254, blank=False, unique=True)
-    name = models.CharField(max_length=255, blank=False)
+    email = models.EmailField(
+        max_length=254, 
+        blank=False, 
+        unique=True, 
+        validators=[EmailValidator(
+            message="Please enter a valid e-mail!",
+            code='invalid'
+        )]
+    )
+    name = models.CharField(
+        max_length=100, 
+        blank=False,
+        validators=[RegexValidator(
+            message="Please enter a valid name!",
+            regex=r'^(?:[^\W\d_]|-|\s)+$'
+        )]
+    )
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
