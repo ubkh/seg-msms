@@ -5,6 +5,7 @@ Views that will be used in the music school management system.
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import LoginForm
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -28,10 +29,20 @@ def register(request):
             return redirect('home')
     return render(request, 'register.html', {'form': form})
 
-def login(request):
+def log_in(request):
     """
     View that displays the login page.
     """
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            user = authenticate(name=name, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
     form = LoginForm()
     return render(request, "login.html", {'form': form})
 
