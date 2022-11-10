@@ -5,7 +5,7 @@ Views that will be used in the music school management system.
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import LoginForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
@@ -48,9 +48,13 @@ def log_in(request):
                 login(request, user)
                 return redirect('home')
         # User inputs incorrect data
-        messages.add_message(request, messages.ERROR, "Incorrect details given")
+        messages.add_message(request, messages.ERROR, "Incorrect details")
     form = LoginForm()
     return render(request, "login.html", {'form': form})
+
+def log_out(request):
+    logout(request)
+    return redirect('index')
 
 def home(request):
     """
