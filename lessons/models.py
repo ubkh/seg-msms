@@ -1,15 +1,22 @@
-"""Models that will be used in the music school management system."""
+"""
+Models that will be used in the music school management system.
+"""
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import EmailValidator, RegexValidator
+import re
 
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    """User manager used to create new users."""
+    """
+    User manager used to create new users.
+    """
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
-        """Create a generic user according to its attributes."""
+        """
+        Create a generic user according to its attributes.
+        """
         if not email:
             raise ValueError("Users must have an email address")
         user = self.model(
@@ -23,15 +30,21 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password, **extra_fields):
-        """Create a standard user."""
+        """
+        Create a standard user.
+        """
         return self._create_user(email, password, False, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        """Create a super user."""
+        """
+        Create a super user.
+        """
         return self._create_user(email, password, True, True, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """User model used for authentication."""
+    """
+    User model used for authentication.
+    """
     email = models.EmailField(
         max_length=254, 
         blank=False, 
@@ -46,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=False,
         validators=[RegexValidator(
             message="Please enter a valid name!",
-            regex=r'^(?:[^\W\d_]|-|\s)+$'
+            regex=re.compile(r'^(?:[\u0530-\u19ff]|[^\W\d_]|-|\s)+$', re.UNICODE)
         )]
     )
     is_staff = models.BooleanField(default=False)
