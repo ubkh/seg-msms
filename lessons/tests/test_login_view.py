@@ -8,6 +8,7 @@ from django.urls import reverse
 from lessons.forms import LoginForm
 from lessons.models import User
 from .helpers import LoginTester
+from django.contrib import messages
 
 class LoginViewTestCase(TestCase, LoginTester):
     def setUp(self):
@@ -28,6 +29,8 @@ class LoginViewTestCase(TestCase, LoginTester):
         form = response.context['form']
         self.assertTrue(isinstance(form, LoginForm))
         self.assertFalse(form.is_bound)
+        message_list = list(response.context['messages'])
+        self.assertEqual(len(message_list), 0)
 
     def test_unsuccessful_login(self):
         form_input = { 'name': 'Foo', 'email': 'fookangaroo@example.com', 'password': 'wrongPassword123'}
@@ -38,6 +41,9 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertTrue(isinstance(form, LoginForm))
         self.assertFalse(form.is_bound)
         self.assertFalse(self._is_logged_in())
+        message_list = list(response.context['messages'])
+        self.assertEqual(len(message_list), 1)
+        self.assertEqual(message_list[0].level, messages.ERROR)
     
     def test_login_successful(self):
         form_input = { 'name': 'Foo', 'email': 'kangaroo@example.com', 'password': 'Password123'}
@@ -46,4 +52,6 @@ class LoginViewTestCase(TestCase, LoginTester):
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'home.html')
+        message_list = list(response.context['messages'])
+        self.assertEqual(len(message_list), 0)
 

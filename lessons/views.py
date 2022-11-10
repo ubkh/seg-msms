@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 # Create your views here.
 
@@ -32,7 +33,9 @@ def register(request):
 
 def log_in(request):
     """
-    View that displays the login page.
+    View that displays the login page and login forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
     """
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -44,6 +47,8 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 return redirect('home')
+        # User inputs incorrect data
+        messages.add_message(request, messages.ERROR, "Incorrect details given")
     form = LoginForm()
     return render(request, "login.html", {'form': form})
 
