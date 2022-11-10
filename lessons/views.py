@@ -4,6 +4,7 @@ Views that will be used in the music school management system.
 
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
+from .forms import LoginForm
 
 # Create your views here.
 
@@ -31,7 +32,8 @@ def login(request):
     """
     View that displays the login page.
     """
-    return render(request, "login.html")
+    form = LoginForm()
+    return render(request, "login.html", {'form': form})
 
 def home(request):
     """
