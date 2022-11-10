@@ -11,7 +11,7 @@ def index(request):
     """
     View that displays the index page.
     """
-    return render(request, "index.html");
+    return render(request, "index.html")
 
 def register(request):
     """
@@ -27,8 +27,14 @@ def register(request):
             return redirect('home')
     return render(request, 'register.html', {'form': form})
 
+def login(request):
+    """
+    View that displays the login page.
+    """
+    return render(request, "login.html")
+
 def home(request):
     """
     View that displays the user's home page.
     """
-    return render(request, "home.html");
+    return render(request, "home.html")

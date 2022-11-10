@@ -4,7 +4,7 @@ Tests that will be used in the music school management system.
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from .models import User
+from ..models import User
 
 # Create your tests here.
 
