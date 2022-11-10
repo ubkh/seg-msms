@@ -5,10 +5,11 @@ Tests that will be used in the music school management system.
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from ..models import User
+from .helpers import LoginTester
 
 # Create your tests here.
 
-class UserModelTestCase(TestCase):
+class UserModelTestCase(TestCase, LoginTester):
     def setUp(self):
         self.user = self._create_user()
         self.secondary_user = self._create_secondary_user()

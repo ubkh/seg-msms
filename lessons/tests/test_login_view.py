@@ -7,8 +7,9 @@ from django.test import TestCase
 from django.urls import reverse
 from lessons.forms import LoginForm
 from lessons.models import User
+from .helpers import LoginTester
 
-class LoginViewTestCase(TestCase):
+class LoginViewTestCase(TestCase, LoginTester):
     def setUp(self):
         self.url = reverse('login')
         User.objects.create_user(
@@ -45,7 +46,4 @@ class LoginViewTestCase(TestCase):
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'home.html')
-
-    def _is_logged_in(self):
-        return '_auth_user_id' in self.client.session.keys()
 
