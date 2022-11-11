@@ -1,4 +1,6 @@
-"""Configuration of the admin interface for the music school management system."""
+"""
+Configuration of the admin interface for the music school management system.
+"""
 
 from django.contrib import admin
 from .models import User

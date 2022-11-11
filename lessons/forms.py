@@ -46,3 +46,8 @@ class RegisterForm(forms.ModelForm):
             password=self.cleaned_data.get('password')
         )
         return user
+
+class LoginForm(forms.Form):
+    name = forms.CharField(label="name")
+    email = forms.CharField(label="email")
+    password = forms.CharField(label="Password", widget=forms.PasswordInput())
