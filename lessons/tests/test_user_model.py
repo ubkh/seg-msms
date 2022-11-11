@@ -1,14 +1,17 @@
 """
-Tests that will be used in the music school management system.
+Tests that will be used to test the User model.
 """
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from .models import User
+from ..models import User
 
 # Create your tests here.
 
 class UserModelTestCase(TestCase):
+    """
+    Unit tests that will be used to test the User model.
+    """
     def setUp(self):
         self.user = self._create_user()
         self.secondary_user = self._create_secondary_user()
