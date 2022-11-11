@@ -22,13 +22,14 @@ def register(request):
     form is submitted the user is redirected to the home page, else they are 
     directed to resubmit the form again.
     """
-    form = RegisterForm()
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('home')
+    else:
+        form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
 def log_in(request):

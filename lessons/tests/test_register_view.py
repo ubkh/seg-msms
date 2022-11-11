@@ -7,8 +7,9 @@ from django.urls import reverse
 from django.contrib.auth.hashers import check_password
 from lessons.models import User
 from lessons.forms import RegisterForm
+from .helpers import LoginTester
 
-class RegisterViewTestCase(TestCase):
+class RegisterViewTestCase(TestCase, LoginTester):
     """
     Unit tests that will be used to test the Registration view.
     """
@@ -48,6 +49,7 @@ class RegisterViewTestCase(TestCase):
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertTrue(form.is_bound)
+        self.assertFalse(self._is_logged_in())
 
     def test_sucessful_registration(self):
         user_count_before = User.objects.count()
@@ -60,3 +62,4 @@ class RegisterViewTestCase(TestCase):
         saved_user = User.objects.get(email=self.form_input['email'])
         self.assertEqual(saved_user.name, self.form_input['name'])
         self.assertTrue(check_password(self.form_input['password'], saved_user.password))
+        self.assertTrue(self._is_logged_in())
