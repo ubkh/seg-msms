@@ -4,12 +4,13 @@ Tests that will be used to test the Registration form.
 
 from django import forms
 from django.test import TestCase
+from django.contrib.auth.hashers import check_password
 from lessons.models import User
 from lessons.forms import RegisterForm
 
 class RegisterFormTestCase(TestCase):
     """
-    Unit tests that will be used to test the User model.
+    Unit tests that will be used to test the Registration form.
     """
     def setUp(self):
         self.form_input = self._create_form_input()
@@ -39,6 +40,16 @@ class RegisterFormTestCase(TestCase):
          self.assertIn('confirm_password', register_form.fields)
          confirm_password_widget = register_form.fields['confirm_password'].widget
          self.assertTrue(isinstance(confirm_password_widget, forms.PasswordInput))
+
+    def tests_form_saves_correctly(self):
+        register_form = RegisterForm(data=self.form_input)
+        user_count_before = User.objects.count()
+        register_form.save()
+        user_count_after = User.objects.count()
+        self.assertEqual(user_count_before + 1, user_count_after)
+        saved_user = User.objects.get(email=self.form_input['email'])
+        self.assertEqual(saved_user.name, self.form_input['name'])
+        self.assertTrue(check_password(self.form_input['password'], saved_user.password))
 
     def test_form_uses_model_email_validation(self):
         self.form_input['email'] = 'kangaroo.com'
