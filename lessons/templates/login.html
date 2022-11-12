@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Music School Management System</title>
-    </head>
-    <body>
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
         <h1>Login</h1>
         {% for message in messages %}
-            <p><b>{{ message }}</b></p>
+            <p>
+                <b>{{ message }}</b>
+            </p>
         {% endfor %}
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Login">
         </form>
-    </body>
-</html>
+    </div>
+{% endblock %}

@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Music School Management System</title>
-    </head>
-    <body>
-        <h1>Music School Management System</h1>
-        <hr>
-        <p>Welcome to Team Kangaroo's Music School Management System</p>
-        <p><a href="{% url 'login' %}">Log In</a></p>
-        <p><a href="{% url 'register' %}">Register</a></p>
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
+        {% include 'partials/navbar.html' %}
+        <div class="vh-100 d-flex justify-content-center align-items-center">
+            <p class="h1 fs-1">Welcome 👋 to Kangaroo Music!</p>
+        </div>
+    </div>
+{% endblock %}
