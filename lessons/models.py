@@ -97,6 +97,7 @@ class Lesson(models.Model):
     number_of_lessons = models.IntegerField(default=1)
     interval = models.IntegerField()
     duration = models.DurationField()
+    title = models.TextField(max_length=20, default="Title")
     information = models.TextField(max_length=280) # we can add more later
 
     def __str__(self):

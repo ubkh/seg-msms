@@ -3,13 +3,16 @@ Views that will be used in the music school management system.
 """
 
 from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+
+from lessons.models import Lesson, User
 from .forms import LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.views.generic.list import ListView
 
 # Create your views here.
 
@@ -77,5 +80,6 @@ def home(request):
     """
     View that displays the user's home page.
     """
+    lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
 
-    return render(request, "home.html")
+    return render(request, "home.html", {'lessons' : lessons})

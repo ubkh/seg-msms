@@ -55,7 +55,7 @@ class LoginForm(forms.Form):
 class LessonRequestForm(forms.ModelForm):
     class Meta:
         model = Lesson
-        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'information']
+        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
 
     hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
   
