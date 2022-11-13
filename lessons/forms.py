@@ -53,9 +53,29 @@ class LoginForm(forms.Form):
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
 class LessonRequestForm(forms.ModelForm):
+    """
+    Model form used for students to request new lessons.
+    """
     class Meta:
         model = Lesson
         fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
 
     hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+    def form_valid(self, form):
+        form.instance.student = self.request.user
+        return super().form_valid(form)
   
+class LessonModifyForm(forms.ModelForm):
+    """
+    Model form for students who wish to change preferences for a lesson request.
+    """
+    class Meta:
+        model = Lesson
+        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
+
+    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+    def form_valid(self, form):
+        form.instance.student = self.request.user
+        return super().form_valid(form)

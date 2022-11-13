@@ -24,5 +24,6 @@ urlpatterns = [
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
     path('home/', views.home, name='home'),
-    path('lessons/request', views.request_lesson, name='request_lesson')
+    path('lesson/request', views.request_lesson, name='request_lesson'),
+    path('lesson/<int:pk>/modify', views.modify_lesson, name='modify_lesson')
 ]

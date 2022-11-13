@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User
-from .forms import LessonRequestForm, RegisterForm
+from .forms import LessonModifyForm, LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -67,6 +67,11 @@ def log_out(request):
 
 @login_required
 def request_lesson(request):
+    """
+    View that displays the form allowing users to request a lesson.
+    If the form is valid, the user is redirected to the home page and 
+    a Lesson object is created.
+    """
     if request.method == "POST":
         form = LessonRequestForm(request.POST)
         if form.is_valid():
@@ -74,6 +79,26 @@ def request_lesson(request):
             form.save()
     form = LessonRequestForm()
     return render(request, "lessons/request_lesson.html", {'form': form})
+
+@login_required
+def modify_lesson(request, pk):
+    """
+    View that displays the form allowing users to edit an existing lesson
+    request. If the form is valid, the user is redirected to the home page
+    and the corresponding Lesson object updated.
+    """
+    data = get_object_or_404(Lesson, id=pk)
+    form = LessonModifyForm(instance=data)
+
+    if request.method == "POST":
+        form = LessonModifyForm(request.POST, instance=data)
+
+        if form.is_valid():
+            if request.user == form.instance.student:
+                form.instance.student = request.user
+                form.save()
+                return redirect('home')
+    return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
 def home(request):

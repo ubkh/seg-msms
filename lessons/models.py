@@ -101,7 +101,7 @@ class Lesson(models.Model):
     information = models.TextField(max_length=280) # we can add more later
 
     def __str__(self):
-        return self.information
+        return self.title
 
     def get_absolute_url(self):
         return reverse('lesson', kwargs={"pk":self.pk})
