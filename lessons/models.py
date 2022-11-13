@@ -96,7 +96,7 @@ class Lesson(models.Model):
     hour = models.TimeField(default=timezone.now)
     number_of_lessons = models.IntegerField(default=1)
     interval = models.IntegerField()
-    duration = models.DurationField()
+    duration = models.IntegerField()
     title = models.TextField(max_length=20, default="Title")
     information = models.TextField(max_length=280) # we can add more later
 

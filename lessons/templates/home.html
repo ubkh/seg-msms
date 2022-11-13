@@ -10,19 +10,23 @@
     <div class="mt-2 container">
         <ul class="list-group list-group-light">
             {% for l in lessons %}
-            <li class="list-group-item d-flex justify-content-between align-items-start px-3 border-0 rounded-3 mb-2">
+            <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
                 <div class="ms-2 me-auto">
-                  <div class="fw-bold">{{ l.title }}</div>
-                  {{ l.information }}
+                  <div class="fw-bold mb-2">{{ l.title }}</div>
+                  <div class="mb-2" style="font-size: 1rem;">
+                    <i class="bi bi-person-fill" style="padding-right: 5px;"></i>TEACHER &nbsp;
+                    <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
+                  </div>
+                  <p class="text-muted mb-2">{{ l.information }}</p>
+                  <a class="btn btn-outline-secondary btn-sm" href="#"><i class="bi bi-pencil" style="padding-right: 5px;"></i>Modify</a>
                 </div>
                 {% if l.fulfilled is False %}
-                    <span class="badge badge-pill" style="background-color: orange;">REQUESTED</span>
+                    <span class="badge rounded-pill" style="background-color: orange;">REQUESTED</span>
                 {% else %}
-                    <span class="badge badge-pill bg-success">BOOKED</span>
+                    <span class="badge rounded-pill bg-success">BOOKED</span>
                 {% endif %}
               </li>
             {% endfor %}
         </ul>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 {% endblock %}
