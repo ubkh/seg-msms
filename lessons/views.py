@@ -2,11 +2,17 @@
 Views that will be used in the music school management system.
 """
 
-from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+
+from lessons.models import Lesson, User
+from .forms import LessonModifyForm, LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.views.generic.list import ListView
 
 # Create your views here.
 
@@ -14,6 +20,8 @@ def index(request):
     """
     View that displays the index page.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
 def register(request):
@@ -22,6 +30,9 @@ def register(request):
     form is submitted the user is redirected to the home page, else they are 
     directed to resubmit the form again.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
+
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -38,6 +49,9 @@ def log_in(request):
     form is submitted the user is redirected to the home page, else they are 
     directed to resubmit the form again.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
+        
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -57,8 +71,46 @@ def log_out(request):
     logout(request)
     return redirect('index')
 
+@login_required
+def request_lesson(request):
+    """
+    View that displays the form allowing users to request a lesson.
+    If the form is valid, the user is redirected to the home page and 
+    a Lesson object is created.
+    """
+    if request.method == "POST":
+        form = LessonRequestForm(request.POST)
+        if form.is_valid():
+            form.instance.student = request.user
+            form.save()
+    form = LessonRequestForm()
+    return render(request, "lessons/request_lesson.html", {'form': form})
+
+@login_required
+def modify_lesson(request, pk):
+    """
+    View that displays the form allowing users to edit an existing lesson
+    request. If the form is valid, the user is redirected to the home page
+    and the corresponding Lesson object updated.
+    """
+    data = get_object_or_404(Lesson, id=pk)
+    form = LessonModifyForm(instance=data)
+
+    if request.method == "POST":
+        form = LessonModifyForm(request.POST, instance=data)
+
+        if form.is_valid():
+            if request.user == form.instance.student:
+                form.instance.student = request.user
+                form.save()
+                return redirect('home')
+    return render(request, "lessons/modify_lesson.html", {'form': form})
+
+@login_required
 def home(request):
     """
     View that displays the user's home page.
     """
-    return render(request, "home.html")
+    lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
+
+    return render(request, "home.html", {'lessons' : lessons})

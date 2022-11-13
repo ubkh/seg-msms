@@ -3,9 +3,10 @@ Configuration of the admin interface for the music school management system.
 """
 
 from django.contrib import admin
-from .models import User
+from .models import User, Lesson
 
 # Register your models here.
+admin.site.register(Lesson)
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):

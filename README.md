@@ -2,11 +2,11 @@
 
 ## Team members
 The members of the team are:
-- *Ubayd Khan*, ([ubayd.khan@kcl.ac.uk](ubayd.khan@kcl.ac.uk))
-- *Erikas Staugas*, ([erikas.staugas@kcl.ac.uk](erikas.staugas@kcl.ac.uk))
-- *Krishna Prasanna Kumar*, ([krishna.prasanna_kumar@kcl.ac.uk](krishna.prasanna_kumar@kcl.ac.uk)) 
-- *Matushan Yogaraj*, ([matushan.yogaraj@kcl.ac.uk](matushan.yogaraj@kcl.ac.uk))
-- *Tri Pham*, ([tri.pham@kcl.ac.uk](tri.pham@kcl.ac.uk))
+- *Ubayd Khan* ([ubayd.khan@kcl.ac.uk](ubayd.khan@kcl.ac.uk))
+- *Erikas Staugas* ([erikas.staugas@kcl.ac.uk](erikas.staugas@kcl.ac.uk))
+- *Krishna Prasanna Kumar* ([krishna.prasanna_kumar@kcl.ac.uk](krishna.prasanna_kumar@kcl.ac.uk)) 
+- *Matushan Yogaraj* ([matushan.yogaraj@kcl.ac.uk](matushan.yogaraj@kcl.ac.uk))
+- *Tri Pham* ([tri.pham@kcl.ac.uk](tri.pham@kcl.ac.uk))
 
 ## Project structure
 The project is called `msms` (Music School Management System).  It currently consists of a single app `lessons` where all functionality resides.
@@ -44,6 +44,20 @@ $ python3 manage.py seed
 Run all tests with:
 ```
 $ python3 manage.py test
+```
+## Deployment instructions
+
+Migrate models into database schema:
+(You may need to run ```makemigrations``` first.)
+
+```
+$ python3 manage.py migrate
+```
+
+Run the server:
+
+```
+$ python3 manage.py runserver
 ```
 
 *The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*

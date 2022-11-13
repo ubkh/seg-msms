@@ -3,7 +3,31 @@
     <div class="container">
         <h1>Music School Management System</h1>
         <hr>
-        <p>Welcome! You can sign up to lessons here.</p>
+        <p>Welcome! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+        <a class="btn btn-primary" href="{% url 'request_lesson' %}">Request Lesson</a>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    &nbsp;
+    <div class="mt-2 container">
+        <ul class="list-group list-group-light">
+            {% for l in lessons %}
+            <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                <div class="ms-2 me-auto">
+                    {% if l.fulfilled is False %}
+                        <span class="badge rounded-pill mb-2" style="background-color: orange;">REQUESTED</span>
+                    {% else %}
+                        <span class="badge rounded-pill bg-success mb-2">BOOKED</span>
+                    {% endif %}
+                  <div class="fw-bold mb-2">{{ l.title }}</div>
+                  <p class="text-muted mb-2">{{ l.information }}</p>
+                </div>
+                <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
+                <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
+                &nbsp;
+                <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
+                &nbsp;
+                <a class="btn btn-outline-light btn-sm" style="background-color: #e74c3c;" href="#"><i class="bi bi-trash3"></i></a>
+              </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
