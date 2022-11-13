@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
+        <h1>Request a Lesson</h1>
+        <p><i>Will be made more user-friendly soon!</i></p>
+        {% for message in messages %}
+            <p>
+                <b>{{ message }}</b>
+            </p>
+        {% endfor %}
+        <form action="{% url 'request_lesson' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Request">
+        </form>
+    </div>
+{% endblock %}

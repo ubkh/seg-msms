@@ -4,7 +4,7 @@ Forms that will be used in the music school management system.
 
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User
+from lessons.models import User, Lesson
 
 class RegisterForm(forms.ModelForm):
     """
@@ -51,3 +51,11 @@ class LoginForm(forms.Form):
     name = forms.CharField(label="name")
     email = forms.CharField(label="email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
+
+class LessonRequestForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'information']
+
+    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+  

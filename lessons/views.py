@@ -3,9 +3,10 @@ Views that will be used in the music school management system.
 """
 
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # Create your views here.
@@ -56,6 +57,16 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect('index')
+
+@login_required
+def request_lesson(request):
+    if request.method == "POST":
+        form = LessonRequestForm(request.POST)
+        if form.is_valid():
+            form.instance.student = request.user
+            form.save()
+    form = LessonRequestForm()
+    return render(request, "lessons/request_lesson.html", {'form': form})
 
 def home(request):
     """
