@@ -2,12 +2,14 @@
 Views that will be used in the music school management system.
 """
 
+from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 
@@ -15,6 +17,8 @@ def index(request):
     """
     View that displays the index page.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
 def register(request):
@@ -68,8 +72,10 @@ def request_lesson(request):
     form = LessonRequestForm()
     return render(request, "lessons/request_lesson.html", {'form': form})
 
+@login_required
 def home(request):
     """
     View that displays the user's home page.
     """
+
     return render(request, "home.html")
