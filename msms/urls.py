@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, register_converter
 from lessons import views
+from msms.hash import HashIDConverter
+
+register_converter(HashIDConverter, "hashid")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +28,5 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('home/', views.home, name='home'),
     path('lesson/request', views.request_lesson, name='request_lesson'),
-    path('lesson/<int:pk>/modify', views.modify_lesson, name='modify_lesson')
+    path('lesson/<hashid:pk>/modify', views.modify_lesson, name='modify_lesson')
 ]

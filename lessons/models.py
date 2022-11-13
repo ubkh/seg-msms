@@ -104,4 +104,4 @@ class Lesson(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('lesson', kwargs={"pk":self.pk})
+        return reverse('modify_lesson', kwargs=[self.id])
