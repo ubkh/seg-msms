@@ -30,6 +30,9 @@ def register(request):
     form is submitted the user is redirected to the home page, else they are 
     directed to resubmit the form again.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
+
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -46,6 +49,9 @@ def log_in(request):
     form is submitted the user is redirected to the home page, else they are 
     directed to resubmit the form again.
     """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
+        
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
