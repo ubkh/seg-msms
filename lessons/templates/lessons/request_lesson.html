@@ -8,7 +8,7 @@
                 <b>{{ message }}</b>
             </p>
         {% endfor %}
-        <form action="{% url 'home' %}" method="post">
+        <form action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Request">

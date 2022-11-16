@@ -51,7 +51,7 @@ def log_in(request):
     """
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('home'))
-        
+
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -83,6 +83,7 @@ def request_lesson(request):
         if form.is_valid():
             form.instance.student = request.user
             form.save()
+            return redirect('home')
     form = LessonRequestForm()
     return render(request, "lessons/request_lesson.html", {'form': form})
 
