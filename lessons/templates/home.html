@@ -3,7 +3,7 @@
     <div class="container">
         <h1>Music School Management System</h1>
         <hr>
-        <p>Welcome! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+        <p>Welcome {{user.name}}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
         <a class="btn btn-primary" href="{% url 'request_lesson' %}">Request Lesson</a>
     </div>
     &nbsp;
