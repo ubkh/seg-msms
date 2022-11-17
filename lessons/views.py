@@ -13,9 +13,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
+from lessons.helpers import login_prohibited
 
 # Create your views here.
-
+@login_prohibited
 def index(request):
     """
     View that displays the index page.
@@ -24,6 +25,7 @@ def index(request):
         return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
+@login_prohibited
 def register(request):
     """
     View that displays the registration page and registration forms. If a valid 
@@ -43,6 +45,7 @@ def register(request):
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
+@login_prohibited
 def log_in(request):
     """
     View that displays the login page and login forms. If a valid 
