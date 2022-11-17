@@ -13,24 +13,18 @@ class UserModelTestCase(TestCase, LoginTester):
     """
     Unit tests that will be used to test the User model.
     """
+    fixtures = ['lessons/tests/fixtures/default_user.json']
+    
     def setUp(self):
         self.user = self._create_user()
         self.secondary_user = self._create_secondary_user()
 
     def _create_user(self):
-        user = User.objects.create_user(
-            email="foo@kangaroo.com",
-            name="Foo",
-            password="example"
-        )
+        user = User.objects.get(name='Foo Bar')
         return user
 
     def _create_secondary_user(self):
-        user = User.objects.create_user(
-            email="bar@kangaroo.com",
-            name="Bar",
-            password="example"
-        )
+        user = User.objects.get(name='Doe Ball')
         return user
 
     def _assert_user_is_valid(self, user):
