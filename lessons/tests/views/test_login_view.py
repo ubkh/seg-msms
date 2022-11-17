@@ -45,6 +45,13 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertEqual(next, destination_url)
         message_list = list(response.context['messages'])
         self.assertEqual(len(message_list), 0)
+    
+    def test_get_login_with_redirect_when_logged_in(self):
+        self.client.login(username=self.user.email, password="Password123")
+        response = self.client.get(self.url, follow=True)
+        redirect_url = reverse('home')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'home.html')
 
     def test_unsuccessful_login(self):
         form_input = {'name': 'Foo Bar', 'email': 'fookangaroo.com', 'password': 'wrongPassword123'}

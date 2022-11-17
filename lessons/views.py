@@ -43,6 +43,15 @@ def register(request):
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
+def login_prohibited(view_function):
+    def modified_view_function(request):
+        if request.user.is_authenticated:
+            return redirect('home')
+        else:
+            return view_function(request)
+    return modified_view_function
+
+@login_prohibited
 def log_in(request):
     """
     View that displays the login page and login forms. If a valid 
