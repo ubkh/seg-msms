@@ -145,3 +145,12 @@ class UserModelTestCase(TestCase, LoginTester):
         '\\']:
             self.user.name = symbol
             self._assert_user_is_invalid(self.user)
+
+    """
+    Test Reference Number/ ID
+    """
+    def test_id_is_unique(self):
+        self.assertNotEqual(self.secondary_user.id, self.user.id)
+
+    def test_first_id(self):
+        self.assertEqual(self.user.id, 1)
