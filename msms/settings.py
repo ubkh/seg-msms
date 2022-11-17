@@ -131,6 +131,10 @@ AUTH_USER_MODEL = 'lessons.User'
 
 LOGIN_URL = 'login'
 
+# URL where login_prohibited redirects to
+
+LOGGED_IN_REDIRECT_URL = 'home'
+
 # Hashing
 
 HASHID_SALT = 'Veni vidi vici'

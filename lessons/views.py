@@ -13,17 +13,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
+from lessons.helpers import login_prohibited
 
 # Create your views here.
-
-def login_prohibited(view_function):
-    def modified_view_function(request):
-        if request.user.is_authenticated:
-            return redirect('home')
-        else:
-            return view_function(request)
-    return modified_view_function
-
 @login_prohibited
 def index(request):
     """
