@@ -127,6 +127,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'lessons.User'
 
+# Login URL for redirecting users to login view
+
+LOGIN_URL = 'login'
+
 # Hashing
 
 HASHID_SALT = 'Veni vidi vici'

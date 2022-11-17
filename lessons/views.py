@@ -65,7 +65,8 @@ def log_in(request):
         # User inputs incorrect data
         messages.add_message(request, messages.ERROR, "Incorrect details")
     form = LoginForm()
-    return render(request, "login.html", {'form': form})
+    next = request.GET.get('next') or ''
+    return render(request, "login.html", {'form': form, 'next': next})
 
 def log_out(request):
     logout(request)
