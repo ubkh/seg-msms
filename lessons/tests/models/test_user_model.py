@@ -13,8 +13,11 @@ class UserModelTestCase(TestCase, LoginTester):
     """
     Unit tests that will be used to test the User model.
     """
-    fixtures = ['lessons/tests/fixtures/default_user.json']
-    
+    fixtures = [
+        'lessons/tests/fixtures/default_user.json',
+        'lessons/tests/fixtures/other_user.json',
+    ]
+
     def setUp(self):
         self.user = self._create_user()
         self.secondary_user = self._create_secondary_user()

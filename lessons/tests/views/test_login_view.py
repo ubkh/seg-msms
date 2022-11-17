@@ -15,7 +15,7 @@ class LoginViewTestCase(TestCase, LoginTester):
     
     def setUp(self):
         self.url = reverse('login')
-        self.user = User.objects.get(name='Foo Bar')
+        self.user = User.objects.get(email='foo@kangaroo.com')
     
     def test_login_url(self):
         self.assertEqual(self.url, '/login/')
@@ -47,7 +47,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertEqual(len(message_list), 0)
     
     def test_get_login_with_redirect_when_logged_in(self):
-        self.client.login(username=self.user.email, password="Password123")
+        self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
@@ -85,4 +85,12 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertTemplateUsed(response, 'home.html')
         message_list = list(response.context['messages'])
         self.assertEqual(len(message_list), 0)
+    
+    def test_post_login_redirect_when_logged_in(self):
+        self.client.login(email=self.user.email, password="Password123")
+        form_input = {'email': 'foobar@kangaroo.com', 'Password': 'wrongPassword123'}
+        response = self.client.post(self.url, form_input, follow=True)
+        redirect_url = reverse('home')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'home.html')
 

@@ -13,17 +13,19 @@ class RegisterViewTestCase(TestCase, LoginTester):
     """
     Unit tests that will be used to test the Registration view.
     """
+    fixtures = ['lessons/tests/fixtures/other_user.json']
 
     def setUp(self):
         self.form_input = self._create_form_input()
         self.url = reverse('register')
+        self.user = User.objects.get(email='doe@kangaroo.com')
 
     def _create_form_input(self):
         input = {
             'name': 'Foo Bar',
             'email': 'foo@kangaroo.com',
-            'password': 'Example123',
-            'confirm_password': 'Example123'
+            'password': 'Password123',
+            'confirm_password': 'Password123'
         }
         return input
 
@@ -37,6 +39,13 @@ class RegisterViewTestCase(TestCase, LoginTester):
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertFalse(form.is_bound)
+    
+    def test_get_register_with_redirect_when_logged_in(self):
+        self.client.login(email=self.user.email, password="Password123")
+        response = self.client.get(self.url, follow=True)
+        redirect_url = reverse('home')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'home.html')
 
     def test_unsucessful_registration(self):
         self.form_input['email'] = 'kangaroo.com'
@@ -61,5 +70,16 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertTemplateUsed(response, 'home.html')
         saved_user = User.objects.get(email=self.form_input['email'])
         self.assertEqual(saved_user.name, self.form_input['name'])
-        self.assertTrue(check_password(self.form_input['password'], saved_user.password))
+        self.assertTrue(check_password('Password123', saved_user.password))
         self.assertTrue(self._is_logged_in())
+    
+    def test_post_register_redirect_when_logged_in(self):
+        self.client.login(email=self.user.email, password="Password123")
+        user_count_before = User.objects.count()
+        response = self.client.post(self.url, self.form_input, follow=True)
+        user_count_after = User.objects.count()
+        self.assertEqual(user_count_before, user_count_after)
+        redirect_url = reverse('home')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'home.html')
+

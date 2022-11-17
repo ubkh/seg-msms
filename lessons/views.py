@@ -16,6 +16,15 @@ from django.views.generic.list import ListView
 
 # Create your views here.
 
+def login_prohibited(view_function):
+    def modified_view_function(request):
+        if request.user.is_authenticated:
+            return redirect('home')
+        else:
+            return view_function(request)
+    return modified_view_function
+
+@login_prohibited
 def index(request):
     """
     View that displays the index page.
@@ -24,6 +33,7 @@ def index(request):
         return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
+@login_prohibited
 def register(request):
     """
     View that displays the registration page and registration forms. If a valid 
@@ -42,14 +52,6 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
-
-def login_prohibited(view_function):
-    def modified_view_function(request):
-        if request.user.is_authenticated:
-            return redirect('home')
-        else:
-            return view_function(request)
-    return modified_view_function
 
 @login_prohibited
 def log_in(request):
