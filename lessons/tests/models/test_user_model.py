@@ -5,7 +5,7 @@ Tests that will be used to test the User model.
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from lessons.models import User
-from .helpers import LoginTester
+from lessons.tests.helpers import LoginTester
 
 # Create your tests here.
 

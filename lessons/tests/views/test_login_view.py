@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from lessons.forms import LoginForm
 from lessons.models import User
-from .helpers import LoginTester
+from lessons.tests.helpers import LoginTester
 from django.contrib import messages
 
 class LoginViewTestCase(TestCase, LoginTester):

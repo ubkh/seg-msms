@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.hashers import check_password
 from lessons.models import User
 from lessons.forms import RegisterForm
-from .helpers import LoginTester
+from lessons.tests.helpers import LoginTester
 
 class RegisterViewTestCase(TestCase, LoginTester):
     """

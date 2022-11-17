@@ -5,7 +5,7 @@ Tests of the log out view
 from django.test import TestCase
 from django.urls import reverse
 from lessons.models import User
-from .helpers import LoginTester
+from lessons.tests.helpers import LoginTester
 
 class LogOutViewTestCase(TestCase, LoginTester):
     def setUp(self):
