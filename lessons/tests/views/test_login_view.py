@@ -7,17 +7,15 @@ from django.test import TestCase
 from django.urls import reverse
 from lessons.forms import LoginForm
 from lessons.models import User
-from .helpers import LoginTester
+from lessons.tests.helpers import LoginTester
 from django.contrib import messages
 
 class LoginViewTestCase(TestCase, LoginTester):
+    fixtures = ['lessons/tests/fixtures/default_user.json']
+    
     def setUp(self):
         self.url = reverse('login')
-        User.objects.create_user(
-            email='kangaroo@example.com',
-            name='Foo',
-            password='Password123',
-        )
+        self.user = User.objects.get(name='Foo Bar')
     
     def test_login_url(self):
         self.assertEqual(self.url, '/login/')
@@ -33,7 +31,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertEqual(len(message_list), 0)
 
     def test_unsuccessful_login(self):
-        form_input = { 'name': 'Foo', 'email': 'fookangaroo@example.com', 'password': 'wrongPassword123'}
+        form_input = {'name': 'Foo Bar', 'email': 'fookangaroo.com', 'password': 'wrongPassword123'}
         response = self.client.post(self.url, form_input)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
@@ -46,7 +44,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertEqual(message_list[0].level, messages.ERROR)
     
     def test_login_successful(self):
-        form_input = { 'name': 'Foo', 'email': 'kangaroo@example.com', 'password': 'Password123'}
+        form_input = {'name': 'Foo Bar', 'email': 'foo@kangaroo.com', 'password': 'Password123'}
         response = self.client.post(self.url, form_input, follow=True)
         self.assertTrue(self._is_logged_in())
         response_url = reverse('home')
