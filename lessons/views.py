@@ -119,3 +119,6 @@ def home(request):
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
 
     return render(request, "home.html", {'lessons' : lessons})
+
+
+    
