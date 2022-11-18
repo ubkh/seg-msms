@@ -30,5 +30,6 @@ urlpatterns = [
     path('lesson/request', views.request_lesson, name='request_lesson'),
     path('lesson/<hashid:pk>/modify', views.modify_lesson, name='modify_lesson'),
     path('create_administrator', views.create_administrator, name='create_administrator'),
-    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator')
+    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
+    path('lesson/<hashid:pk>/invoice', views.booking_invoice, name='booking_invoice')
 ]

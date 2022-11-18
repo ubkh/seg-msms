@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
+        <h1>Booking Invoice:</h1>
+        <hr>
+        <h6>Will be Improved</h6>
+        {% for curLesson in lessons %}
+            <h3>Title: {{curLesson.title}}</h3>
+            <br>
+            <h5>Day: {{curLesson.day}}</h5>
+            <br>
+            <h5>Price: {{curLesson.price}}</h5>
+            <br>
+            <h5>Time: {{curLesson.hour}}</h5>
+            <br>
+            <h5>Number Of Lessons: {{curLesson.number_of_lessons}}</h5>
+            <br>
+            <h5>Interval: {{curLesson.Interval}}</h5>
+            <br>
+            <h5>Duration: {{curLesson.duration}}</h5>
+            <br>
+            <h5>Information: {{curLesson.information}}</h5>
+        {% endfor %}
+    </div>
+{% endblock %}
