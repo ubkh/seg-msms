@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User
-from .forms import LessonModifyForm, LessonRequestForm, RegisterForm
+from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -143,3 +143,28 @@ def create_administrator(request):
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
+@login_required
+@director_required
+def modify_administrator(request, pk):
+    """
+    View that displays the form to edit an administrator. If a valid 
+    form is submitted the director is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+    admin_data = get_object_or_404(User, id=pk)
+    form = AdminModifyForm(instance=admin_data)
+    if request.method == "POST":
+        form = AdminModifyForm(request.POST, instance=admin_data)
+        if form.is_valid():
+            user = form.save()
+            if form.data.get('make_account_director'):
+                user.groups.clear()
+                director_group, created = Group.objects.get_or_create(name='Director')
+                user.groups.add(director_group)
+            if form.data.get('delete_account'):
+                user.delete()
+            return redirect('home')
+    return render(request, "register.html", {'form': form})
+
+    
