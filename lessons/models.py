@@ -87,6 +87,8 @@ class Lesson(models.Model):
     Lesson model used to represent a fulfilled or unfulfilled lesson.
     """
     fulfilled = models.BooleanField(default=False)
+    paid = models.BooleanField(default=False)
+    price = models.FloatField(default=0.00)
     student = models.ForeignKey(
         User,
         blank=False,
