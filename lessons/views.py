@@ -167,4 +167,15 @@ def modify_administrator(request, pk):
             return redirect('home')
     return render(request, "register.html", {'form': form})
 
+
+@login_required
+def booking_invoice(request, pk):
+    """
+    View that displays to the User details of a booking after it has been confirmed by and Admin
+    """
+    lessons = Lesson.objects.filter(id=pk)
+    return render(request, "lessons/invoice.html", {'lessons': lessons})
+    
+
+
     
