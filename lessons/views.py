@@ -10,6 +10,7 @@ from .forms import LessonModifyForm, LessonRequestForm, RegisterForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
@@ -39,6 +40,8 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            student_group, created = Group.objects.get_or_create(name='Student')
+            user.groups.add(student_group)
             login(request, user)
             return redirect('home')
     else:
