@@ -3,6 +3,10 @@
     {% for group in user.groups.all %}
         {%  if group.name == "Student" %}
             {% include 'home/student_home.html' %}
+        {%  elif group.name == "Administrator" %}
+            {% include 'home/administrator_home.html' %}
+        {%  elif group.name == "Director" %}
+            {% include 'home/director_home.html' %}
         {% endif %}
     {% endfor %}
 {% endblock %}
