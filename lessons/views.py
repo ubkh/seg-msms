@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User
-from .forms import LessonModifyForm, LessonRequestForm, RegisterForm
+from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
-from lessons.helpers import login_prohibited
+from lessons.helpers import login_prohibited, director_required
 
 # Create your views here.
 @login_prohibited
@@ -120,8 +120,51 @@ def home(request):
     View that displays the user's home page.
     """
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
+    administrators = User.objects.filter(groups__name='Administrator')
 
-    return render(request, "home.html", {'lessons' : lessons})
+    return render(request, "home.html", {'lessons' : lessons, 'administrators' : administrators})
 
+
+@login_required
+@director_required
+def create_administrator(request):
+    """
+    View that displays the form to register an administrator. If a valid 
+    form is submitted the director is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            administrator_group, created = Group.objects.get_or_create(name='Administrator')
+            user.groups.add(administrator_group)
+            return redirect('home')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
+
+@login_required
+@director_required
+def modify_administrator(request, pk):
+    """
+    View that displays the form to edit an administrator. If a valid 
+    form is submitted the director is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+    admin_data = get_object_or_404(User, id=pk)
+    form = AdminModifyForm(instance=admin_data)
+    if request.method == "POST":
+        form = AdminModifyForm(request.POST, instance=admin_data)
+        if form.is_valid():
+            user = form.save()
+            if form.data.get('make_account_director'):
+                user.groups.clear()
+                director_group, created = Group.objects.get_or_create(name='Director')
+                user.groups.add(director_group)
+            if form.data.get('delete_account'):
+                user.delete()
+            return redirect('home')
+    return render(request, "register.html", {'form': form})
 
     

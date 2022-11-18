@@ -28,5 +28,7 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('home/', views.home, name='home'),
     path('lesson/request', views.request_lesson, name='request_lesson'),
-    path('lesson/<hashid:pk>/modify', views.modify_lesson, name='modify_lesson')
+    path('lesson/<hashid:pk>/modify', views.modify_lesson, name='modify_lesson'),
+    path('create_administrator', views.create_administrator, name='create_administrator'),
+    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator')
 ]

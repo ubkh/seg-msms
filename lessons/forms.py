@@ -79,3 +79,14 @@ class LessonModifyForm(forms.ModelForm):
     def form_valid(self, form):
         form.instance.student = self.request.user
         return super().form_valid(form)
+
+class AdminModifyForm(forms.ModelForm):
+    """
+    Model form to modify an existing administrator by a director.
+    """
+    class Meta:
+        model = User
+        fields = ['name', 'email']
+
+    make_account_director = forms.BooleanField(label="Would you like to make this account a director account?", required=False)
+    delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)
