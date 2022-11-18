@@ -7,6 +7,7 @@
             {% include 'home/administrator_home.html' %}
         {%  elif group.name == "Director" %}
             {% include 'home/director_home.html' %}
+            {% include 'home/administrator_home.html' %}
         {% endif %}
     {% endfor %}
 {% endblock %}

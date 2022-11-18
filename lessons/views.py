@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
-from lessons.helpers import login_prohibited
+from lessons.helpers import login_prohibited, director_required
 
 # Create your views here.
 @login_prohibited
@@ -124,4 +124,21 @@ def home(request):
     return render(request, "home.html", {'lessons' : lessons})
 
 
-    
+@login_required
+@director_required
+def create_administrator(request):
+    """
+    View that displays the form to register an administrator. If a valid 
+    form is submitted the director is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            administrator_group, created = Group.objects.get_or_create(name='Administrator')
+            user.groups.add(administrator_group)
+            return redirect('home')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
