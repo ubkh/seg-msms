@@ -120,8 +120,9 @@ def home(request):
     View that displays the user's home page.
     """
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
+    administrators = User.objects.filter(groups__name='Administrator')
 
-    return render(request, "home.html", {'lessons' : lessons})
+    return render(request, "home.html", {'lessons' : lessons, 'administrators' : administrators})
 
 
 @login_required
