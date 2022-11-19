@@ -1,5 +1,5 @@
 <div class="container">
-    <h1>Music School Management System</h1>
+    <h2>Lessons</h2>
     <hr>
     <p>Welcome {{ user.name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
     <a class="btn btn-primary" href="{% url 'request_lesson' %}">Request Lesson</a>
@@ -36,7 +36,7 @@
 </div>
 &nbsp;
 <div class="mt-2 container">
-    <h3>Recent Transactions:</h3>
+    <h3>Recent Transactions</h3>
     <hr>
     <ul class="list-group list-group-light">
         {% for curLesson in lessons %}

@@ -1,11 +1,47 @@
 {% extends 'base.html' %}
 {% block body %}
     <div class="container">
-        <h1>Register</h1>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit">
-        </form>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                  <h2 class="p-3"><b>REGISTER</b></h2>
+                </div>
+                <div class="card-body">
+                  {% for message in messages %}
+                    <p style="color: red;">
+                        <b>{{ message }}</b>
+                    </p>
+                  {% endfor %}
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                      <div class="mb-4">
+                        <label class="form-label">{{ field.label }}</label>
+                        {% for error in field.errors %}
+                            <p style="color: red;">
+                                <strong>{{ error }}</strong>
+                            </p>
+                        {% endfor %}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               class="form-control" 
+                               name="{{ field.name }}"
+                               id="id_{{ field.name }}" 
+                               value="{{ field.value|default:'' }}"
+                        />
+                        <p class="help-text">{{ field.help_text }} </p>
+                      </div>
+                    {% endfor %}
+                    <div class="d-grid">
+                      <input type="submit" value="Register" class="btn btn-primary">
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                  Already have an account?&nbsp;<a href="{% url 'login' %}"><b>Login</b></a>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
