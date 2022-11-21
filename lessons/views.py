@@ -112,6 +112,12 @@ def modify_lesson(request, pk):
                 form.instance.student = request.user
                 form.save()
                 return redirect('home')
+            else:
+                administrators = User.objects.filter(groups__name='Administrator')
+                for admin in administrators:
+                    if request.user == admin:
+                        form.save()
+                        return redirect('home')
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
@@ -150,7 +156,7 @@ def fulfill_lesson(request, pk):
 
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect(home)
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
