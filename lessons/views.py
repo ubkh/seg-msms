@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User
 from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
-from .forms import LoginForm
+from .forms import LoginForm, LessonFulfillForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -138,19 +138,20 @@ def open_bookings(request, pk):
 @login_required
 def fulfill_lesson(request, pk):
     """
-    Change a unfulfilled lesson into a fulfilled one
+    View that displays the form allowing administrators to fulfill a lesson
+    request. If the form is valid, the admin is redirected to the home page
+    and the corresponding Lesson object updated.
     """
     data = get_object_or_404(Lesson, id=pk)
-    form = fulfill_lesson(instance=data)
+    form = LessonFulfillForm(instance=data)
 
     if request.method == "POST":
-        form = fulfill_lesson(request.POST, instance=data)
+        form = LessonFulfillForm(request.POST, instance=data)
 
         if form.is_valid():
-            if request.user == form.instance.student:
-                form.instance.student = request.user
-                form.save()
-                return redirect('lessons/bookings.html')
+            form.save()
+            return redirect('home')
+    return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
 @director_required
