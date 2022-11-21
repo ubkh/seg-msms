@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User
 from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
-from .forms import LoginForm
+from .forms import LoginForm, LessonFulfillForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -19,7 +19,7 @@ from lessons.helpers import login_prohibited, director_required
 # Create your views here.
 @login_prohibited
 def index(request):
-    """
+    """ 
     View that displays the index page.
     """
     if request.user.is_authenticated:
@@ -112,6 +112,12 @@ def modify_lesson(request, pk):
                 form.instance.student = request.user
                 form.save()
                 return redirect('home')
+            else:
+                administrators = User.objects.filter(groups__name='Administrator')
+                for admin in administrators:
+                    if request.user == admin:
+                        form.save()
+                        return redirect('home')
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
@@ -119,11 +125,39 @@ def home(request):
     """
     View that displays the user's home page.
     """
+    students = User.objects.filter(groups__name='Student')
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
     administrators = User.objects.filter(groups__name='Administrator')
 
-    return render(request, "home.html", {'lessons' : lessons, 'administrators' : administrators})
+    return render(request, "home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators})
 
+@login_required
+def open_bookings(request, pk):
+    """
+    View that displays all student bookings.
+    """
+    s = get_object_or_404(User, id=pk)
+    current_student = User.objects.filter(id=pk)
+    lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
+    return render(request, "lessons/bookings.html", {'current_student' : current_student, 'lessons' : lessons})
+
+@login_required
+def fulfill_lesson(request, pk):
+    """
+    View that displays the form allowing administrators to fulfill a lesson
+    request. If the form is valid, the admin is redirected to the home page
+    and the corresponding Lesson object updated.
+    """
+    data = get_object_or_404(Lesson, id=pk)
+    form = LessonFulfillForm(instance=data)
+
+    if request.method == "POST":
+        form = LessonFulfillForm(request.POST, instance=data)
+
+        if form.is_valid():
+            form.save()
+            return redirect(home)
+    return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
 @director_required

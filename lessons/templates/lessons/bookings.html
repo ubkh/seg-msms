@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
+{% block body %}
+    <div class="container">
+        <h2>Student Lessons</h2>
+        <hr>
+        <div class="list-group">
+            {% for s in current_student %}
+                <p>Welcome {{ s.name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    &nbsp;
+
+    <div class="mt-2 container">
+        <ul class="list-group list-group-light">
+            <h5>Awaiting to be fulfilled.</h5>
+            {% for l in lessons %}
+                {% if l.fulfilled is False %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                        <div class="ms-2 me-auto">
+                            <span class="badge rounded-pill mb-2" style="background-color: orange;">Awaiting</span>
+                            <div class="fw-bold mb-2">{{ l.title }}</div>
+                            <p class="text-muted mb-2">{{ l.information }}</p>
+                        </div>
+                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
+                        <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
+                        &nbsp;
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
+                        &nbsp;
+                        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' l.id %}"><i class="bi bi-check"></i></a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        
+        <ul class="list-group list-group-light">
+            <h5>Fulfilled Lessons.</h5>
+            {% for l in lessons %}
+                {% if l.fulfilled is True %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                        <div class="ms-2 me-auto">
+                            <span class="badge rounded-pill bg-success mb-2">BOOKED</span>
+                            <div class="fw-bold mb-2">{{ l.title }}</div>
+                            <p class="text-muted mb-2">{{ l.information }}</p>
+                        </div>
+                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
+                        <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }} &nbsp;
+                        &nbsp;
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
+                        &nbsp;
+                        <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    &nbsp;
+
+    <div class="mt-2 container">
+        <h3>Recent Transactions</h3>
+        <hr>
+        <ul class="list-group list-group-light">
+            {% for curLesson in lessons %}
+                <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                    <div class="ms-2 me-auto">
+                        {% if curLesson.paid is True %}
+                            <span class="badge rounded-pill bg-success mb-2">PAID</span>
+                            <div class="fw-bold mb-2">{{ curLesson.title }}</div>
+                            <p class="text-muted mb-2">Successful Transfer: £{{ curLesson.price }}</p>
+                        {% else %}
+                            <span class="badge rounded-pill bg-success mb-2">PENDING</span>
+                            <div class="fw-bold mb-2">{{ curLesson.title }}</div>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

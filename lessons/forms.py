@@ -48,7 +48,6 @@ class RegisterForm(forms.ModelForm):
         return user
 
 class LoginForm(forms.Form):
-    #name = forms.CharField(label="Name")
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
@@ -75,6 +74,18 @@ class LessonModifyForm(forms.ModelForm):
         fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
 
     hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+    def form_valid(self, form):
+        form.instance.student = self.request.user
+        return super().form_valid(form)
+
+class LessonFulfillForm(forms.ModelForm):
+    """
+    Model form for administrators who wish to fulfill a booking.
+    """
+    class Meta:
+        model = Lesson
+        fields = ['fulfilled']
 
     def form_valid(self, form):
         form.instance.student = self.request.user
