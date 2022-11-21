@@ -19,7 +19,7 @@ from lessons.helpers import login_prohibited, director_required
 # Create your views here.
 @login_prohibited
 def index(request):
-    """
+    """ 
     View that displays the index page.
     """
     if request.user.is_authenticated:
@@ -119,11 +119,38 @@ def home(request):
     """
     View that displays the user's home page.
     """
+    students = User.objects.filter(groups__name='Student')
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
     administrators = User.objects.filter(groups__name='Administrator')
 
-    return render(request, "home.html", {'lessons' : lessons, 'administrators' : administrators})
+    return render(request, "home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators})
 
+@login_required
+def open_bookings(request, pk):
+    """
+    View that displays all student bookings.
+    """
+    s = get_object_or_404(User, id=pk)
+    current_student = User.objects.filter(id=pk)
+    lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
+    return render(request, "lessons/bookings.html", {'current_student' : current_student, 'lessons' : lessons})
+
+@login_required
+def fulfill_lesson(request, pk):
+    """
+    Change a unfulfilled lesson into a fulfilled one
+    """
+    data = get_object_or_404(Lesson, id=pk)
+    form = fulfill_lesson(instance=data)
+
+    if request.method == "POST":
+        form = fulfill_lesson(request.POST, instance=data)
+
+        if form.is_valid():
+            if request.user == form.instance.student:
+                form.instance.student = request.user
+                form.save()
+                return redirect('lessons/bookings.html')
 
 @login_required
 @director_required

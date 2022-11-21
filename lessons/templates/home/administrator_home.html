@@ -1,5 +1,17 @@
 <div class="container">
-    <h1>Music School Management System Administration</h1>
+    <h1>Music School Management System AdministratorPanel</h1>
     <hr>
-    <p>Welcome {{ user.name }}! You can manage requests from students.</p>
+    <p>Welcome {{ user.name }}! You can manage student bookings within the management system.</p>
+    <h2>Student List</h2>
+    <div class="list-group">
+        {% for student in students %}
+            <a href="{% url 'open_bookings' student.id %}"
+               class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ student.name }}</h5>
+                </div>
+                <p class="mb-1">{{ student.email }}</p>
+            </a>
+        {% endfor %}
+    </div>
 </div>

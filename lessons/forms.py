@@ -80,6 +80,20 @@ class LessonModifyForm(forms.ModelForm):
         form.instance.student = self.request.user
         return super().form_valid(form)
 
+class fulfill_lesson(forms.ModelForm):
+    """
+    Model form for administrators who wish to fulfill a booking.
+    """
+    class Meta:
+        model = Lesson
+        fields = ['fulfilled']
+
+    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+    def form_valid(self, form):
+        form.instance.student = self.request.user
+        return super().form_valid(form)
+
 class AdminModifyForm(forms.ModelForm):
     """
     Model form to modify an existing administrator by a director.
