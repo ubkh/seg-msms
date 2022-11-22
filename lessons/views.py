@@ -5,9 +5,9 @@ Views that will be used in the music school management system.
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from lessons.models import Lesson, User
+from lessons.models import Lesson, User, Transfer
 from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
-from .forms import LoginForm, LessonFulfillForm
+from .forms import LoginForm, LessonFulfillForm, TransferForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -128,8 +128,9 @@ def home(request):
     students = User.objects.filter(groups__name='Student')
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
     administrators = User.objects.filter(groups__name='Administrator')
+    transfers = Transfer.objects.all() #user_id=request.user.id
 
-    return render(request, "home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators})
+    return render(request, "home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators, 'transfers': transfers})
 
 @login_required
 def open_bookings(request, pk):
@@ -211,5 +212,18 @@ def booking_invoice(request, pk):
     return render(request, "lessons/invoice.html", {'lessons': lessons})
     
 
+@login_required
+#@admin_restricted
+def transfer(request):
+    form = TransferForm()
 
+    if request.method == "POST":
+        #print(request.POST)
+        form = TransferForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('home')
+    else:
+        form = TransferForm()
+    return render(request, "transfer.html", {'form': form})
     
