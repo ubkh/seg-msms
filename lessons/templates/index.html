@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="vh-100 d-flex justify-content-center align-items-center">
+    {% include 'partials/navbar.html' %}
+    <div class="container-xxl px-0 vh-100">
+        <div class="h-50 d-flex justify-content-center align-items-center" style="background-color: #ce9865;">
             <p class="h1 fs-1">Welcome 👋 to Kangaroo Music!</p>
         </div>
     </div>

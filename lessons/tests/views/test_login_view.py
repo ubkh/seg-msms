@@ -23,7 +23,7 @@ class LoginViewTestCase(TestCase, LoginTester):
     def test_get_login(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login.html')
+        self.assertTemplateUsed(response, 'authentication/login.html')
         form = response.context['form']
         next = response.context['next']
         self.assertTrue(isinstance(form, LoginForm))
@@ -37,7 +37,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.url = reverse_with_next('login', destination_url)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login.html')
+        self.assertTemplateUsed(response, 'authentication/login.html')
         form = response.context['form']
         next = response.context['next']
         self.assertTrue(isinstance(form, LoginForm))
@@ -51,13 +51,13 @@ class LoginViewTestCase(TestCase, LoginTester):
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
 
     def test_unsuccessful_login(self):
         form_input = {'name': 'Foo Bar', 'email': 'fookangaroo.com', 'password': 'wrongPassword123'}
         response = self.client.post(self.url, form_input)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login.html')
+        self.assertTemplateUsed(response, 'authentication/login.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, LoginForm))
         self.assertFalse(form.is_bound)
@@ -72,7 +72,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         self.assertTrue(self._is_logged_in())
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
         message_list = list(response.context['messages'])
         self.assertEqual(len(message_list), 0)
     
@@ -82,7 +82,7 @@ class LoginViewTestCase(TestCase, LoginTester):
         response = self.client.post(self.url, form_input, follow=True)
         self.assertTrue(self._is_logged_in())
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
         message_list = list(response.context['messages'])
         self.assertEqual(len(message_list), 0)
     
@@ -92,5 +92,5 @@ class LoginViewTestCase(TestCase, LoginTester):
         response = self.client.post(self.url, form_input, follow=True)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
 

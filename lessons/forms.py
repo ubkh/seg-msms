@@ -105,7 +105,7 @@ class AdminModifyForm(forms.ModelForm):
 class TransferForm(forms.ModelForm):
     class Meta:
         model = Transfer
-        fields = ['lesson_id', 'user_id', 'amount']
+        fields = ['lesson', 'user', 'amount']
 
-    lesson_id = forms.IntegerField()
-    user_id = forms.IntegerField()
+    lesson = forms.IntegerField()
+    user = forms.IntegerField()
