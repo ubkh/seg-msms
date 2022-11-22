@@ -85,7 +85,7 @@ class LessonFulfillForm(forms.ModelForm):
     """
     class Meta:
         model = Lesson
-        fields = ['fulfilled']
+        fields = ['fulfilled','price']
 
     def form_valid(self, form):
         form.instance.student = self.request.user

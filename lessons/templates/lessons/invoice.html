@@ -4,9 +4,9 @@
 {% block body %}
     <div class="container">
         <h1>Booking Invoice:</h1>
-        <hr>
-        <h6>Will be Improved</h6>
         {% for curLesson in lessons %}
+            <h2>Invoice Number: {{user.id}}-{{curLesson.id}}</h2>
+            <hr>
             <h3>Title: {{curLesson.title}}</h3>
             <br>
             <h5>Day: {{curLesson.day}}</h5>
