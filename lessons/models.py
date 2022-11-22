@@ -108,7 +108,7 @@ class Lesson(models.Model):
         return reverse('modify_lesson', kwargs=[self.id])
 
 class Transfer(models.Model):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, blank=False)
     # Fix bug where only a user can only pay for a single lesson
     user = models.OneToOneField(User, on_delete=models.CASCADE, db_constraint=False)
+    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, blank=False)
     amount = models.IntegerField()

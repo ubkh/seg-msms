@@ -1,16 +1,38 @@
 """
 Configuration of the admin interface for the music school management system.
+Register your models here.
 """
 
 from django.contrib import admin
-from .models import User, Lesson
+from .models import User, Lesson, Transfer
 
-# Register your models here.
-admin.site.register(Lesson)
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """Configuration of the admin interface to display users."""
+    """
+    Configuration of the admin interface to display users.
+    """
     list_display = [
         'id', 'email', 'name', 'last_login', 'is_staff', 'is_superuser'
+    ]
+
+
+@admin.register(Lesson)
+class LessonAdmin(admin.ModelAdmin):
+    """
+    Configuration of the admin interface to display lessons.
+    """
+    list_display = [
+        'id', 'fulfilled', 'student', 'day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title',
+        'information', 'price'
+    ]
+
+
+@admin.register(Transfer)
+class TransferAdmin(admin.ModelAdmin):
+    """
+    Configuration of the admin interface to display transfers.
+    """
+    list_display = [
+        'id', 'user', 'lesson', 'amount'
     ]
