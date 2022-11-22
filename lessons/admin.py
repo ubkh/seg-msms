@@ -13,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
     Configuration of the admin interface to display users.
     """
     list_display = [
-        'id', 'email', 'name', 'last_login', 'is_staff', 'is_superuser'
+        'id', 'email', 'first_name', 'last_name', 'last_login', 'is_staff', 'is_superuser'
     ]
 
 

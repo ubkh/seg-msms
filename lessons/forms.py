@@ -12,7 +12,7 @@ class RegisterForm(forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ['name', 'email']
+        fields = ['first_name', 'last_name', 'email']
 
     password = forms.CharField(
         label='Password', 
@@ -42,7 +42,8 @@ class RegisterForm(forms.ModelForm):
         super().save(commit=False)
         user = User.objects.create_user(
             self.cleaned_data.get('email'),
-            name=self.cleaned_data.get('name'),
+            first_name=self.cleaned_data.get('first_name'),
+            last_name=self.cleaned_data.get('last_name'),
             password=self.cleaned_data.get('password')
         )
         return user
@@ -97,7 +98,7 @@ class AdminModifyForm(forms.ModelForm):
     """
     class Meta:
         model = User
-        fields = ['name', 'email']
+        fields = ['first_name', 'last_name', 'email']
 
     make_account_director = forms.BooleanField(label="Would you like to make this account a director account?", required=False)
     delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)

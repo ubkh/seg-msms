@@ -22,7 +22,8 @@ class RegisterViewTestCase(TestCase, LoginTester):
 
     def _create_form_input(self):
         input = {
-            'name': 'Foo Bar',
+            'first_name': 'Foo',
+            'last_name': 'Bar',
             'email': 'foo@kangaroo.com',
             'password': 'Password123',
             'confirm_password': 'Password123'
@@ -69,7 +70,8 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'home/home.html')
         saved_user = User.objects.get(email=self.form_input['email'])
-        self.assertEqual(saved_user.name, self.form_input['name'])
+        self.assertEqual(saved_user.first_name, self.form_input['first_name'])
+        self.assertEqual(saved_user.last_name, self.form_input['last_name'])
         self.assertTrue(check_password('Password123', saved_user.password))
         self.assertTrue(self._is_logged_in())
     

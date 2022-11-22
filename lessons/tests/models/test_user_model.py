@@ -23,11 +23,11 @@ class UserModelTestCase(TestCase, LoginTester):
         self.secondary_user = self._create_secondary_user()
 
     def _create_user(self):
-        user = User.objects.get(name='Foo Bar')
+        user = User.objects.get(first_name='Foo')
         return user
 
     def _create_secondary_user(self):
-        user = User.objects.get(name='Doe Ball')
+        user = User.objects.get(first_name='Doe')
         return user
 
     def _assert_user_is_valid(self, user):
@@ -92,58 +92,58 @@ class UserModelTestCase(TestCase, LoginTester):
         self._assert_user_is_invalid(self.user)
 
     """
-    Test name
+    Test first name
     """
 
-    def test_name_can_equal_100_characters(self):
-        self.user.name = 'a' * 100
+    def test_first_name_can_equal_100_characters(self):
+        self.user.first_name = 'a' * 100
         self._assert_user_is_valid(self.user)
 
-    def test_name_cannot_exceed_100_characters(self):
-        self.user.name = 'a' * 101
+    def test_first_name_cannot_exceed_100_characters(self):
+        self.user.first_name = 'a' * 101
         self._assert_user_is_invalid(self.user)
 
-    def test_name_cannot_be_blank(self):
-        self.user.name = ''
+    def test_first_name_cannot_be_blank(self):
+        self.user.first_name = ''
         self._assert_user_is_invalid(self.user)
 
-    def test_name_does_not_have_to_be_unique(self):
-        self.user.name = self.secondary_user.name
+    def test_first_name_does_not_have_to_be_unique(self):
+        self.user.first_name = self.secondary_user.first_name
         self._assert_user_is_valid(self.user)
 
-    def test_name_can_have_spaces(self):
-        self.user.name = "Foo Kangaroo"
+    def test_first_name_can_have_spaces(self):
+        self.user.first_name = "Foo Kangaroo"
         self._assert_user_is_valid(self.user)
 
-    def test_name_can_have_hyphens(self):
-        self.user.name = "Foo-Kangaroo"
+    def test_first_name_can_have_hyphens(self):
+        self.user.first_name = "Foo-Kangaroo"
         self._assert_user_is_valid(self.user)
 
-    def test_name_can_have_diacritics(self):
-        self.user.name = """
+    def test_first_name_can_have_diacritics(self):
+        self.user.first_name = """
         Á á À Â à Â â Ä ä Ã ã Å å Æ æ Ç ç Ð ð É é È è Ê ê Ë ë Í í Ì ì Î î Ï ï
         """
         self._assert_user_is_valid(self.user)
 
-    def test_name_can_contain_non_latin_scripts(self):
-        self.user.name = """
+    def test_first_name_can_contain_non_latin_scripts(self):
+        self.user.first_name = """
         համար التركيز елементарен 最近 საბეჭდი απλά מוסחת और เนื้อหา இப்சம்
         """
         self._assert_user_is_valid(self.user)
 
 
-    def test_name_cannot_have_numbers(self):
+    def test_first_name_cannot_have_numbers(self):
         for digit in range(0, 10):
-            self.user.name = str(digit)
+            self.user.first_name = str(digit)
             self._assert_user_is_invalid(self.user)
 
-    def test_name_cannot_have_symbols(self):
+    def test_first_name_cannot_have_symbols(self):
         for symbol in ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', 
         ',', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', ']', '^', '_', 
         '`', '{', '|', '}', '~', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 
         '«', '¬', '®', '¯', '°', '±', '´', '¶', '·', '¸', '»', '¿', '×', '÷', 
         '\\']:
-            self.user.name = symbol
+            self.user.first_name = symbol
             self._assert_user_is_invalid(self.user)
 
     """

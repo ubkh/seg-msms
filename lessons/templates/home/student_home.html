@@ -1,7 +1,7 @@
 <div class="container">
     <h2>Lessons</h2>
     <hr>
-    <p>Welcome {{ user.name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+    <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
     <a class="btn btn-primary" href="{% url 'request_lesson' %}">Request Lesson</a>
 </div>
 &nbsp;

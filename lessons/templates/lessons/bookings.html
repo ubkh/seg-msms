@@ -8,7 +8,7 @@
         <hr>
         <div class="list-group">
             {% for s in current_student %}
-                <p>Welcome {{ s.name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+                <p>Welcome {{ s.first_name }} {{ s.last_name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
             {% endfor %}
         </div>
     </div>

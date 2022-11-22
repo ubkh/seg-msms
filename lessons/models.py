@@ -9,7 +9,10 @@ from django.core.validators import EmailValidator, RegexValidator
 from django.utils import timezone
 import re
 
-# Create your models here.
+"""
+Authentication Models
+"""
+
 
 class UserManager(BaseUserManager):
     """
@@ -43,7 +46,8 @@ class UserManager(BaseUserManager):
         """
         return self._create_user(email, password, True, True, **extra_fields)
 
-class User(AbstractBaseUser, PermissionsMixin):
+
+class User(PermissionsMixin, AbstractBaseUser):
     """
     User model used for authentication.
     """
@@ -56,8 +60,16 @@ class User(AbstractBaseUser, PermissionsMixin):
             code='invalid'
         )]
     )
-    name = models.CharField(
+    first_name = models.CharField(
         max_length=100, 
+        blank=False,
+        validators=[RegexValidator(
+            message="Please enter a valid name!",
+            regex=re.compile(r'^(?:[\u0530-\u19ff]|[^\W\d_]|-|\s)+$', re.UNICODE)
+        )]
+    )
+    last_name = models.CharField(
+        max_length=100,
         blank=False,
         validators=[RegexValidator(
             message="Please enter a valid name!",
@@ -72,6 +84,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+
+"""
+Lesson Model
+"""
+
 DAYS_OF_WEEK = [
     (0, 'Monday'),
     (1, 'Tuesday'),
@@ -81,6 +98,7 @@ DAYS_OF_WEEK = [
     (5, 'Saturday'),
     (6, 'Sunday'),
 ]
+
 
 class Lesson(models.Model):
     """
@@ -106,6 +124,12 @@ class Lesson(models.Model):
 
     def get_absolute_url(self):
         return reverse('modify_lesson', kwargs=[self.id])
+
+
+"""
+Transfer Model
+"""
+
 
 class Transfer(models.Model):
     # Fix bug where only a user can only pay for a single lesson

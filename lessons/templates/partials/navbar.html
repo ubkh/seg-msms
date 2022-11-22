@@ -19,9 +19,9 @@
                 {% if user.is_authenticated %}
                     {% for group in user.groups.all %}
                         {% if group.name == 'Student' %}
-                            <span class="navbar-text">Logged in as: {{ user.name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
+                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
                         {% else %}
-                            <span class="navbar-text">Logged in as: {{ user.name }}&nbsp&nbsp&nbsp</span>
+                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp</span>
                         {% endif %}
                     {% endfor %}
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>

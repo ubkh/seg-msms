@@ -17,7 +17,8 @@ class RegisterFormTestCase(TestCase):
 
     def _create_form_input(self):
         input = {
-            'name': 'Foo Bar',
+            'first_name': 'Foo',
+            'last_name': 'Bar',
             'email': 'foo@kangaroo.com',
             'password': 'Example123',
             'confirm_password': 'Example123'
@@ -30,7 +31,8 @@ class RegisterFormTestCase(TestCase):
 
     def test_register_form_contains_required_fields(self):
          register_form = RegisterForm()
-         self.assertIn('name', register_form.fields)
+         self.assertIn('first_name', register_form.fields)
+         self.assertIn('last_name', register_form.fields)
          self.assertIn('email', register_form.fields)
          email_field = register_form.fields['email']
          self.assertTrue(isinstance(email_field, forms.EmailField))
@@ -48,7 +50,8 @@ class RegisterFormTestCase(TestCase):
         user_count_after = User.objects.count()
         self.assertEqual(user_count_before + 1, user_count_after)
         saved_user = User.objects.get(email=self.form_input['email'])
-        self.assertEqual(saved_user.name, self.form_input['name'])
+        self.assertEqual(saved_user.first_name, self.form_input['first_name'])
+        self.assertEqual(saved_user.last_name, self.form_input['last_name'])
         self.assertTrue(check_password(self.form_input['password'], saved_user.password))
 
     def test_form_uses_model_email_validation(self):
@@ -56,8 +59,13 @@ class RegisterFormTestCase(TestCase):
         form = RegisterForm(data=self.form_input)
         self.assertFalse(form.is_valid())
 
-    def test_form_uses_model_name_validation(self):
-        self.form_input['name'] = 'n@me'
+    def test_form_uses_model_first_name_validation(self):
+        self.form_input['first_name'] = 'n@me'
+        form = RegisterForm(data=self.form_input)
+        self.assertFalse(form.is_valid())
+
+    def test_form_uses_model_last_name_validation(self):
+        self.form_input['last_name'] = 'n@me'
         form = RegisterForm(data=self.form_input)
         self.assertFalse(form.is_valid())
 
