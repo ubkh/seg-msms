@@ -17,8 +17,8 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
-                    <span class="navbar-brand mb-0 h1">Logged in as: {{ user.name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
-                    <a class="btn btn-outline-light mx-1 btn" role="button" href="{% url 'log_out' %}">Log Out</a>
+                    <span class="navbar-text">Logged in as: {{ user.name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
+                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'login' %}">Log In</a>
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'register' %}">Register</a>

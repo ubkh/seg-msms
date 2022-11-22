@@ -6,14 +6,13 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.models import Lesson, User, Transfer
-from .forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
-from .forms import LoginForm, LessonFulfillForm, TransferForm
+from lessons.forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
+from lessons.forms import LoginForm, LessonFulfillForm, TransferForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.views.generic.list import ListView
 from lessons.helpers import login_prohibited, director_required
 
 # Create your views here.
@@ -210,7 +209,7 @@ def booking_invoice(request, pk):
     """
     lessons = Lesson.objects.filter(id=pk)
     return render(request, "lessons/invoice.html", {'lessons': lessons})
-    
+
 
 @login_required
 #@admin_restricted
@@ -226,4 +225,4 @@ def transfer(request):
     else:
         form = TransferForm()
     return render(request, "admin/record_transfer.html", {'form': form})
-    
+

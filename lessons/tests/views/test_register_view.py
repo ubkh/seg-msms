@@ -35,7 +35,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
     def test_get_register(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'register.html')
+        self.assertTemplateUsed(response, 'authentication/register.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertFalse(form.is_bound)
@@ -45,7 +45,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
 
     def test_unsucessful_registration(self):
         self.form_input['email'] = 'kangaroo.com'
@@ -54,7 +54,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
         user_count_after = User.objects.count()
         self.assertEqual(user_count_before, user_count_after)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'register.html')
+        self.assertTemplateUsed(response, 'authentication/register.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertTrue(form.is_bound)
@@ -67,7 +67,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertEqual(user_count_before + 1, user_count_after)
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
         saved_user = User.objects.get(email=self.form_input['email'])
         self.assertEqual(saved_user.name, self.form_input['name'])
         self.assertTrue(check_password('Password123', saved_user.password))
@@ -81,5 +81,5 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertEqual(user_count_before, user_count_after)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home.html')
+        self.assertTemplateUsed(response, 'home/home.html')
 
