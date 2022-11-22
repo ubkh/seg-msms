@@ -1,28 +1,30 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-black py-3 my-1 ms-1 me-1 rounded-3 sticky-sm-top border border-dark" style="--bs-bg-opacity: .7; backdrop-filter: blur(10px) saturate(125%); top: 0.25em;">
-    <div class="container-fluid mx-auto">
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                {% if not user.is_authenticated %}
-                    <div class="navbar-nav">
-                        <a class="navbar-brand" href="{% url 'index' %}">
-                            <span class="navbar-brand mb-0 h1">Kangaroo Music</span>
-                        </a>
-                    </div>
-                    <div class="navbar-nav ms-auto">
-                        <a class="btn btn-outline-light mx-1 btn" role="button" href="{% url 'login' %}">Log In</a>
-                        <a class="btn btn-outline-light mx-1 btn" role="button" href="{% url 'register' %}">Register</a>
-                    </div>
-                {% endif %}
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bd-navbar sticky-top container-xxl bd-gutter py-3 flex-wrap flex-lg-nowrap"
+     style="background-color: #8b572d;">
+    <div class="container-fluid">
+
+        <a class="navbar-brand " href="{% url 'index' %}">
+            <img src="{% static "kangaroo_logo.svg" %}" alt="Kangaroo Music" width="30" height="25"
+                 class="d-inline-block align-text-top">
+            <span class="navbar-brand h1 fs-4 text-decoration-underline"><b>Kangaroo Music</b></span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
+                aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
-                    <div class="navbar-nav">
-                        <a class="navbar-brand" href="{% url 'home' %}">
-                            <span class="navbar-brand mb-0 h1">Kangaroo Music</span>
-                        </a>
-                    </div>
-                    <div class="navbar-nav ms-auto">
-                        <span class="navbar-brand mb-0 h1">Logged in as: {{user.name}}&nbsp&nbsp&nbsp&nbsp Reference Number: {{user.id}}&nbsp&nbsp&nbsp</span>
-                        <a class="btn btn-outline-light mx-1 btn" role="button" href="{% url 'log_out' %}">Log Out</a
-                    </div>
+                    <span class="navbar-brand mb-0 h1">Logged in as: {{ user.name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
+                    <a class="btn btn-outline-light mx-1 btn" role="button" href="{% url 'log_out' %}">Log Out</a>
+                {% else %}
+                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'login' %}">Log In</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'register' %}">Register</a>
                 {% endif %}
+            </div>
         </div>
+
     </div>
 </nav>
