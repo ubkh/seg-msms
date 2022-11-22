@@ -155,6 +155,7 @@ def fulfill_lesson(request, pk):
         form = LessonFulfillForm(request.POST, instance=data)
 
         if form.is_valid():
+            data.price = data.duration*data.number_of_lessons*10
             form.save()
             return redirect(home)
     return render(request, "lessons/modify_lesson.html", {'form': form})
