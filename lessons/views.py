@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from lessons.helpers import login_prohibited, director_required
+from lessons.helpers import login_prohibited, super_administrator_restricted
 
 # Create your views here.
 @login_prohibited
@@ -160,7 +160,7 @@ def fulfill_lesson(request, pk):
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
 @login_required
-@director_required
+@super_administrator_restricted
 def create_administrator(request):
     """
     View that displays the form to register an administrator. If a valid 
@@ -179,7 +179,7 @@ def create_administrator(request):
     return render(request, 'authentication/register.html', {'form': form})
 
 @login_required
-@director_required
+@super_administrator_restricted
 def modify_administrator(request, pk):
     """
     View that displays the form to edit an administrator. If a valid 
@@ -217,7 +217,6 @@ def transfer(request):
     form = TransferForm()
 
     if request.method == "POST":
-        #print(request.POST)
         form = TransferForm(request.POST)
         if form.is_valid():
             user = form.save()

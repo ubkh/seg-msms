@@ -9,7 +9,7 @@ def login_prohibited(view_function):
             return view_function(request)
     return modified_view_function
 
-def director_required(view_function):
+def super_administrator_restricted(view_function):
     def modified_view_function(request, *args, **kwargs):
         if request.user.groups.filter(name='Director').exists():
             return view_function(request, *args, **kwargs)
