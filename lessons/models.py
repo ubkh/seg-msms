@@ -107,3 +107,8 @@ class Lesson(models.Model):
 
     def get_absolute_url(self):
         return reverse('modify_lesson', kwargs=[self.id])
+
+class Transfer(models.Model):
+    lesson_id = models.OneToOneField(Lesson, on_delete=models.CASCADE); # Foriegn Key #change to lesson
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE); # Foriegn Key
+    amount = models.IntegerField();

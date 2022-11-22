@@ -4,9 +4,7 @@
     <p>Welcome {{ user.name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
     <a class="btn btn-primary" href="{% url 'request_lesson' %}">Request Lesson</a>
 </div>
-
 &nbsp;
-
 <div class="mt-2 container">
     <ul class="list-group list-group-light">
         <h5>Unfulfilled Lessons.</h5>
@@ -24,13 +22,12 @@
                     <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
                     &nbsp;
                     <a class="btn btn-outline-light btn-sm"
-                    style="background-color: #e74c3c"
-                    href="#"><i class="bi bi-trash3"></i></a>
+                       style="background-color: #e74c3c"
+                       href="#"><i class="bi bi-trash3"></i></a>
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
-    
     <ul class="list-group list-group-light">
         <h5>Fulfilled Lessons.</h5>
         {% for l in lessons %}
@@ -50,13 +47,21 @@
         {% endfor %}
     </ul>
 </div>
-
 &nbsp;
-
 <div class="mt-2 container">
     <h3>Recent Transactions</h3>
     <hr>
     <ul class="list-group list-group-light">
+        {% for transfer in transfers %}
+            <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                <div class="ms-2 me-auto">
+                    <span class="badge rounded-pill bg-success mb-2">PAID</span>
+                    <div class="fw-bold mb-2">{{ transfer.lesson_id.id }}-{{ transfer.user_id.id }}</div>
+                    <p class="text-muted mb-2">Successful Transfer: £{{ transfer.amount }}</p>
+                </div>
+            </li>
+        {% endfor %}
+        <!--
         {% for curLesson in lessons %}
             <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
                 <div class="ms-2 me-auto">
@@ -65,11 +70,12 @@
                         <div class="fw-bold mb-2">{{ curLesson.title }}</div>
                         <p class="text-muted mb-2">Successful Transfer: £{{ curLesson.price }}</p>
                     {% else %}
-                        <span class="badge rounded-pill bg-success mb-2">PENDING</span>
+                        <span class="badge rounded-pill bg-warning mb-2">PENDING</span>
                         <div class="fw-bold mb-2">{{ curLesson.title }}</div>
                     {% endif %}
                 </div>
             </li>
         {% endfor %}
+        -->
     </ul>
 </div>

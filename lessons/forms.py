@@ -4,7 +4,7 @@ Forms that will be used in the music school management system.
 
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User, Lesson
+from lessons.models import User, Lesson, Transfer
 
 class RegisterForm(forms.ModelForm):
     """
@@ -101,3 +101,11 @@ class AdminModifyForm(forms.ModelForm):
 
     make_account_director = forms.BooleanField(label="Would you like to make this account a director account?", required=False)
     delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)
+
+class TransferForm(forms.ModelForm):
+    class Meta:
+        model = Transfer
+        fields = ['lesson_id', 'user_id', 'amount']
+
+    lesson_id = forms.IntegerField()
+    user_id = forms.IntegerField()
