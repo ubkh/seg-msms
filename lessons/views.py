@@ -46,7 +46,7 @@ def register(request):
             return redirect('home')
     else:
         form = RegisterForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'authentication/register.html', {'form': form})
 
 @login_prohibited
 def log_in(request):
@@ -72,7 +72,7 @@ def log_in(request):
         messages.add_message(request, messages.ERROR, "Incorrect details")
     form = LoginForm()
     next = request.GET.get('next') or ''
-    return render(request, "login.html", {'form': form, 'next': next})
+    return render(request, "authentication/login.html", {'form': form, 'next': next})
 
 def log_out(request):
     logout(request)
@@ -128,9 +128,9 @@ def home(request):
     students = User.objects.filter(groups__name='Student')
     lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
     administrators = User.objects.filter(groups__name='Administrator')
-    transfers = Transfer.objects.all() #user_id=request.user.id
+    transfers = Transfer.objects.filter(user_id=request.user)
 
-    return render(request, "home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators, 'transfers': transfers})
+    return render(request, "home/home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators, 'transfers': transfers})
 
 @login_required
 def open_bookings(request, pk):
@@ -177,7 +177,7 @@ def create_administrator(request):
             return redirect('home')
     else:
         form = RegisterForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'authentication/register.html', {'form': form})
 
 @login_required
 @director_required
@@ -200,7 +200,7 @@ def modify_administrator(request, pk):
             if form.data.get('delete_account'):
                 user.delete()
             return redirect('home')
-    return render(request, "register.html", {'form': form})
+    return render(request, "authentication/register.html", {'form': form})
 
 
 @login_required
@@ -225,5 +225,5 @@ def transfer(request):
             return redirect('home')
     else:
         form = TransferForm()
-    return render(request, "transfer.html", {'form': form})
+    return render(request, "admin/record_transfer.html", {'form': form})
     
