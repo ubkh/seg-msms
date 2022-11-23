@@ -200,7 +200,8 @@ def open_bookings(request, pk):
     s = get_object_or_404(User, id=pk)
     current_student = User.objects.filter(id=pk)
     lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
-    return render(request, "lessons/bookings.html", {'current_student': current_student, 'lessons': lessons})
+    transfers = Transfer.objects.filter(user=s)
+    return render(request, "lessons/bookings.html", {'current_student': current_student, 'lessons': lessons, 'transfers': transfers})
 
 
 @login_required

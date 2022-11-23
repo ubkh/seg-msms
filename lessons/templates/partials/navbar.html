@@ -21,10 +21,9 @@
                         {% if group.name == 'Student' %}
                             <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
                         {% elif group.name == 'Director' %}
+                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
                             <a class="nav-link" href="#">Administrators</a> <!-- Not yet functional -->
-                            <div class="vr"></div>
                             <a class="nav-link" href="#">Requests</a> <!-- Not yet functional -->
-                            <div class="vr"></div>
                             <a class="nav-link" href="#">Transfers</a> <!-- Not yet functional -->
                         {% else %}
                             <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp</span>
