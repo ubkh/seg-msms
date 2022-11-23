@@ -6,13 +6,18 @@ from django import forms
 from django.core.validators import RegexValidator
 from lessons.models import User, Lesson, Transfer
 
+"""
+Authentication Forms
+"""
+
+
 class RegisterForm(forms.ModelForm):
     """
     Model form used to register new users.
     """
     class Meta:
         model = User
-        fields = ['name', 'email']
+        fields = ['first_name', 'last_name', 'email']
 
     password = forms.CharField(
         label='Password', 
@@ -42,7 +47,8 @@ class RegisterForm(forms.ModelForm):
         super().save(commit=False)
         user = User.objects.create_user(
             self.cleaned_data.get('email'),
-            name=self.cleaned_data.get('name'),
+            first_name=self.cleaned_data.get('first_name'),
+            last_name=self.cleaned_data.get('last_name'),
             password=self.cleaned_data.get('password')
         )
         return user
@@ -50,6 +56,29 @@ class RegisterForm(forms.ModelForm):
 class LoginForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
+
+class AdminModifyForm(forms.ModelForm):
+    """
+    Model form to modify an existing administrator by a director.
+    """
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    make_account_director = forms.BooleanField(
+        label="Would you like to make this account a director account?",
+        required=False
+    )
+    delete_account = forms.BooleanField(
+        label="Would you like to delete this account?",
+        required=False
+    )
+
+
+"""
+Lessons Forms
+"""
+
 
 class LessonRequestForm(forms.ModelForm):
     """
@@ -91,21 +120,38 @@ class LessonFulfillForm(forms.ModelForm):
         form.instance.student = self.request.user
         return super().form_valid(form)
 
-class AdminModifyForm(forms.ModelForm):
-    """
-    Model form to modify an existing administrator by a director.
-    """
-    class Meta:
-        model = User
-        fields = ['name', 'email']
 
-    make_account_director = forms.BooleanField(label="Would you like to make this account a director account?", required=False)
-    delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)
+"""
+Transfer Form
+"""
+
 
 class TransferForm(forms.ModelForm):
     class Meta:
         model = Transfer
-        fields = ['lesson', 'user', 'amount']
+        fields = ['amount']
 
-    lesson = forms.IntegerField()
-    user = forms.IntegerField()
+    user_id = forms.IntegerField()
+    lesson_id = forms.IntegerField()
+
+    def clean(self):
+        super().clean()
+        user_id = self.cleaned_data.get('user_id')
+        user = User.objects.filter(pk=user_id).first()
+        lesson_id = self.cleaned_data.get('lesson_id')
+        lesson = Lesson.objects.filter(pk=lesson_id).first()
+        if user and lesson and user != lesson.student:
+            self.add_error('amount', 'This student has not booked this lesson. You should refund this transfer.')
+        if not user:
+            self.add_error('user_id', 'This user could not be found. You should refund this transfer.')
+        if not lesson:
+            self.add_error('lesson_id', 'This lesson could not be found. You should refund this transfer.')
+
+    def save(self):
+        super().save(commit=False)
+        transfer = Transfer.objects.create(
+            user=User.objects.filter(pk=self.cleaned_data.get('user_id')).first(),
+            lesson=Lesson.objects.filter(pk=self.cleaned_data.get('lesson_id')).first(),
+            amount=self.cleaned_data.get('amount'),
+        )
+        return transfer

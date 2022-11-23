@@ -3,7 +3,8 @@
         "model": "lessons.user",
         "pk": 1,
         "fields": {
-            "name": "Foo Bar",
+            "first_name": "Foo",
+            "last_name": "Bar",
             "email": "foo@kangaroo.com",
             "password": "pbkdf2_sha256$390000$5Js8MTHY7RhngoVNSapPqF$1Obet+jEytXsHVy4YAUs8A7bFe07Wu2P/GbUadi9fbc="
         }

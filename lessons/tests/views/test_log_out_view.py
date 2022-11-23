@@ -12,7 +12,7 @@ class LogOutViewTestCase(TestCase, LoginTester):
 
     def setUp(self):
         self.url = reverse('log_out')
-        self.user = User.objects.get(name='Foo Bar')
+        self.user = User.objects.get(first_name='Foo')
     
     def test_log_out_url(self):
         self.assertEqual(self.url, '/log_out/')

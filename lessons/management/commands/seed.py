@@ -12,7 +12,8 @@ class Command(BaseCommand):
         User.objects.filter(email="john.doe@example.org").delete()
         student_user = User.objects.create_user(
             email="john.doe@example.org",
-            name="John Doe",
+            first_name="John",
+            last_name="Doe",
             password="Password123",
         )
         student_group, created = Group.objects.get_or_create(name='Student')
@@ -22,7 +23,8 @@ class Command(BaseCommand):
         User.objects.filter(email="petra.pickles@example.org").delete()
         administrator_user = User.objects.create_user(
             email="petra.pickles@example.org",
-            name="Petra Pickles",
+            first_name="Petra",
+            last_name="Pickles",
             password="Password123",
         )
         administrator_group, created = Group.objects.get_or_create(name='Administrator')
@@ -32,7 +34,8 @@ class Command(BaseCommand):
         User.objects.filter(email="marty.major@example.org").delete()
         director_user = User.objects.create_user(
             email="marty.major@example.org",
-            name="Marty Major",
+            first_name="Marty",
+            last_name="Major",
             password="Password123",
         )
         director_group, created = Group.objects.get_or_create(name='Director')

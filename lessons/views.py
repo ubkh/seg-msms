@@ -15,7 +15,11 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from lessons.helpers import login_prohibited, super_administrator_restricted
 
-# Create your views here.
+"""
+Authentication views
+"""
+
+
 @login_prohibited
 def index(request):
     """ 
@@ -24,6 +28,21 @@ def index(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
+
+
+@login_required
+def home(request):
+    """
+    View that displays the user's home page.
+    """
+    students = User.objects.filter(groups__name='Student')
+    lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
+    administrators = User.objects.filter(groups__name='Administrator')
+    transfers = Transfer.objects.filter(user_id=request.user)
+
+    return render(request, "home/home.html",
+                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers})
+
 
 @login_prohibited
 def register(request):
@@ -46,6 +65,7 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})
+
 
 @login_prohibited
 def log_in(request):
@@ -73,9 +93,60 @@ def log_in(request):
     next = request.GET.get('next') or ''
     return render(request, "authentication/login.html", {'form': form, 'next': next})
 
+
 def log_out(request):
     logout(request)
     return redirect('index')
+
+
+@login_required
+@super_administrator_restricted
+def create_administrator(request):
+    """
+    View that displays the form to register an administrator. If a valid
+    form is submitted the director is redirected to the home page, else they are
+    directed to resubmit the form again.
+    """
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            administrator_group, created = Group.objects.get_or_create(name='Administrator')
+            user.groups.add(administrator_group)
+            return redirect('home')
+    else:
+        form = RegisterForm()
+    return render(request, 'authentication/register.html', {'form': form})
+
+
+@login_required
+@super_administrator_restricted
+def modify_administrator(request, pk):
+    """
+    View that displays the form to edit an administrator. If a valid
+    form is submitted the director is redirected to the home page, else they are
+    directed to resubmit the form again.
+    """
+    admin_data = get_object_or_404(User, id=pk)
+    form = AdminModifyForm(instance=admin_data)
+    if request.method == "POST":
+        form = AdminModifyForm(request.POST, instance=admin_data)
+        if form.is_valid():
+            user = form.save()
+            if form.data.get('make_account_director'):
+                user.groups.clear()
+                director_group, created = Group.objects.get_or_create(name='Director')
+                user.groups.add(director_group)
+            if form.data.get('delete_account'):
+                user.delete()
+            return redirect('home')
+    return render(request, "authentication/register.html", {'form': form})
+
+
+"""
+Lesson views
+"""
+
 
 @login_required
 def request_lesson(request):
@@ -92,6 +163,7 @@ def request_lesson(request):
             return redirect('home')
     form = LessonRequestForm()
     return render(request, "lessons/request_lesson.html", {'form': form})
+
 
 @login_required
 def modify_lesson(request, pk):
@@ -119,17 +191,6 @@ def modify_lesson(request, pk):
                         return redirect('home')
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
-@login_required
-def home(request):
-    """
-    View that displays the user's home page.
-    """
-    students = User.objects.filter(groups__name='Student')
-    lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
-    administrators = User.objects.filter(groups__name='Administrator')
-    transfers = Transfer.objects.filter(user_id=request.user)
-
-    return render(request, "home/home.html", {'students' : students, 'lessons' : lessons, 'administrators' : administrators, 'transfers': transfers})
 
 @login_required
 def open_bookings(request, pk):
@@ -139,7 +200,9 @@ def open_bookings(request, pk):
     s = get_object_or_404(User, id=pk)
     current_student = User.objects.filter(id=pk)
     lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
-    return render(request, "lessons/bookings.html", {'current_student' : current_student, 'lessons' : lessons})
+    transfers = Transfer.objects.filter(user=s)
+    return render(request, "lessons/bookings.html", {'current_student': current_student, 'lessons': lessons, 'transfers': transfers})
+
 
 @login_required
 def fulfill_lesson(request, pk):
@@ -155,52 +218,10 @@ def fulfill_lesson(request, pk):
         form = LessonFulfillForm(request.POST, instance=data)
 
         if form.is_valid():
-            data.price = data.duration*data.number_of_lessons*10
+            data.price = data.duration * data.number_of_lessons * 10
             form.save()
             return redirect(home)
     return render(request, "lessons/modify_lesson.html", {'form': form})
-
-@login_required
-@super_administrator_restricted
-def create_administrator(request):
-    """
-    View that displays the form to register an administrator. If a valid 
-    form is submitted the director is redirected to the home page, else they are 
-    directed to resubmit the form again.
-    """
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            administrator_group, created = Group.objects.get_or_create(name='Administrator')
-            user.groups.add(administrator_group)
-            return redirect('home')
-    else:
-        form = RegisterForm()
-    return render(request, 'authentication/register.html', {'form': form})
-
-@login_required
-@super_administrator_restricted
-def modify_administrator(request, pk):
-    """
-    View that displays the form to edit an administrator. If a valid 
-    form is submitted the director is redirected to the home page, else they are 
-    directed to resubmit the form again.
-    """
-    admin_data = get_object_or_404(User, id=pk)
-    form = AdminModifyForm(instance=admin_data)
-    if request.method == "POST":
-        form = AdminModifyForm(request.POST, instance=admin_data)
-        if form.is_valid():
-            user = form.save()
-            if form.data.get('make_account_director'):
-                user.groups.clear()
-                director_group, created = Group.objects.get_or_create(name='Director')
-                user.groups.add(director_group)
-            if form.data.get('delete_account'):
-                user.delete()
-            return redirect('home')
-    return render(request, "authentication/register.html", {'form': form})
 
 
 @login_required
@@ -213,7 +234,7 @@ def booking_invoice(request, pk):
 
 
 @login_required
-#@admin_restricted
+# @admin_restricted
 def transfer(request):
     form = TransferForm()
 
@@ -225,4 +246,3 @@ def transfer(request):
     else:
         form = TransferForm()
     return render(request, "admin/record_transfer.html", {'form': form})
-
