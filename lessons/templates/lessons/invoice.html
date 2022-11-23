@@ -5,23 +5,62 @@
     <div class="container">
         <h1>Booking Invoice:</h1>
         {% for curLesson in lessons %}
-            <h2>Lesson Number: {{curLesson.id}}</h2>
-            <hr>
-            <h3>Title: {{curLesson.title}}</h3>
-            <br>
-            <h5>Day: {{curLesson.day}}</h5>
-            <br>
-            <h5>Price: £{{curLesson.price}}</h5>
-            <br>
-            <h5>Time: {{curLesson.hour}}</h5>
-            <br>
-            <h5>Number Of Lessons: {{curLesson.number_of_lessons}}</h5>
-            <br>
-            <h5>Interval: {{curLesson.Interval}}</h5>
-            <br>
-            <h5>Duration: {{curLesson.duration}}</h5>
-            <br>
-            <h5>Information: {{curLesson.information}}</h5>
+            <div>
+                <h2>Bill To:</h2>
+                <br>
+                <h4>{{curLesson.student.name}}</h4>
+                <h4>{{curLesson.student.email}}</h4>
+                <br>
+                <h2>Invoice Number: {{curLesson.student.id}}-{{curLesson.id}}</h2>
+                <hr>
+            </div>
+            <div>
+                <h2>Title: {{curLesson.title}}</h2>
+                <br>
+                <div class="container">
+                    <div class="row border border-dark">
+                      <div class="col-sm bg-secondary border border-dark">
+                        <h4>Day</h4>
+                      </div>
+                      <div class="col-sm bg-secondary border border-dark">
+                        <h4>Time</h4>
+                      </div>
+                      <div class="col-sm bg-secondary border border-dark">
+                        <h4>Number Of Lessons</h4>
+                      </div>
+                      <div class="col-sm bg-secondary border border-dark">
+                        <h4>Interval</h4>
+                      </div>
+                      <div class="col-sm bg-secondary border border-dark">
+                        <h4>Duration</h4>
+                      </div>
+                      <div class="w-100"></div>
+                      <div class="col-sm bg-info border border-dark">
+                        <h5>{{curLesson.day}}</h5>
+                      </div>
+                      <div class="col-sm bg-info border border-dark">
+                        <h5>{{curLesson.hour}}</h5>
+                      </div>
+                      <div class="col-sm bg-info border border-dark">
+                        <h5>{{curLesson.number_of_lessons}}</h5>
+                      </div>
+                      <div class="col-sm bg-info border border-dark">
+                        <h5>{{curLesson.interval}} Week/s</h5>
+                      </div>
+                      <div class="col-sm bg-info border border-dark">
+                        <h5>{{curLesson.duration}} Hour/s</h5>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <br>
+                <h3>Information: {{curLesson.information}}</h3>
+            </div>
+            
+            <div>
+                <hr>
+                <h1>Amount Due: £{{curLesson.price}}</h1>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}
