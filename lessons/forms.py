@@ -6,6 +6,11 @@ from django import forms
 from django.core.validators import RegexValidator
 from lessons.models import User, Lesson, Transfer
 
+"""
+Authentication Forms
+"""
+
+
 class RegisterForm(forms.ModelForm):
     """
     Model form used to register new users.
@@ -52,6 +57,27 @@ class LoginForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
+class AdminModifyForm(forms.ModelForm):
+    """
+    Model form to modify an existing administrator by a director.
+    """
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    make_account_director = forms.BooleanField(
+        label="Would you like to make this account a director account?",
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-label'})
+    )
+    delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)
+
+
+"""
+Lessons Forms
+"""
+
+
 class LessonRequestForm(forms.ModelForm):
     """
     Model form used for students to request new lessons.
@@ -92,16 +118,11 @@ class LessonFulfillForm(forms.ModelForm):
         form.instance.student = self.request.user
         return super().form_valid(form)
 
-class AdminModifyForm(forms.ModelForm):
-    """
-    Model form to modify an existing administrator by a director.
-    """
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email']
 
-    make_account_director = forms.BooleanField(label="Would you like to make this account a director account?", required=False)
-    delete_account = forms.BooleanField(label="Would you like to delete this account?", required=False)
+"""
+Transfer Form
+"""
+
 
 class TransferForm(forms.ModelForm):
     class Meta:

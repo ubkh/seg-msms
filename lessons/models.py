@@ -10,7 +10,7 @@ from django.utils import timezone
 import re
 
 """
-Authentication Models
+Authentication Model
 """
 
 
