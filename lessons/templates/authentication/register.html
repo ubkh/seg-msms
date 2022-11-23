@@ -26,12 +26,14 @@
                                     <input type="{{ field.field.widget.input_type }}"
                                             {% if field.field.widget.input_type == 'checkbox' %}
                                            class='form-check form-switch form-check-input'
+                                           value="{{ field.value }}"
                                             {% else %}
                                            class="form-control"
+                                           value="{{ field.value|default:'' }}"
                                             {% endif %}
                                            name="{{ field.name }}"
                                            id="id_{{ field.name }}"
-                                           value="{{ field.value|default:'' }}"
+
                                     />
                                     <p class="help-text">{{ field.help_text }} </p>
                                 </div>
