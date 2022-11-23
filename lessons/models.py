@@ -132,7 +132,6 @@ Transfer Model
 
 
 class Transfer(models.Model):
-    # Fix bug where only a user can only pay for a single lesson
-    user = models.OneToOneField(User, on_delete=models.CASCADE, db_constraint=False)
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, blank=False)
-    amount = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=False)
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
