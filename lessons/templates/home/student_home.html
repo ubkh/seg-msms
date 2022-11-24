@@ -7,41 +7,46 @@
 &nbsp;
 <div class="mt-2 container">
     <ul class="list-group list-group-light">
-        <h5>Unfulfilled Lessons.</h5>
+        <h5>Unfulfilled Lessons</h5>
         {% for l in lessons %}
             {% if l.fulfilled is False %}
                 <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
                     <div class="ms-2 me-auto">
                         <span class="badge rounded-pill mb-2" style="background-color: orange;">REQUESTED</span>
-                        <div class="fw-bold mb-2">{{ l.title }}</div>
-                        <p class="text-muted mb-2">{{ l.information }}</p>
+                        <div class="mb-2"><b>{{ l.title }}</b> with Teacher for {{ l.duration }}m - £{{ l.price }} - <span class="text-muted">{{ l.information|truncatechars:140}}</span></div>
                     </div>
-                    <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
-                    <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
-                    &nbsp;
-                    <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
-                    &nbsp;
-                    <a class="btn btn-outline-light btn-sm"
-                       style="background-color: #e74c3c"
-                       href="#"><i class="bi bi-trash3"></i></a>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm rounded-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i>&nbsp;Modify</a></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash3"></i>&nbsp;Delete</a></li>
+                        </ul>
+                    </div>
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
+    &nbsp;
     <ul class="list-group list-group-light">
-        <h5>Fulfilled Lessons.</h5>
+        <h5>Fulfilled Lessons</h5>
         {% for l in lessons %}
             {% if l.fulfilled is True %}
                 <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
                     <div class="ms-2 me-auto">
                         <span class="badge rounded-pill bg-success mb-2">BOOKED</span>
-                        <div class="fw-bold mb-2">{{ l.title }} - £{{ l.price }}</div>
-                        <p class="text-muted mb-2">{{ l.information }}</p>
+                        <div class="mb-2"><b>{{ l.title }}</b> with Teacher for {{ l.duration }}m - £{{ l.price }} - <span class="text-muted">{{ l.information|truncatechars:140}}</span></div>
                     </div>
-                    <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
-                    <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
-                    &nbsp;
-                    <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm rounded-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'booking_invoice' l.id %}"><i class="bi bi-receipt"></i>&nbsp;View Invoice</a></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash3"></i>&nbsp;Delete</a></li>
+                        </ul>
+                    </div>
                 </li>
             {% endif %}
         {% endfor %}
