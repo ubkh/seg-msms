@@ -4,30 +4,28 @@ Forms that will be used in the music school management system.
 
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User, Lesson, Transfer
 
-"""
-Authentication Forms
-"""
+from lessons.models import User
 
 
 class RegisterForm(forms.ModelForm):
     """
     Model form used to register new users.
     """
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
 
     password = forms.CharField(
-        label='Password', 
+        label='Password',
         widget=forms.PasswordInput(),
         validators=[RegexValidator(
             regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$',
             message="Password must contain at least 6 characters, which includes "
                     "a uppercase character, a lowercase character and a number."
-            )]
-        )
+        )]
+    )
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
 
     def clean(self):
@@ -53,14 +51,17 @@ class RegisterForm(forms.ModelForm):
         )
         return user
 
+
 class LoginForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
+
 
 class AdminModifyForm(forms.ModelForm):
     """
     Model form to modify an existing administrator by a director.
     """
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
@@ -73,85 +74,3 @@ class AdminModifyForm(forms.ModelForm):
         label="Would you like to delete this account?",
         required=False
     )
-
-
-"""
-Lessons Forms
-"""
-
-
-class LessonRequestForm(forms.ModelForm):
-    """
-    Model form used for students to request new lessons.
-    """
-    class Meta:
-        model = Lesson
-        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
-
-    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
-
-    def form_valid(self, form):
-        form.instance.student = self.request.user
-        return super().form_valid(form)
-  
-class LessonModifyForm(forms.ModelForm):
-    """
-    Model form for students who wish to change preferences for a lesson request.
-    """
-    class Meta:
-        model = Lesson
-        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
-
-    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
-
-    def form_valid(self, form):
-        form.instance.student = self.request.user
-        return super().form_valid(form)
-
-class LessonFulfillForm(forms.ModelForm):
-    """
-    Model form for administrators who wish to fulfill a booking.
-    """
-    class Meta:
-        model = Lesson
-        fields = ['fulfilled']
-
-    def form_valid(self, form):
-        form.instance.student = self.request.user
-        return super().form_valid(form)
-
-
-"""
-Transfer Form
-"""
-
-
-class TransferForm(forms.ModelForm):
-    class Meta:
-        model = Transfer
-        fields = ['amount']
-
-    user_id = forms.IntegerField()
-    lesson_id = forms.IntegerField()
-
-    def clean(self):
-        super().clean()
-        user_id = self.cleaned_data.get('user_id')
-        user = User.objects.filter(pk=user_id).first()
-        lesson_id = self.cleaned_data.get('lesson_id')
-        lesson = Lesson.objects.filter(pk=lesson_id).first()
-        if user and lesson and user != lesson.student:
-            self.add_error('amount', 'This student has not booked this lesson. You should refund this transfer.')
-        if not user:
-            self.add_error('user_id', 'This user could not be found. You should refund this transfer.')
-        if not lesson:
-            self.add_error('lesson_id', 'This lesson could not be found. You should refund this transfer.')
-
-    def save(self):
-        super().save(commit=False)
-        transfer = Transfer.objects.create(
-            user=User.objects.filter(pk=self.cleaned_data.get('user_id')).first(),
-            lesson=Lesson.objects.filter(pk=self.cleaned_data.get('lesson_id')).first(),
-            amount=self.cleaned_data.get('amount'),
-        )
-        return transfer
