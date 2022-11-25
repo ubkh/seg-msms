@@ -2,22 +2,18 @@
 Views that will be used in the music school management system.
 """
 
-from django.urls import reverse
-from django.shortcuts import render, redirect, get_object_or_404
-
-from lessons.models import Lesson, User, Transfer
-from lessons.forms import LessonModifyForm, LessonRequestForm, RegisterForm, AdminModifyForm
-from lessons.forms import LoginForm, LessonFulfillForm, TransferForm
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.contrib import messages
 from django.http import HttpResponseRedirect
-from lessons.helpers import login_prohibited, super_administrator_restricted
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
-"""
-Authentication views
-"""
+from lessons.forms import LoginForm
+from lessons.forms import RegisterForm, AdminModifyForm
+from lessons.helpers import login_prohibited, super_administrator_restricted
+from lessons.models import Lesson, User, Transfer
 
 
 @login_prohibited
@@ -141,108 +137,3 @@ def modify_administrator(request, pk):
                 user.delete()
             return redirect('home')
     return render(request, "authentication/register.html", {'form': form})
-
-
-"""
-Lesson views
-"""
-
-
-@login_required
-def request_lesson(request):
-    """
-    View that displays the form allowing users to request a lesson.
-    If the form is valid, the user is redirected to the home page and 
-    a Lesson object is created.
-    """
-    if request.method == "POST":
-        form = LessonRequestForm(request.POST)
-        if form.is_valid():
-            form.instance.student = request.user
-            form.save()
-            return redirect('home')
-    form = LessonRequestForm()
-    return render(request, "lessons/request_lesson.html", {'form': form})
-
-
-@login_required
-def modify_lesson(request, pk):
-    """
-    View that displays the form allowing users to edit an existing lesson
-    request. If the form is valid, the user is redirected to the home page
-    and the corresponding Lesson object updated.
-    """
-    data = get_object_or_404(Lesson, id=pk)
-    form = LessonModifyForm(instance=data)
-
-    if request.method == "POST":
-        form = LessonModifyForm(request.POST, instance=data)
-
-        if form.is_valid():
-            if request.user == form.instance.student:
-                form.instance.student = request.user
-                form.save()
-                return redirect('home')
-            else:
-                administrators = User.objects.filter(groups__name='Administrator')
-                for admin in administrators:
-                    if request.user == admin:
-                        form.save()
-                        return redirect('home')
-    return render(request, "lessons/modify_lesson.html", {'form': form})
-
-
-@login_required
-def open_bookings(request, pk):
-    """
-    View that displays all student bookings.
-    """
-    s = get_object_or_404(User, id=pk)
-    current_student = User.objects.filter(id=pk)
-    lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
-    transfers = Transfer.objects.filter(user=s)
-    return render(request, "lessons/bookings.html", {'current_student': current_student, 'lessons': lessons, 'transfers': transfers})
-
-
-@login_required
-def fulfill_lesson(request, pk):
-    """
-    View that displays the form allowing administrators to fulfill a lesson
-    request. If the form is valid, the admin is redirected to the home page
-    and the corresponding Lesson object updated.
-    """
-    data = get_object_or_404(Lesson, id=pk)
-    form = LessonFulfillForm(instance=data)
-
-    if request.method == "POST":
-        form = LessonFulfillForm(request.POST, instance=data)
-
-        if form.is_valid():
-            data.price = data.duration * data.number_of_lessons * 10
-            form.save()
-            return redirect(home)
-    return render(request, "lessons/modify_lesson.html", {'form': form})
-
-
-@login_required
-def booking_invoice(request, pk):
-    """
-    View that displays to the User details of a booking after it has been confirmed by and Admin
-    """
-    lessons = Lesson.objects.filter(id=pk)
-    return render(request, "lessons/invoice.html", {'lessons': lessons})
-
-
-@login_required
-# @admin_restricted
-def transfer(request):
-    form = TransferForm()
-
-    if request.method == "POST":
-        form = TransferForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            return redirect('home')
-    else:
-        form = TransferForm()
-    return render(request, "admin/record_transfer.html", {'form': form})
