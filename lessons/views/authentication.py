@@ -232,6 +232,9 @@ def booking_invoice(request, pk):
     lessons = Lesson.objects.filter(id=pk)
     return render(request, "lessons/invoice.html", {'lessons': lessons})
 
+"""
+Transfer views
+"""
 
 @login_required
 # @admin_restricted
