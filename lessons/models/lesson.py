@@ -2,11 +2,11 @@
 Models that will be used in the music school management system.
 """
 
-from audioop import reverse
+from django.urls import reverse
 
 from django.db import models
 from django.utils import timezone
-
+from django.core.validators import MinValueValidator, MaxValueValidator, StepValueValidator
 from lessons.models import User
 
 DAYS_OF_WEEK = [
@@ -31,12 +31,20 @@ class Lesson(models.Model):
         on_delete=models.CASCADE
     )
     day = models.IntegerField(choices=DAYS_OF_WEEK, default=0)
-    hour = models.TimeField(default=timezone.now)
-    number_of_lessons = models.IntegerField(default=1)
-    interval = models.IntegerField()
-    duration = models.IntegerField()
-    title = models.TextField(max_length=20, default="Title")
-    information = models.TextField(max_length=280)  # we can add more later
+    time = models.TimeField(default=timezone.now)
+    number_of_lessons = models.PositiveIntegerField(default=1, verbose_name="Number of Lessons")
+    interval = models.PositiveIntegerField(
+        default=1, 
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
+        verbose_name="Interval (weeks)"
+    )
+    duration = models.PositiveIntegerField(
+        default=30,
+        validators=[MinValueValidator(30), MaxValueValidator(60), StepValueValidator(15)],
+        verbose_name="Duration (minutes)"
+    )
+    title = models.TextField(max_length=25, default="Music Lesson")
+    information = models.TextField(max_length=280, verbose_name="Further Information", blank=True)
     price = models.FloatField(default=0.00)
 
     def __str__(self):

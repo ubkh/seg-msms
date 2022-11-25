@@ -5,8 +5,7 @@ Views that will be used in the music school management system.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from lessons.forms import LessonFulfillForm
-from lessons.forms import LessonModifyForm, LessonRequestForm
+from lessons.forms import LessonRequestForm, LessonFulfillForm
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
 
@@ -24,7 +23,8 @@ def request_lesson(request):
             form.instance.student = request.user
             form.save()
             return redirect('home')
-    form = LessonRequestForm()
+    else:
+        form = LessonRequestForm()
     return render(request, "lessons/request_lesson.html", {'form': form})
 
 
@@ -36,10 +36,10 @@ def modify_lesson(request, pk):
     and the corresponding Lesson object updated.
     """
     data = get_object_or_404(Lesson, id=pk)
-    form = LessonModifyForm(instance=data)
+    form = LessonRequestForm(instance=data)
 
     if request.method == "POST":
-        form = LessonModifyForm(request.POST, instance=data)
+        form = LessonRequestForm(request.POST, instance=data)
 
         if form.is_valid():
             if request.user == form.instance.student:
