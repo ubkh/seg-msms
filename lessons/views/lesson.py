@@ -21,7 +21,9 @@ def request_lesson(request):
         form = LessonRequestForm(request.POST)
         if form.is_valid():
             form.instance.student = request.user
-            form.save()
+            lesson = form.save(commit=False)
+            lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
+            lesson.save()
             return redirect('home')
     else:
         form = LessonRequestForm()
@@ -44,13 +46,17 @@ def modify_lesson(request, pk):
         if form.is_valid():
             if request.user == form.instance.student:
                 form.instance.student = request.user
-                form.save()
+                lesson = form.save(commit=False)
+                lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
+                lesson.save()
                 return redirect('home')
             else:
                 administrators = User.objects.filter(groups__name='Administrator')
                 for admin in administrators:
                     if request.user == admin:
-                        form.save()
+                        lesson = form.save(commit=False)
+                        lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
+                        lesson.save()
                         return redirect('home')
     return render(request, "lessons/modify_lesson.html", {'form': form})
 
@@ -82,7 +88,7 @@ def fulfill_lesson(request, pk):
         form = LessonFulfillForm(request.POST, instance=data)
 
         if form.is_valid():
-            data.price = data.duration * data.number_of_lessons * 10
+            data.price = (data.duration/60) * data.number_of_lessons * 10
             form.save()
             return redirect(home)
     return render(request, "lessons/modify_lesson.html", {'form': form})
