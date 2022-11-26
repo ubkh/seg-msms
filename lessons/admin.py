@@ -23,7 +23,7 @@ class LessonAdmin(admin.ModelAdmin):
     Configuration of the admin interface to display lessons.
     """
     list_display = [
-        'id', 'fulfilled', 'student', 'day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title',
+        'id', 'fulfilled', 'student', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'title',
         'information', 'price'
     ]
 

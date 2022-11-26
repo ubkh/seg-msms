@@ -9,30 +9,41 @@ from lessons.models import Lesson
 
 class LessonRequestForm(forms.ModelForm):
     """
-    Model form used for students to request new lessons.
+    Model form used for students who wish to request a new lesson or change their preferences
+    for an existing lesson request.
     """
 
     class Meta:
         model = Lesson
-        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
+        fields = ['title', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']
+        widgets = {
+            'day': forms.Select(attrs={'class': "form-select"}),
+            'time': forms.TimeInput(format='%H:%M', attrs={
+                'class': "form-control timepicker",
+                'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
+            }),
+            'interval': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'max': '4',
+                'min': '1'
+            }),
+            'duration': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'max': '120',
+                'min': '30',
+                'step': '15'
+            }),
+            'title': forms.TextInput(attrs={'class': "form-control"}),
+            'information': forms.Textarea(attrs={'class': "form-control"})
+        }
 
-    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
-
-    def form_valid(self, form):
-        form.instance.student = self.request.user
-        return super().form_valid(form)
-
-
-class LessonModifyForm(forms.ModelForm):
-    """
-    Model form for students who wish to change preferences for a lesson request.
-    """
-
-    class Meta:
-        model = Lesson
-        fields = ['day', 'hour', 'number_of_lessons', 'interval', 'duration', 'title', 'information']
-
-    hour = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
 
     def form_valid(self, form):
         form.instance.student = self.request.user
