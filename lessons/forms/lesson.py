@@ -38,7 +38,6 @@ class LessonModifyForm(forms.ModelForm):
         form.instance.student = self.request.user
         return super().form_valid(form)
 
-
 class LessonFulfillForm(forms.ModelForm):
     """
     Model form for administrators who wish to fulfill a booking.
