@@ -6,10 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from lessons.forms import TransferForm
+from lessons.helpers import administrator_restricted
 
 
 @login_required
-# @admin_restricted
+@administrator_restricted
 def transfer(request):
     form = TransferForm()
 
