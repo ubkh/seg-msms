@@ -20,4 +20,4 @@ def transfer(request):
             return redirect('home')
     else:
         form = TransferForm()
-    return render(request, "admin/record_transfer.html", {'form': form})
+    return render(request, "administrators/record_transfer.html", {'form': form})
