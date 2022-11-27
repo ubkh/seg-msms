@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from lessons.forms import LessonRequestForm, LessonFulfillForm
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
+from lessons.helpers import administrator_restricted
 
 
 @login_required
@@ -62,6 +63,7 @@ def modify_lesson(request, pk):
 
 
 @login_required
+@administrator_restricted
 def open_bookings(request, pk):
     """
     View that displays all student bookings.
@@ -75,6 +77,7 @@ def open_bookings(request, pk):
 
 
 @login_required
+@administrator_restricted
 def fulfill_lesson(request, pk):
     """
     View that displays the form allowing administrators to fulfill a lesson
