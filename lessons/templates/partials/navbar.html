@@ -17,18 +17,17 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
+                    <a class="nav-link" href="#">Lessons & Requests</a> <!-- Not yet functional -->
+                    <a class="nav-link" href="#">Transfers</a> <!-- Not yet functional -->
+
                     {% for group in user.groups.all %}
-                        {% if group.name == 'Student' %}
-                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp&nbsp Reference Number: {{ user.id }}&nbsp&nbsp&nbsp</span>
-                        {% elif group.name == 'Director' %}
-                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
+                        {% if group.name == 'Director' %}
                             <a class="nav-link" href="#">Administrators</a> <!-- Not yet functional -->
-                            <a class="nav-link" href="#">Requests</a> <!-- Not yet functional -->
-                            <a class="nav-link" href="#">Transfers</a> <!-- Not yet functional -->
-                        {% else %}
-                            <span class="navbar-text">Logged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp&nbsp</span>
                         {% endif %}
                     {% endfor %}
+                    <div class="vr"></div>
+                    <span class="navbar-text">&nbsp&nbspReference Number: {{ user.id }}&nbsp&nbsp&nbsp</span> <!-- DELETE -->
+                    <span class="navbar-text">&nbsp&nbspLogged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'login' %}">Log In</a>
