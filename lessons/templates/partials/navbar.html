@@ -22,7 +22,7 @@
 
                     {% for group in user.groups.all %}
                         {% if group.name == 'Director' %}
-                            <a class="nav-link" href="#">Administrators</a> <!-- Not yet functional -->
+                            <a class="nav-link" href="{% url 'administrators' %}">Administrators</a> <!-- Not yet functional -->
                         {% endif %}
                     {% endfor %}
                     <div class="vr"></div>
