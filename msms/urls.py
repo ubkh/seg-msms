@@ -36,5 +36,6 @@ urlpatterns = [
     path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
     path('create_administrator/', views.create_administrator, name='create_administrator'),
     path('transfers/', views.display_transfer, name='transfers'),
-    path('create_transfer/', views.create_transfer, name='create_transfer')
+    path('create_transfer/', views.create_transfer, name='create_transfer'),
+    path('children', views.display_children, name='children')
 ]

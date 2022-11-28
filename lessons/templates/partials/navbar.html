@@ -21,7 +21,11 @@
 
                     {% for group in user.groups.all %}
 
-                        {% if group.name == 'Administrator'%}
+                        {% if group.name == 'Adult-student' %}
+                            <a class="nav-link" href="{% url 'children' %}">Children</a>
+                        {% endif %}
+
+                        {% if group.name == 'Administrator' %}
                             <a class="nav-link" href="{% url 'transfers' %}">Transfers</a>
                         {% endif %}
 
