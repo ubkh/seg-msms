@@ -76,7 +76,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     parent = models.ForeignKey(
         'self',
         null=True,
-        blank=False,
+        blank=True,
         related_name='User',
         on_delete=models.CASCADE
     )
