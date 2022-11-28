@@ -55,4 +55,21 @@ class InvoiceViewTestCase(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertContains(response, self.lesson.information)
+
+
+    def test_invoice_contains_time(self):
+        self.client.login(email=self.user.email, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, "1 p.m.")
         
+    def test_invoice_contains_interval(self):
+        self.client.login(email=self.user.email, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.lesson.interval)
+
+    def test_invoice_contains_day(self):
+        self.client.login(email=self.user.email, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.lesson.day)
+
+    
