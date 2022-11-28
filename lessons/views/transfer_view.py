@@ -7,17 +7,18 @@ from django.shortcuts import render, redirect
 
 from lessons.forms import TransferForm
 from lessons.models import Transfer
+from lessons.helpers import administrator_restricted
 
 
 @login_required
-# @admin_restricted
+@administrator_restricted
 def display_transfer(request):
     transfer_list = Transfer.objects.all()
     return render(request, "transfer/transfers.html", {'transfers': transfer_list})
 
 
 @login_required
-# @admin_restricted
+@administrator_restricted
 def create_transfer(request):
     form = TransferForm()
 

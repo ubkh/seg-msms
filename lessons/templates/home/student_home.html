@@ -14,7 +14,7 @@
                     <div class="ms-2 me-auto">
                         <span class="badge rounded-pill mb-2" style="background-color: orange;">REQUESTED</span>
                         <div class="mb-2">
-                            <b>{{ l.title }}</b> with Teacher for {{ l.duration }}m
+                            <b>{{ l.title }} - {{ l.instrument }}</b> with Teacher for {{ l.duration }}m
                             {% if l.information %}
                             - <span class="text-muted">{{ l.information|truncatechars:140}}</span>
                             {% endif %}
