@@ -21,18 +21,21 @@
 
                     {% for group in user.groups.all %}
 
-                        {% if group.name == 'Administrator' or group.name == 'Director' %}
+                        {% if group.name == 'Adult-student' %}
+                            <a class="nav-link" href="{% url 'children' %}">Children</a>
+                        {% endif %}
+
+                        {% if group.name == 'Administrator' %}
                             <a class="nav-link" href="{% url 'transfers' %}">Transfers</a>
                         {% endif %}
 
-                        {% if group.name == 'Director' %}
+                        {% if group.name == 'Super-administrator' %}
                             <a class="nav-link" href="{% url 'administrators' %}">Administrators</a>
                         {% endif %}
 
                     {% endfor %}
 
                     <div class="vr"></div>
-                    <span class="navbar-text">&nbsp&nbspReference Number: {{ user.id }}&nbsp&nbsp&nbsp</span> <!-- DELETE -->
                     <span class="navbar-text">&nbsp&nbspLogged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}

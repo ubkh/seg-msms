@@ -27,6 +27,10 @@ class RegisterForm(forms.ModelForm):
         )]
     )
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
+    make_account_adult_student = forms.BooleanField(
+        label="Would you like to make this account an adult account?",
+        required=False
+    )
 
     def clean(self):
         """
@@ -66,11 +70,17 @@ class AdminModifyForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-    make_account_director = forms.BooleanField(
-        label="Would you like to make this account a director account?",
+    make_account_super_administrator = forms.BooleanField(
+        label="Would you like to make this account a super administrator account?",
         required=False
     )
     delete_account = forms.BooleanField(
         label="Would you like to delete this account?",
         required=False
     )
+
+class ChildCreateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+

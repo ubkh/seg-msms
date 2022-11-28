@@ -33,8 +33,10 @@ urlpatterns = [
     path('student/<hashid:pk>/bookings/fulfill', views.fulfill_lesson, name='fulfill_lesson'),
     path('lesson/<hashid:pk>/invoice', views.booking_invoice, name='booking_invoice'),
     path('administrators', views.display_administrators, name='administrators'),
-    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
-    path('create_administrator/', views.create_administrator, name='create_administrator'),
+    path('administrators/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
+    path('administrators/create/', views.create_administrator, name='create_administrator'),
     path('transfers/', views.display_transfer, name='transfers'),
-    path('create_transfer/', views.create_transfer, name='create_transfer')
+    path('transfers/create', views.create_transfer, name='create_transfer'),
+    path('children/', views.display_children, name='children'),
+    path('children/create/', views.create_child, name='create_child')
 ]

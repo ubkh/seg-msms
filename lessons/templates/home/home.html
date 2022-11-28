@@ -7,8 +7,6 @@
             {% include 'home/student_home.html' %}
         {%  elif group.name == "Administrator" %}
             {% include 'home/administrator_home.html' %}
-        {%  elif group.name == "Director" %}
-            {% include 'home/administrator_home.html' %}
         {% endif %}
     {% endfor %}
 {% endblock %}

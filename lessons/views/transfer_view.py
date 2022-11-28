@@ -26,7 +26,7 @@ def create_transfer(request):
         form = TransferForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('home')
+            return redirect('transfers')
     else:
         form = TransferForm()
     return render(request, "transfer/record_transfer.html", {'form': form})

@@ -2,12 +2,18 @@ from django.core.management.base import BaseCommand, CommandError
 from lessons.models import User
 from django.contrib.auth.models import Group
 
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("NOTE: The seed command has not been FULLY implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
-        
+
+        student_group, created = Group.objects.get_or_create(name='Student')
+        administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+        director_group, created = Group.objects.get_or_create(name='Director')
+
         # Create Student
         User.objects.filter(email="john.doe@example.org").delete()
         student_user = User.objects.create_user(
@@ -16,7 +22,6 @@ class Command(BaseCommand):
             last_name="Doe",
             password="Password123",
         )
-        student_group, created = Group.objects.get_or_create(name='Student')
         student_user.groups.add(student_group)
 
         # Create Administrator
@@ -27,7 +32,6 @@ class Command(BaseCommand):
             last_name="Pickles",
             password="Password123",
         )
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
         administrator_user.groups.add(administrator_group)
 
         # Create Director
@@ -38,7 +42,6 @@ class Command(BaseCommand):
             last_name="Major",
             password="Password123",
         )
-        director_group, created = Group.objects.get_or_create(name='Director')
         director_user.groups.add(director_group)
-
-        
+        director_user.groups.add(super_administrator_group)
+        director_user.groups.add(administrator_group)

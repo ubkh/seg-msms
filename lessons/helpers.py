@@ -9,25 +9,29 @@ def login_prohibited(view_function):
             return redirect(LOGGED_IN_REDIRECT_URL)
         else:
             return view_function(request)
+
     return modified_view_function
+
 
 def super_administrator_restricted(view_function):
     def modified_view_function(request, *args, **kwargs):
-        if request.user.groups.filter(name='Director').exists():
+        if request.user.groups.filter(name='Super-administrator').exists():
             return view_function(request, *args, **kwargs)
         else:
             return redirect(LOGGED_IN_REDIRECT_URL)
+
     return modified_view_function
+
 
 def administrator_restricted(view_function):
     def modified_view_function(request, *args, **kwargs):
-        if request.user.groups.filter(name='Director').exists():
-            return view_function(request, *args, **kwargs)
-        elif request.user.groups.filter(name='Administrator').exists():
+        if request.user.groups.filter(name='Administrator').exists():
             return view_function(request, *args, **kwargs)
         else:
             return redirect(LOGGED_IN_REDIRECT_URL)
+
     return modified_view_function
+
 
 def lesson_fulfilled_restricted(view_function):
     def modified_view_function(request, *args, **kwargs):
@@ -36,4 +40,5 @@ def lesson_fulfilled_restricted(view_function):
             return view_function(request, *args, **kwargs)
         else:
             return redirect(LOGGED_IN_REDIRECT_URL)
+
     return modified_view_function
