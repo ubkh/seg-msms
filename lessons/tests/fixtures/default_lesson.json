@@ -5,7 +5,8 @@
         "fields": {
             "fulfilled": true,
             "title": "Test Lesson",
-            "student": "1"
+            "student": "1",
+            "time": "13:00"
         }
     }
 ]
