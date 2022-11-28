@@ -31,8 +31,10 @@ urlpatterns = [
     path('lesson/<hashid:pk>/modify', views.modify_lesson, name='modify_lesson'),
     path('student/<hashid:pk>/bookings/', views.open_bookings, name='open_bookings'),
     path('student/<hashid:pk>/bookings/fulfill', views.fulfill_lesson, name='fulfill_lesson'),
-    path('create_administrator', views.create_administrator, name='create_administrator'),
-    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
     path('lesson/<hashid:pk>/invoice', views.booking_invoice, name='booking_invoice'),
-    path('transfer', views.transfer, name = 'transfer')
+    path('administrators', views.display_administrators, name='administrators'),
+    path('administrator/<hashid:pk>/modify', views.modify_administrator, name='modify_administrator'),
+    path('create_administrator/', views.create_administrator, name='create_administrator'),
+    path('transfers/', views.display_transfer, name='transfers'),
+    path('create_transfer/', views.create_transfer, name='create_transfer')
 ]
