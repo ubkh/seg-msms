@@ -50,10 +50,12 @@ def modify_administrator(request, pk):
         form = AdminModifyForm(request.POST, instance=admin_data)
         if form.is_valid():
             user = form.save()
-            if form.data.get('make_account_director'):
+            if form.data.get('make_account_super_administrator'):
                 user.groups.clear()
-                director_group, created = Group.objects.get_or_create(name='Director')
-                user.groups.add(director_group)
+                administrator_group, created = Group.objects.get_or_create(name='Administrator')
+                super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+                user.groups.add(administrator_group)
+                user.groups.add(super_administrator_group)
             if form.data.get('delete_account'):
                 user.delete()
             return redirect('home')

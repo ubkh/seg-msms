@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from lessons.models import User
 from django.contrib.auth.models import Group
 
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
@@ -44,5 +45,3 @@ class Command(BaseCommand):
         director_user.groups.add(director_group)
         director_user.groups.add(super_administrator_group)
         director_user.groups.add(administrator_group)
-
-        
