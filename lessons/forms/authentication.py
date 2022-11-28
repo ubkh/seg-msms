@@ -32,7 +32,6 @@ class RegisterForm(forms.ModelForm):
         required=False
     )
 
-
     def clean(self):
         """
         Check if the data in the registration form is valid.
@@ -79,3 +78,9 @@ class AdminModifyForm(forms.ModelForm):
         label="Would you like to delete this account?",
         required=False
     )
+
+class ChildCreateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+

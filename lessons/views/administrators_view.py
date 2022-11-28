@@ -30,7 +30,7 @@ def create_administrator(request):
             user = form.save()
             administrator_group, created = Group.objects.get_or_create(name='Administrator')
             user.groups.add(administrator_group)
-            return redirect('home')
+            return redirect('administrators')
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})

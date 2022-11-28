@@ -49,6 +49,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     """
     email = models.EmailField(
         max_length=254,
+        null=True,
         blank=False,
         unique=True,
         validators=[EmailValidator(
@@ -72,6 +73,13 @@ class User(PermissionsMixin, AbstractBaseUser):
             regex=re.compile(r'^(?:[\u0530-\u19ff]|[^\W\d_]|-|\s)+$', re.UNICODE)
         )]
     )
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=False,
+        related_name='User',
+        on_delete=models.CASCADE
+    )
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
@@ -79,3 +87,6 @@ class User(PermissionsMixin, AbstractBaseUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    def __str__(self):
+        return str(f"{self.first_name} {self.last_name}")
