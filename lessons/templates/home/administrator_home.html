@@ -2,7 +2,6 @@
     <h1>Music School Management System AdministratorPanel</h1>
     <hr>
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management system.</p>
-    <a class="btn btn-primary" href="{% url 'transfer' %}">Add Transaction</a>
     <h2>Student List</h2>
     <div class="list-group">
         {% for student in students %}
