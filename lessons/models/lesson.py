@@ -19,6 +19,16 @@ DAYS_OF_WEEK = [
     ('Sunday','Sunday'),
 ]
 
+INSTRUMENTS = [
+    ('Piano', 'Piano'),
+    ('Guitar','Guitar'),
+    ('Drums','Drums'),
+    ('Violin','Violin'),
+    ('Trumpet','Trumpet'),
+    ('Flute','Flute'),
+    ('Harp','Harp'),
+]
+
 
 class Lesson(models.Model):
     """
@@ -31,6 +41,7 @@ class Lesson(models.Model):
         on_delete=models.CASCADE
     )
     day = models.TextField(choices=DAYS_OF_WEEK, default='Monday')
+    instrument = models.TextField(choices=INSTRUMENTS, default='Piano')
     time = models.TimeField(default=timezone.now)
     number_of_lessons = models.PositiveIntegerField(default=1, verbose_name="Number of Lessons")
     interval = models.PositiveIntegerField(
