@@ -51,4 +51,4 @@ class Lesson(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('modify_lesson', kwargs=[self.id])
+        return reverse('booking_invoice', kwargs=[self.id])
