@@ -15,8 +15,9 @@ class LessonRequestForm(forms.ModelForm):
 
     class Meta:
         model = Lesson
-        fields = ['title', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']
+        fields = ['title', 'instrument', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']
         widgets = {
+            'instrument': forms.Select(attrs={'class': "form-select"}),
             'day': forms.Select(attrs={'class': "form-select"}),
             'time': forms.TimeInput(format='%H:%M', attrs={
                 'class': "form-control timepicker",

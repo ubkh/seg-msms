@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from lessons.forms import LessonRequestForm, LessonFulfillForm
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
-from lessons.helpers import administrator_restricted
+from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
 
 
 @login_required
@@ -98,6 +98,7 @@ def fulfill_lesson(request, pk):
 
 
 @login_required
+@lesson_fulfilled_restricted
 def booking_invoice(request, pk):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
