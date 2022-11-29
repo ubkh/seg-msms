@@ -5,7 +5,7 @@ Views that will be used in the music school management system.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from lessons.forms import LessonRequestForm, LessonFulfillForm
+from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
@@ -19,15 +19,15 @@ def request_lesson(request):
     a Lesson object is created.
     """
     if request.method == "POST":
-        form = LessonRequestForm(request.POST)
+        form = LessonRequestForm(request.POST, user=request.user)
         if form.is_valid():
-            form.instance.student = request.user
+            # form.instance.student = request.user
             lesson = form.save(commit=False)
             lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
             lesson.save()
             return redirect('home')
     else:
-        form = LessonRequestForm()
+        form = LessonRequestForm(user=request.user)
     return render(request, "lessons/request_lesson.html", {'form': form})
 
 
@@ -39,14 +39,14 @@ def modify_lesson(request, pk):
     and the corresponding Lesson object updated.
     """
     data = get_object_or_404(Lesson, id=pk)
-    form = LessonRequestForm(instance=data)
+    form = LessonModifyForm(instance=data)
 
     if request.method == "POST":
-        form = LessonRequestForm(request.POST, instance=data)
+        form = LessonModifyForm(request.POST, instance=data)
 
         if form.is_valid():
-            if request.user == form.instance.student:
-                form.instance.student = request.user
+            if request.user == form.instance.student or request.user == form.instance.student.parent:
+                # form.instance.student = request.user
                 lesson = form.save(commit=False)
                 lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
                 lesson.save()
