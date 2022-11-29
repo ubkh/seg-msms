@@ -58,19 +58,19 @@ class User(PermissionsMixin, AbstractBaseUser):
         )]
     )
     first_name = models.CharField(
-        max_length=100,
+        max_length=40,
         blank=False,
         validators=[RegexValidator(
             message="Please enter a valid name!",
-            regex=re.compile(r'^(?:[\u0530-\u19ff]|[^\W\d_]|-|\s)+$', re.UNICODE)
+            regex=re.compile(r'^(?:[a-zA-ZÀ-ž]|-|\s)+$', re.UNICODE)
         )]
     )
     last_name = models.CharField(
-        max_length=100,
+        max_length=40,
         blank=False,
         validators=[RegexValidator(
             message="Please enter a valid name!",
-            regex=re.compile(r'^(?:[\u0530-\u19ff]|[^\W\d_]|-|\s)+$', re.UNICODE)
+            regex=re.compile(r'^(?:[a-zA-ZÀ-ž]|-|\s)+$', re.UNICODE)
         )]
     )
     parent = models.ForeignKey(
