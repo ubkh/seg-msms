@@ -5,7 +5,7 @@ from lessons.forms import ChildCreateForm
 from lessons.models import User
 
 
-class ChildCreateTestCase(TestCase):
+class ChildCreateFormTestCase(TestCase):
     """
     Unit tests that will be used to test the Registration form.
     """
@@ -20,17 +20,17 @@ class ChildCreateTestCase(TestCase):
         }
         return form_input
 
-    def test_register_form_is_valid(self):
+    def test_child_create_form_is_valid(self):
         register_form = ChildCreateForm(data=self.form_input)
         self.assertTrue(register_form.is_valid())
 
     def test_child_create_form_contains_required_fields(self):
-        register_form = ChildCreateForm()
-        self.assertIn('first_name', register_form.fields)
-        first_name_field = register_form.fields['first_name']
+        child_create_form = ChildCreateForm()
+        self.assertIn('first_name', child_create_form.fields)
+        first_name_field = child_create_form.fields['first_name']
         self.assertTrue(isinstance(first_name_field, forms.CharField))
-        self.assertIn('last_name', register_form.fields)
-        last_name_field = register_form.fields['last_name']
+        self.assertIn('last_name', child_create_form.fields)
+        last_name_field = child_create_form.fields['last_name']
         self.assertTrue(isinstance(last_name_field, forms.CharField))
 
     def test_form_saves_correctly(self):

@@ -29,21 +29,21 @@ class AdminModifyFormTestCase(TestCase):
         self.assertTrue(register_form.is_valid())
 
     def test_admin_modify_form_contains_required_fields(self):
-        register_form = AdminModifyForm()
-        self.assertIn('first_name', register_form.fields)
-        first_name_field = register_form.fields['first_name']
+        admin_modify_form = AdminModifyForm()
+        self.assertIn('first_name', admin_modify_form.fields)
+        first_name_field = admin_modify_form.fields['first_name']
         self.assertTrue(isinstance(first_name_field, forms.CharField))
-        self.assertIn('last_name', register_form.fields)
-        last_name_field = register_form.fields['last_name']
+        self.assertIn('last_name', admin_modify_form.fields)
+        last_name_field = admin_modify_form.fields['last_name']
         self.assertTrue(isinstance(last_name_field, forms.CharField))
-        self.assertIn('email', register_form.fields)
-        email_field = register_form.fields['email']
+        self.assertIn('email', admin_modify_form.fields)
+        email_field = admin_modify_form.fields['email']
         self.assertTrue(isinstance(email_field, forms.EmailField))
-        self.assertIn('make_account_super_administrator', register_form.fields)
-        make_account_super_administrator_field = register_form.fields['make_account_super_administrator']
+        self.assertIn('make_account_super_administrator', admin_modify_form.fields)
+        make_account_super_administrator_field = admin_modify_form.fields['make_account_super_administrator']
         self.assertTrue(isinstance(make_account_super_administrator_field, forms.BooleanField))
-        self.assertIn('delete_account', register_form.fields)
-        delete_account_field = register_form.fields['delete_account']
+        self.assertIn('delete_account', admin_modify_form.fields)
+        delete_account_field = admin_modify_form.fields['delete_account']
         self.assertTrue(isinstance(delete_account_field, forms.BooleanField))
 
     def test_form_saves_correctly(self):
