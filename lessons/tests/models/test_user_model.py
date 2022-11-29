@@ -8,8 +8,6 @@ from lessons.models import User
 from lessons.tests.helpers import LoginTester
 
 
-# Create your tests here.
-
 class UserModelTestCase(TestCase, LoginTester):
     """
     Unit tests that will be used to test the User model.
@@ -20,16 +18,9 @@ class UserModelTestCase(TestCase, LoginTester):
     ]
 
     def setUp(self):
-        self.user = self._create_user()
-        self.secondary_user = self._create_secondary_user()
-
-    def _create_user(self):
-        user = User.objects.get(first_name='Foo')
-        return user
-
-    def _create_secondary_user(self):
-        user = User.objects.get(first_name='Doe')
-        return user
+        super(TestCase, self).setUp()
+        self.user = User.objects.get(email='foo@kangaroo.com')
+        self.secondary_user = User.objects.get(email='doe@kangaroo.com')
 
     def _assert_user_is_valid(self, user):
         try:
@@ -42,14 +33,14 @@ class UserModelTestCase(TestCase, LoginTester):
             user.full_clean()
 
     """
-    Test user
+    Test User
     """
 
     def test_user_is_valid(self):
         self._assert_user_is_valid(self.user)
 
     """
-    Test Reference Number/ ID
+    Test Reference Number / ID
     """
 
     def test_id_is_unique(self):
@@ -59,7 +50,7 @@ class UserModelTestCase(TestCase, LoginTester):
         self.assertEqual(self.user.id, 1)
 
     """
-    Test e-mail
+    Test E-mail
     """
 
     def test_email_can_equal_254_characters(self):
@@ -108,7 +99,7 @@ class UserModelTestCase(TestCase, LoginTester):
         self._assert_user_is_invalid(self.user)
 
     """
-    Test first name
+    Test First Name
     """
 
     def test_first_name_can_equal_40_characters(self):
@@ -157,7 +148,7 @@ class UserModelTestCase(TestCase, LoginTester):
             self._assert_user_is_invalid(self.user)
 
     """
-    Test last name
+    Test Last Name
     """
 
     def test_last_name_can_equal_40_characters(self):
