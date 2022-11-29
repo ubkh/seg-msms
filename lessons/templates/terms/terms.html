@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
+{% block body %}
+<div class="container">
+    &nbsp;
+    <p>Create and edit terms here.</p>
+    <a class="btn btn-primary" href="{% url 'create_transfer' %}">New Term</a>
+</div>
+&nbsp;
+<div class="container">
+    <h2>Terms</h2>
+    <hr>
+    <div class="list-group">
+        {% for term in terms %}
+            
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
