@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from lessons.models import User
 from lessons.tests.helpers import LoginTester
 
+
 # Create your tests here.
 
 class UserModelTestCase(TestCase, LoginTester):
@@ -48,6 +49,16 @@ class UserModelTestCase(TestCase, LoginTester):
         self._assert_user_is_valid(self.user)
 
     """
+    Test Reference Number/ ID
+    """
+
+    def test_id_is_unique(self):
+        self.assertNotEqual(self.secondary_user.id, self.user.id)
+
+    def test_first_id(self):
+        self.assertEqual(self.user.id, 1)
+
+    """
     Test e-mail
     """
 
@@ -71,6 +82,11 @@ class UserModelTestCase(TestCase, LoginTester):
         self.user.email = self.secondary_user.email
         self._assert_user_is_invalid(self.user)
 
+    def test_email_with_different_case_must_be_unique(self):
+        # As according to RFC 5321
+        self.user.email = self.secondary_user.email.upper()
+        self._assert_user_is_valid(self.user)
+
     def test_email_must_contain_local_part(self):
         self.user.email = '@kangaroo.com'
         self._assert_user_is_invalid(self.user)
@@ -83,7 +99,7 @@ class UserModelTestCase(TestCase, LoginTester):
         self.user.email = 'bar@.com'
         self._assert_user_is_invalid(self.user)
 
-    def test_email_must_contain_top_leveldomain(self):
+    def test_email_must_contain_top_level_domain(self):
         self.user.email = 'bar@kangaroo'
         self._assert_user_is_invalid(self.user)
 
@@ -95,12 +111,12 @@ class UserModelTestCase(TestCase, LoginTester):
     Test first name
     """
 
-    def test_first_name_can_equal_100_characters(self):
-        self.user.first_name = 'a' * 100
+    def test_first_name_can_equal_40_characters(self):
+        self.user.first_name = 'a' * 40
         self._assert_user_is_valid(self.user)
 
-    def test_first_name_cannot_exceed_100_characters(self):
-        self.user.first_name = 'a' * 101
+    def test_first_name_cannot_exceed_41_characters(self):
+        self.user.first_name = 'a' * 41
         self._assert_user_is_invalid(self.user)
 
     def test_first_name_cannot_be_blank(self):
@@ -120,17 +136,13 @@ class UserModelTestCase(TestCase, LoginTester):
         self._assert_user_is_valid(self.user)
 
     def test_first_name_can_have_diacritics(self):
-        self.user.first_name = """
-        Á á À Â à Â â Ä ä Ã ã Å å Æ æ Ç ç Ð ð É é È è Ê ê Ë ë Í í Ì ì Î î Ï ï
-        """
+        self.user.first_name = "ÁáÀÂàÂâÄäÃãÅåÆæÇçÐðÉéÈèÊêËëÍíÌìÎîÏï"
         self._assert_user_is_valid(self.user)
 
-    def test_first_name_can_contain_non_latin_scripts(self):
-        self.user.first_name = """
-        համար التركيز елементарен 最近 საბეჭდი απλά מוסחת और เนื้อหา இப்சம்
-        """
-        self._assert_user_is_valid(self.user)
-
+    def test_first_name_cannot_contain_non_latin_scripts(self):
+        for name in ['համար', 'التركيز', 'елементарен', '最近', 'საბეჭდი', 'απλά', 'מוסחת', 'और', 'เนื้อหา', 'இப்சம்']:
+            self.user.first_name = name
+            self._assert_user_is_invalid(self.user)
 
     def test_first_name_cannot_have_numbers(self):
         for digit in range(0, 10):
@@ -138,19 +150,57 @@ class UserModelTestCase(TestCase, LoginTester):
             self._assert_user_is_invalid(self.user)
 
     def test_first_name_cannot_have_symbols(self):
-        for symbol in ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', 
-        ',', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', ']', '^', '_', 
-        '`', '{', '|', '}', '~', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 
-        '«', '¬', '®', '¯', '°', '±', '´', '¶', '·', '¸', '»', '¿', '×', '÷', 
-        '\\']:
+        for symbol in ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '.', '/', ':', ';', '<', '=', '>',
+                       '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨',
+                       '©', '«', '¬', '®', '¯', '°', '±', '´', '¶', '·', '¸', '»', '¿', '\\']:
             self.user.first_name = symbol
             self._assert_user_is_invalid(self.user)
 
     """
-    Test Reference Number/ ID
+    Test last name
     """
-    def test_id_is_unique(self):
-        self.assertNotEqual(self.secondary_user.id, self.user.id)
 
-    def test_first_id(self):
-        self.assertEqual(self.user.id, 1)
+    def test_last_name_can_equal_40_characters(self):
+        self.user.last_name = 'a' * 40
+        self._assert_user_is_valid(self.user)
+
+    def test_last_name_cannot_exceed_41_characters(self):
+        self.user.last_name = 'a' * 41
+        self._assert_user_is_invalid(self.user)
+
+    def test_last_name_cannot_be_blank(self):
+        self.user.last_name = ''
+        self._assert_user_is_invalid(self.user)
+
+    def test_last_name_does_not_have_to_be_unique(self):
+        self.user.last_name = self.secondary_user.last_name
+        self._assert_user_is_valid(self.user)
+
+    def test_last_name_can_have_spaces(self):
+        self.user.last_name = "Foo Kangaroo"
+        self._assert_user_is_valid(self.user)
+
+    def test_last_name_can_have_hyphens(self):
+        self.user.last_name = "Foo-Kangaroo"
+        self._assert_user_is_valid(self.user)
+
+    def test_last_name_can_have_diacritics(self):
+        self.user.last_name = "ÁáÀÂàÂâÄäÃãÅåÆæÇçÐðÉéÈèÊêËëÍíÌìÎîÏï"
+        self._assert_user_is_valid(self.user)
+
+    def test_last_name_cannot_contain_non_latin_scripts(self):
+        for name in ['համար', 'التركيز', 'елементарен', '最近', 'საბეჭდი', 'απλά', 'מוסחת', 'और', 'เนื้อหา', 'இப்சம்']:
+            self.user.last_name = name
+            self._assert_user_is_invalid(self.user)
+
+    def test_last_name_cannot_have_numbers(self):
+        for digit in range(0, 10):
+            self.user.last_name = str(digit)
+            self._assert_user_is_invalid(self.user)
+
+    def test_last_name_cannot_have_symbols(self):
+        for symbol in ['!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '.', '/', ':', ';', '<', '=', '>',
+                       '?', '@', '[', ']', '^', '_', '`', '{', '|', '}', '~', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨',
+                       '©', '«', '¬', '®', '¯', '°', '±', '´', '¶', '·', '¸', '»', '¿', '\\']:
+            self.user.last_name = symbol
+            self._assert_user_is_invalid(self.user)
