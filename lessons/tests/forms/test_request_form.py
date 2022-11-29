@@ -15,6 +15,7 @@ class RequestFormTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')
         self.form_input = {
+            'student': self.user,
             'title': 'Music Lesson',
             'day': 'Monday',
             'instrument': 'Piano',
@@ -26,7 +27,7 @@ class RequestFormTestCase(TestCase):
             }
 
     def test_form_contains_required_fields(self):
-        form = LessonRequestForm()
+        form = LessonRequestForm(user=self.user)
         self.assertIn('title', form.fields)
         self.assertIn('day', form.fields)
         self.assertIn('instrument', form.fields)
@@ -42,9 +43,8 @@ class RequestFormTestCase(TestCase):
         instrument_field = form.fields['instrument']
         self.assertTrue(isinstance(instrument_field, forms.ChoiceField))
 
-
     def test_form_saves_correctly(self):
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         lesson_count_before = Lesson.objects.count()
         lesson = form.save(commit=False)
         lesson.student = self.user
@@ -63,25 +63,25 @@ class RequestFormTestCase(TestCase):
 
     def test_form_uses_number_of_lessons_validation(self):
         self.form_input['number_of_lessons'] = -1
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_day_validation(self):
         self.form_input['day'] = 'Wrong_Day'
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_instrument_validation(self):
         self.form_input['instrument'] = 'Wrong_Instrument'
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_interval_validation(self):
         self.form_input['interval'] = -1
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_duration_validation(self):
         self.form_input['duration'] = -1.5
-        form = LessonRequestForm(data=self.form_input)
+        form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
