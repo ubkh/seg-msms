@@ -79,8 +79,8 @@ class AdminModifyForm(forms.ModelForm):
         required=False
     )
 
+
 class ChildCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
-

@@ -1,40 +1,37 @@
-"""
-Tests that will be used to test the Registration view.
-"""
-
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.hashers import check_password
-from lessons.models import User
+
 from lessons.forms import RegisterForm
-from lessons.tests.helpers import LoginTester
+from lessons.models import User
 
 
-class RegisterViewTestCase(TestCase, LoginTester):
-    """
-    Unit tests that will be used to test the Registration view.
-    """
-    fixtures = ['lessons/tests/fixtures/other_user.json']
+class CreateAdministratorViewTestCase(TestCase):
+    fixtures = ['lessons/tests/fixtures/default_user.json']
 
     def setUp(self):
         self.form_input = self._create_form_input()
-        self.url = reverse('register')
-        self.user = User.objects.get(email='doe@kangaroo.com')
+        self.url = reverse('create_administrator')
+        self.user = User.objects.get(email='foo@kangaroo.com')
+        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+        self.user.groups.add(super_administrator_group)
 
     def _create_form_input(self):
         form_input = {
-            'first_name': 'Foo',
+            'first_name': 'Admin',
             'last_name': 'Bar',
-            'email': 'foo@kangaroo.com',
+            'email': 'admin@kangaroo.com',
             'password': 'Password123',
             'confirm_password': 'Password123'
         }
         return form_input
 
-    def test_register_url(self):
-        self.assertEqual(self.url, '/register/')
+    def test_create_administrator_url(self):
+        self.assertEqual(self.url, '/administrators/create/')
 
-    def test_get_register(self):
+    def test_get_create_administrator(self):
+        self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'authentication/register.html')
@@ -42,14 +39,8 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertFalse(form.is_bound)
 
-    def test_get_register_with_redirect_when_logged_in(self):
-        self.client.login(email=self.user.email, password="Password123")
-        response = self.client.get(self.url, follow=True)
-        redirect_url = reverse('home')
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
-
     def test_unsuccessful_registration(self):
+        self.client.login(email=self.user.email, password="Password123")
         self.form_input['email'] = 'kangaroo.com'
         user_count_before = User.objects.count()
         response = self.client.post(self.url, self.form_input)
@@ -60,28 +51,17 @@ class RegisterViewTestCase(TestCase, LoginTester):
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertTrue(form.is_bound)
-        self.assertFalse(self._is_logged_in())
 
     def test_successful_registration(self):
-        user_count_before = User.objects.count()
-        response = self.client.post(self.url, self.form_input, follow=True)
-        user_count_after = User.objects.count()
-        self.assertEqual(user_count_before + 1, user_count_after)
-        response_url = reverse('home')
-        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
-        saved_user = User.objects.get(email=self.form_input['email'])
-        self.assertEqual(saved_user.first_name, self.form_input['first_name'])
-        self.assertEqual(saved_user.last_name, self.form_input['last_name'])
-        self.assertTrue(check_password('Password123', saved_user.password))
-        self.assertTrue(self._is_logged_in())
-
-    def test_post_register_redirect_when_logged_in(self):
         self.client.login(email=self.user.email, password="Password123")
         user_count_before = User.objects.count()
         response = self.client.post(self.url, self.form_input, follow=True)
         user_count_after = User.objects.count()
-        self.assertEqual(user_count_before, user_count_after)
-        redirect_url = reverse('home')
-        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
+        self.assertEqual(user_count_before + 1, user_count_after)
+        response_url = reverse('administrators')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'administrators/administrators.html')
+        saved_user = User.objects.get(email=self.form_input['email'])
+        self.assertEqual(saved_user.first_name, self.form_input['first_name'])
+        self.assertEqual(saved_user.last_name, self.form_input['last_name'])
+        self.assertTrue(check_password('Password123', saved_user.password))

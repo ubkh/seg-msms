@@ -58,5 +58,5 @@ def modify_administrator(request, pk):
                 user.groups.add(super_administrator_group)
             if form.data.get('delete_account'):
                 user.delete()
-            return redirect('home')
+            return redirect('administrators')
     return render(request, "authentication/register.html", {'form': form})
