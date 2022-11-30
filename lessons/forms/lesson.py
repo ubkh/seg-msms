@@ -3,11 +3,12 @@ Forms that will be used in the music school management system.
 """
 
 from django import forms
+from django.db.models import Q
 
-from lessons.models import Lesson
+from lessons.models import Lesson, User
 
 
-class LessonRequestForm(forms.ModelForm):
+class LessonModifyForm(forms.ModelForm):
     """
     Model form used for students who wish to request a new lesson or change their preferences
     for an existing lesson request.
@@ -45,10 +46,29 @@ class LessonRequestForm(forms.ModelForm):
             'information': forms.Textarea(attrs={'class': "form-control"})
         }
 
+    def form_valid(self, form):
+        form.instance.student = self.request.user
+        return super().form_valid(form)
+
+
+class LessonRequestForm(LessonModifyForm):
+    class Meta(LessonModifyForm.Meta):
+        model = Lesson
+        fields = ['student'] + LessonModifyForm.Meta.fields
+        LessonModifyForm.Meta.widgets |= {
+            'student': forms.Select(attrs={'class': "form-select"})
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(LessonRequestForm, self).__init__(*args, **kwargs)
+        self.fields['student'].queryset = User.objects.filter(Q(id=self.user.id) | Q(parent=self.user))
+        self.fields['student'].empty_label = None
 
     def form_valid(self, form):
         form.instance.student = self.request.user
         return super().form_valid(form)
+
 
 class LessonFulfillForm(forms.ModelForm):
     """

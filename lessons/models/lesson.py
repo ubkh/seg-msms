@@ -43,7 +43,11 @@ class Lesson(models.Model):
     day = models.TextField(choices=DAYS_OF_WEEK, default='Monday')
     instrument = models.TextField(choices=INSTRUMENTS, default='Piano')
     time = models.TimeField(default=timezone.now)
-    number_of_lessons = models.PositiveIntegerField(default=1, verbose_name="Number of Lessons")
+    number_of_lessons = models.PositiveIntegerField(
+        default=1,
+        verbose_name="Number of Lessons",
+        validators=[MinValueValidator(1)]
+    )
     interval = models.PositiveIntegerField(
         default=1, 
         validators=[MinValueValidator(1), MaxValueValidator(4)],
@@ -54,9 +58,9 @@ class Lesson(models.Model):
         validators=[MinValueValidator(30), MaxValueValidator(60), StepValueValidator(15)],
         verbose_name="Duration (minutes)"
     )
-    title = models.TextField(max_length=25, default="Music Lesson")
-    information = models.TextField(max_length=280, verbose_name="Further Information", blank=True)
-    price = models.DecimalField(default=0.00,max_digits=10,decimal_places=2)
+    title = models.CharField(max_length=25, default="Music Lesson", )
+    information = models.CharField(max_length=280, verbose_name="Further Information", blank=True)
+    price = models.DecimalField(default=10.00,max_digits=10,decimal_places=2, validators=[MinValueValidator(5.00)])
 
     def __str__(self):
         return self.title

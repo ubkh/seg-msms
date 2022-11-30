@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -32,7 +33,7 @@ def home(request):
     View that displays the user's home page.
     """
     students = User.objects.filter(groups__name='Student')
-    lessons = Lesson.objects.filter(student=request.user).order_by('-fulfilled')
+    lessons = Lesson.objects.filter(Q(student=request.user) | Q(student__parent=request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
     administrators = User.objects.filter(groups__name='Administrator')
     transfers = Transfer.objects.filter(user_id=request.user)
 
