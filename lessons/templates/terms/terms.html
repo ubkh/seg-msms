@@ -1,18 +1,33 @@
 {% extends 'base.html' %}
 {% block head %} {% include 'partials/navbar.html' %} {% endblock %}
 {% block body %}
+
+&nbsp;
 <div class="container">
-    &nbsp;
+    <h1><b>Terms</b></h1>
     <p>Create and edit terms here.</p>
-    <a class="btn btn-primary" href="{% url 'create_transfer' %}">New Term</a>
 </div>
 &nbsp;
 <div class="container">
-    <h2>Terms</h2>
-    <hr>
+    <h2>Create a new term</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add Term" class="btn btn-primary">
+    </form>
+</div>
+&nbsp;
+<div class="container">
+    <h2>Existing terms</h2>
+    <p>Click on a term to edit it.</p>
     <div class="list-group">
         {% for term in terms %}
-            
+            <a href="{% url 'edit_term' term.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Term {{ term.id }}</h5>
+                    <small class="text-muted">{{ term.start_date }} to {{ term.end_date }}</small>
+                </div>
+            </a>
         {% endfor %}
     </div>
 </div>

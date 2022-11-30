@@ -39,5 +39,6 @@ urlpatterns = [
     path('transfers/create', views.create_transfer, name='create_transfer'),
     path('children/', views.display_children, name='children'),
     path('children/create/', views.create_child, name='create_child'),
-    path('terms/', views.view_terms, name='terms')
+    path('terms/', views.view_terms, name='terms'),
+    path('term/<int:pk>/edit', views.edit_term, name='edit_term')
 ]
