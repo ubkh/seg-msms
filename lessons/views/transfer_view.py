@@ -12,6 +12,7 @@ from lessons.models import Transfer
 
 
 class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+
     model = Transfer
     template_name = "transfer/transfers.html"
     context_object_name = "transfers"
@@ -22,6 +23,7 @@ class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
 
 
 class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+
     model = Transfer
     template_name = "transfer/record_transfer.html"
     form_class = TransferForm

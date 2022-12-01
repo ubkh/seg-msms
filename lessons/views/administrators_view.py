@@ -1,64 +1,83 @@
 """
 Views that will be used in the music school management system.
 """
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.views.generic import ListView, CreateView, UpdateView
 
 from lessons.forms import RegisterForm, AdminModifyForm
 from lessons.helpers import super_administrator_restricted
+from lessons.mixins import GroupRestrictedMixin
 from lessons.models import User
 
 
-@login_required
-def display_administrators(request):
-    administrator_list = User.objects.filter(groups__name='Administrator')
-    return render(request, "administrators/administrators.html", {'administrators': administrator_list})
+class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+    """
+
+    """
+
+    model = User
+    template_name = "administrators/administrators.html"
+    context_object_name = "administrators"
+    allowed_group = "Super-administrator"
+
+    def get_queryset(self):
+        return User.objects.filter(groups__name='Administrator')
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-@super_administrator_restricted
-def create_administrator(request):
+class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
     """
     View that displays the form to register an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
     directed to resubmit the form again.
     """
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.set_group_administrator()
-            # administrator_group, created = Group.objects.get_or_create(name='Administrator')
-            # user.groups.add(administrator_group)
-            return redirect('administrators')
-    else:
-        form = RegisterForm()
-    return render(request, 'authentication/register.html', {'form': form})
+
+    model = User
+    template_name = "authentication/register.html"
+    form_class = RegisterForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Super-administrator"
+
+    def form_valid(self, form):
+        administrator = form.save()
+        administrator.set_group_administrator()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('administrators')
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-@super_administrator_restricted
-def modify_administrator(request, pk):
+class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
     """
     View that displays the form to edit an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
     directed to resubmit the form again.
     """
-    admin_data = get_object_or_404(User, id=pk)
-    form = AdminModifyForm(instance=admin_data)
-    if request.method == "POST":
-        form = AdminModifyForm(request.POST, instance=admin_data)
-        if form.is_valid():
-            user = form.save()
-            if form.data.get('make_account_super_administrator'):
-                user.groups.clear()
-                user.set_group_super_administrator()
-                # administrator_group, created = Group.objects.get_or_create(name='Administrator')
-                # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-                # user.groups.add(administrator_group)
-                # user.groups.add(super_administrator_group)
-            if form.data.get('delete_account'):
-                user.delete()
-            return redirect('administrators')
-    return render(request, "authentication/register.html", {'form': form})
+    model = User
+    template_name = "authentication/register.html"
+    form_class = AdminModifyForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Super-administrator"
+
+    def form_valid(self, form):
+        user = form.save()
+        if form.data.get('make_account_super_administrator'):
+            user.groups.clear()
+            user.set_group_super_administrator()
+        if form.data.get('delete_account'):
+            user.delete()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('administrators')
