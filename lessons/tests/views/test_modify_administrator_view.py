@@ -18,11 +18,13 @@ class ModifyAdministratorViewTestCase(TestCase):
     def setUp(self):
         self.form_input = self._create_form_input()
         self.user = User.objects.get(email='foo@kangaroo.com')
-        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        self.user.groups.add(super_administrator_group)
+        self.user.set_group_super_administrator()
+        # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+        # self.user.groups.add(super_administrator_group)
         self.administrator = User.objects.get(email='doe@kangaroo.com')
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.administrator.groups.add(administrator_group)
+        self.administrator.set_group_administrator()
+        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        # self.administrator.groups.add(administrator_group)
 
     def _create_form_input(self):
         form_input = {

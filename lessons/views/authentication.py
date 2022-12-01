@@ -55,11 +55,13 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            student_group, created = Group.objects.get_or_create(name='Student')
-            user.groups.add(student_group)
+            user.set_group_student()
+            # student_group, created = Group.objects.get_or_create(name='Student')
+            # user.groups.add(student_group)
             if form.data.get('make_account_adult_student'):
-                adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
-                user.groups.add(adult_student_group)
+                user.set_group_adult_student()
+                # adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
+                # user.groups.add(adult_student_group)
             login(request, user)
             return redirect('home')
     else:

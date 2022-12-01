@@ -9,10 +9,10 @@ class Command(BaseCommand):
         print("NOTE: The seed command has not been FULLY implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
 
-        student_group, created = Group.objects.get_or_create(name='Student')
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        director_group, created = Group.objects.get_or_create(name='Director')
+        # student_group, created = Group.objects.get_or_create(name='Student')
+        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+        # director_group, created = Group.objects.get_or_create(name='Director')
 
         # Create Student
         User.objects.filter(email="john.doe@example.org").delete()
@@ -22,7 +22,8 @@ class Command(BaseCommand):
             last_name="Doe",
             password="Password123",
         )
-        student_user.groups.add(student_group)
+        student_user.set_group_student()
+        # student_user.groups.add(student_group)
 
         # Create Administrator
         User.objects.filter(email="petra.pickles@example.org").delete()
@@ -32,7 +33,8 @@ class Command(BaseCommand):
             last_name="Pickles",
             password="Password123",
         )
-        administrator_user.groups.add(administrator_group)
+        administrator_user.set_group_administrator()
+        # administrator_user.groups.add(administrator_group)
 
         # Create Director
         User.objects.filter(email="marty.major@example.org").delete()
@@ -42,6 +44,7 @@ class Command(BaseCommand):
             last_name="Major",
             password="Password123",
         )
-        director_user.groups.add(director_group)
-        director_user.groups.add(super_administrator_group)
-        director_user.groups.add(administrator_group)
+        director_user.set_group_director()
+        # director_user.groups.add(director_group)
+        # director_user.groups.add(super_administrator_group)
+        # director_user.groups.add(administrator_group)

@@ -18,8 +18,9 @@ class DisplayTransferViewTestCase(TestCase):
     def setUp(self):
         self.url = reverse('transfers')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.user.groups.add(administrator_group)
+        self.user.set_group_administrator()
+        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        # self.user.groups.add(administrator_group)
         self.transfer = Transfer.objects.get(id='1')
 
     def test_display_administrator_url(self):

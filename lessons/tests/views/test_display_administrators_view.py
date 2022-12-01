@@ -17,11 +17,13 @@ class DisplayAdministratorViewTestCase(TestCase):
     def setUp(self):
         self.url = reverse('administrators')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        self.user.groups.add(super_administrator_group)
+        self.user.set_group_super_administrator()
+        # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+        # self.user.groups.add(super_administrator_group)
         self.administrator = User.objects.get(email='doe@kangaroo.com')
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.administrator.groups.add(administrator_group)
+        self.administrator.set_group_administrator()
+        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        # self.administrator.groups.add(administrator_group)
 
     def test_display_administrator_url(self):
         self.assertEqual(self.url, '/administrators/')
@@ -31,7 +33,7 @@ class DisplayAdministratorViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'administrators/administrators.html')
-        self.assertEqual(len(response.context['administrators']), 1)
+        self.assertEqual(len(response.context['administrators']), 2)
         self.assertContains(response, self.administrator.email)
         self.assertContains(response, self.administrator.first_name)
         self.assertContains(response, self.administrator.last_name)
