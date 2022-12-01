@@ -8,6 +8,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
+from lessons.mixins import GroupRegistrationMixin
+
 
 class UserManager(BaseUserManager):
     """
@@ -43,7 +45,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, True, True, **extra_fields)
 
 
-class User(PermissionsMixin, AbstractBaseUser):
+class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
     """
     User model used for authentication.
     """
@@ -77,7 +79,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         'self',
         null=True,
         blank=True,
-        related_name='User',
+        related_name='children',
         on_delete=models.CASCADE
     )
     is_staff = models.BooleanField(default=False)

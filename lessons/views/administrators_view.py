@@ -28,8 +28,9 @@ def create_administrator(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            administrator_group, created = Group.objects.get_or_create(name='Administrator')
-            user.groups.add(administrator_group)
+            user.set_group_administrator()
+            # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+            # user.groups.add(administrator_group)
             return redirect('administrators')
     else:
         form = RegisterForm()
@@ -52,10 +53,11 @@ def modify_administrator(request, pk):
             user = form.save()
             if form.data.get('make_account_super_administrator'):
                 user.groups.clear()
-                administrator_group, created = Group.objects.get_or_create(name='Administrator')
-                super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-                user.groups.add(administrator_group)
-                user.groups.add(super_administrator_group)
+                user.set_group_super_administrator()
+                # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+                # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
+                # user.groups.add(administrator_group)
+                # user.groups.add(super_administrator_group)
             if form.data.get('delete_account'):
                 user.delete()
             return redirect('administrators')

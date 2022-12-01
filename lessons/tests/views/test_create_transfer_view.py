@@ -17,11 +17,13 @@ class CreateTransferViewTestCase(TestCase):
         self.form_input = self._create_form_input()
         self.url = reverse('create_transfer')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.user.groups.add(administrator_group)
+        self.user.set_group_administrator()
+        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
+        # self.user.groups.add(administrator_group)
         self.student = User.objects.get(email='doe@kangaroo.com')
-        student_group, created = Group.objects.get_or_create(name='Student')
-        self.student.groups.add(student_group)
+        self.student.set_group_student()
+        # student_group, created = Group.objects.get_or_create(name='Student')
+        # self.student.groups.add(student_group)
 
     def _create_form_input(self):
         form_input = {

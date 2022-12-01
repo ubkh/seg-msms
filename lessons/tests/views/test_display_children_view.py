@@ -17,8 +17,9 @@ class DisplayChildrenViewTestCase(TestCase):
     def setUp(self):
         self.url = reverse('children')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
-        self.user.groups.add(adult_student_group)
+        self.user.set_group_adult_student()
+        # adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
+        # self.user.groups.add(adult_student_group)
         self.child = User.objects.get(id='3')
 
     def test_display_administrator_url(self):

@@ -20,8 +20,9 @@ def create_child(request):
             user = form.save()
             user.parent = request.user
             user.save()
-            student_group, created = Group.objects.get_or_create(name='Student')
-            user.groups.add(student_group)
+            user.set_group_student()
+            # student_group, created = Group.objects.get_or_create(name='Student')
+            # user.groups.add(student_group)
             return redirect('children')
     else:
         form = ChildCreateForm()
