@@ -14,7 +14,7 @@
                                 <b>{{ message }}</b>
                             </p>
                         {% endfor %}
-                        <form action="" method="post">
+                        <form method="post">
                             {% csrf_token %}
                             {% for field in form %}
                                 <div class="mb-4">
