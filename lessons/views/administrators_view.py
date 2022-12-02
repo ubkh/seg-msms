@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, UpdateView
 
-from lessons.forms import RegisterForm, AdminModifyForm
+from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
 from lessons.helpers import super_administrator_restricted
 from lessons.mixins import GroupRestrictedMixin
 from lessons.models import User
@@ -81,3 +81,21 @@ class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateVi
 
     def get_success_url(self):
         return reverse('administrators')
+
+
+@login_required
+@super_administrator_restricted
+def ban_client(request, pk):
+    """"
+    View used to ban clients
+    """
+    user = get_object_or_404(User, id=pk)
+    form = BanClientForm(instance=user)
+
+    if request.method == "POST":
+        form = BanClientForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    return render(request, "authentication/ban_client.html", {'form': form})
