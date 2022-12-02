@@ -26,9 +26,12 @@ def index(request):
         return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
-
 @login_required
 def home(request):
+    return render(request, "home/home_refactor.html")
+
+@login_required
+def school_home(request):
     """
     View that displays the user's home page.
     """

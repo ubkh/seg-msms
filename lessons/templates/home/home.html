@@ -1,6 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% block head %} {% include 'partials/navbar.html' %} {% endblock %}
 {% block body %}
+    {% include 'partials/school_group.html' %}
     &nbsp;
     {% for group in user.groups.all %}
         {%  if group.name == "Student" %}

@@ -25,15 +25,6 @@
                             <a class="nav-link" href="{% url 'children' %}">Children</a>
                         {% endif %}
 
-                        {% if group.name == 'Administrator' %}
-                            <a class="nav-link" href="{% url 'transfers' %}">Transfers</a>
-                            <a class="nav-link" href="{% url 'terms' %}">Terms</a>
-                        {% endif %}
-
-                        {% if group.name == 'Super-administrator' %}
-                            <a class="nav-link" href="{% url 'administrators' %}">Administrators</a>
-                        {% endif %}
-
                         {% if group.name == 'Director' %}
                             <a class="nav-link" href="{% url 'create_school' %}">School</a>
                         {% endif %}

@@ -23,6 +23,8 @@ register_converter(HashIDConverter, "hashid")
 
 schoolurlpatterns = [
 
+    path('school_home/', views.school_home, name='school_home'),  # school_home
+
     # Student
     path('lesson/request', views.request_lesson, name='request_lesson'),
     path('lesson/<hashid:pk>/modify/', views.modify_lesson, name='modify_lesson'),
@@ -60,8 +62,10 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
-    path('home/', views.home, name='home'),
+    path('home/', views.home, name='home'),  # school_home
     path('', include(schoolurlpatterns)),
+    # path('school/<int:pk>/', include(schoolurlpatterns)),
+
 
     # Student
     # path(find_school)
