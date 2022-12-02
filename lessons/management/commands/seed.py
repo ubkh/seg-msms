@@ -3,6 +3,8 @@ from lessons.models import User, Term
 from django.contrib.auth.models import Group
 import datetime
 
+from lessons.models.school import School
+
 
 class Command(BaseCommand):
 
@@ -10,6 +12,12 @@ class Command(BaseCommand):
         print("NOTE: The seed command has not been FULLY implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
 
+        # temp
+        school, created = School.objects.get_or_create(
+            name = "KCL Kangaroos"
+        )
+
+        
         # student_group, created = Group.objects.get_or_create(name='Student')
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
         # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')

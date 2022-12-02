@@ -2,11 +2,14 @@
 Views that will be used in the music school management system.
 """
 
+from ast import And, Not
+from datetime import datetime
+from unicodedata import name
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
-from lessons.models import Lesson, User, Transfer
+from lessons.models import Lesson, User, Transfer, School, Term
 from lessons.views import home
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
 
@@ -84,18 +87,34 @@ def fulfill_lesson(request, pk):
     request. If the form is valid, the admin is redirected to the home page
     and the corresponding Lesson object updated.
     """
+    
+    school_instance = School.objects.get(name="KCL Kangaroos")
+    this_term = school_instance.current_term
+    if this_term != None and Term.objects.count() > 1:
+        next_term = Term.get_next_by_start_date(this_term)
+        days_to_term_end = (this_term.end_date - datetime.now().date()).days
+        # we still have a week of term left
+        if days_to_term_end >= 7:
+            next_term = this_term
+        # we are NOT in a term break/holiday
+        if this_term.end_date <= datetime.now().date():
+            next_term = this_term
+    else:
+        next_term = this_term
+
     data = get_object_or_404(Lesson, id=pk)
-    form = LessonFulfillForm(instance=data)
+    form = LessonFulfillForm(instance=data, initial={'start_term': next_term})
 
     if request.method == "POST":
         form = LessonFulfillForm(request.POST, instance=data)
 
         if form.is_valid():
             data.price = (data.duration/60) * data.number_of_lessons * 10
+            if data.end_date == None and this_term != None:
+                data.end_date = this_term.end_date
             form.save()
             return redirect(home)
-    return render(request, "lessons/modify_lesson.html", {'form': form})
-
+    return render(request, "lessons/fulfill_lesson.html", {'form': form})
 
 @login_required
 @lesson_fulfilled_restricted
@@ -105,3 +124,4 @@ def booking_invoice(request, pk):
     """
     lessons = Lesson.objects.filter(id=pk)
     return render(request, "lessons/invoice.html", {'lessons': lessons})
+

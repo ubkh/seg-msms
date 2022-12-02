@@ -8,6 +8,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator, StepValueValidator
 from lessons.models import User
+from lessons.models.term import Term
 
 DAYS_OF_WEEK = [
     ('Monday','Monday'),
@@ -61,6 +62,14 @@ class Lesson(models.Model):
     title = models.CharField(max_length=25, default="Music Lesson", )
     information = models.CharField(max_length=280, verbose_name="Further Information", blank=True)
     price = models.DecimalField(default=10.00,max_digits=10,decimal_places=2, validators=[MinValueValidator(5.00)])
+    start_term = models.ForeignKey(
+        Term,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.title
