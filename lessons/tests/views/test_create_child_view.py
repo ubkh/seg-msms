@@ -31,7 +31,7 @@ class CreateChildViewTestCase(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'authentication/register.html')
+        self.assertTemplateUsed(response, 'children/create_child.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, ChildCreateForm))
         self.assertFalse(form.is_bound)
@@ -44,7 +44,7 @@ class CreateChildViewTestCase(TestCase):
         user_count_after = User.objects.count()
         self.assertEqual(user_count_before, user_count_after)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'authentication/register.html')
+        self.assertTemplateUsed(response, 'children/create_child.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, ChildCreateForm))
         self.assertTrue(form.is_bound)

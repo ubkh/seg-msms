@@ -27,7 +27,7 @@ class ChildListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
 class ChildCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
 
     model = User
-    template_name = "authentication/register.html"
+    template_name = "children/create_child.html"
     form_class = ChildCreateForm
     http_method_names = ['get', 'post']
     allowed_group = "Adult-student"
