@@ -19,6 +19,11 @@ class Transfer(models.Model):
         on_delete=models.CASCADE,
         blank=False
     )
+    school = models.ForeignKey(
+        'School',
+        on_delete=models.CASCADE,
+        blank=False
+    )
     lesson = models.ForeignKey(
         Lesson,
         on_delete=models.CASCADE,
