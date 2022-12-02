@@ -1,0 +1,11 @@
+[
+    {
+        "model": "lessons.user",
+        "pk": 3,
+        "fields": {
+            "first_name": "Foo",
+            "last_name": "Bar",
+            "parent": 1
+        }
+    }
+]

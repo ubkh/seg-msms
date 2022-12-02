@@ -8,40 +8,50 @@ from django.contrib.auth.hashers import check_password
 from lessons.models import User
 from lessons.forms import RegisterForm
 
+
 class RegisterFormTestCase(TestCase):
     """
     Unit tests that will be used to test the Registration form.
     """
+
     def setUp(self):
         self.form_input = self._create_form_input()
 
     def _create_form_input(self):
-        input = {
+        form_input = {
             'first_name': 'Foo',
             'last_name': 'Bar',
             'email': 'foo@kangaroo.com',
             'password': 'Example123',
-            'confirm_password': 'Example123'
+            'confirm_password': 'Example123',
+            'make_account_adult_student': 'False'
         }
-        return input
+        return form_input
 
     def test_register_form_is_valid(self):
         register_form = RegisterForm(data=self.form_input)
         self.assertTrue(register_form.is_valid())
 
     def test_register_form_contains_required_fields(self):
-         register_form = RegisterForm()
-         self.assertIn('first_name', register_form.fields)
-         self.assertIn('last_name', register_form.fields)
-         self.assertIn('email', register_form.fields)
-         email_field = register_form.fields['email']
-         self.assertTrue(isinstance(email_field, forms.EmailField))
-         self.assertIn('password', register_form.fields)
-         password_widget = register_form.fields['password'].widget
-         self.assertTrue(isinstance(password_widget, forms.PasswordInput))
-         self.assertIn('confirm_password', register_form.fields)
-         confirm_password_widget = register_form.fields['confirm_password'].widget
-         self.assertTrue(isinstance(confirm_password_widget, forms.PasswordInput))
+        register_form = RegisterForm()
+        self.assertIn('first_name', register_form.fields)
+        first_name_field = register_form.fields['first_name']
+        self.assertTrue(isinstance(first_name_field, forms.CharField))
+        self.assertIn('last_name', register_form.fields)
+        last_name_field = register_form.fields['last_name']
+        self.assertTrue(isinstance(last_name_field, forms.CharField))
+        self.assertIn('email', register_form.fields)
+        email_field = register_form.fields['email']
+        self.assertTrue(isinstance(email_field, forms.EmailField))
+        self.assertIn('password', register_form.fields)
+        password_widget = register_form.fields['password'].widget
+        self.assertTrue(isinstance(password_widget, forms.PasswordInput))
+        self.assertIn('confirm_password', register_form.fields)
+        confirm_password_widget = register_form.fields['confirm_password'].widget
+        self.assertTrue(isinstance(confirm_password_widget, forms.PasswordInput))
+        self.assertIn('make_account_adult_student', register_form.fields)
+        make_account_adult_student_field = register_form.fields['make_account_adult_student']
+        self.assertTrue(isinstance(make_account_adult_student_field, forms.BooleanField))
 
     def tests_form_saves_correctly(self):
         register_form = RegisterForm(data=self.form_input)
@@ -110,3 +120,8 @@ class RegisterFormTestCase(TestCase):
         self.form_input['confirm_password'] = 'PAssword1234'
         form = RegisterForm(data=self.form_input)
         self.assertFalse(form.is_valid())
+
+    def test_make_account_adult_student_can_be_true(self):
+        self.form_input['make_account_adult_student'] = 'True'
+        form = RegisterForm(data=self.form_input)
+        self.assertTrue(form.is_valid())

@@ -1,0 +1,12 @@
+[
+    {
+        "model": "lessons.lesson",
+        "pk": 3,
+        "fields": {
+            "fulfilled": false,
+            "title": "Test Lesson 3",
+            "student": "2",
+            "time": "13:00"
+        }
+    }
+]
