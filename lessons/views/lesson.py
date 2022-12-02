@@ -110,6 +110,8 @@ def fulfill_lesson(request, pk):
 
         if form.is_valid():
             data.price = (data.duration/60) * data.number_of_lessons * 10
+            if data.end_date == None and this_term != None:
+                data.end_date = this_term.end_date
             form.save()
             return redirect(home)
     return render(request, "lessons/fulfill_lesson.html", {'form': form})
