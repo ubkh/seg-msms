@@ -75,8 +75,9 @@ def open_bookings(request, pk):
     current_student = User.objects.filter(id=pk)
     lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
     transfers = Transfer.objects.filter(user=s)
+    user = request.user
     return render(request, "lessons/bookings.html",
-                  {'current_student': current_student, 'lessons': lessons, 'transfers': transfers})
+                  {'current_student': current_student, 'lessons': lessons, 'transfers': transfers, 'user': user})
 
 
 @login_required
@@ -124,4 +125,3 @@ def booking_invoice(request, pk):
     """
     lessons = Lesson.objects.filter(id=pk)
     return render(request, "lessons/invoice.html", {'lessons': lessons})
-

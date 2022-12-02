@@ -9,6 +9,17 @@
         <div class="list-group">
             {% for s in current_student %}
                 <p>Welcome {{ s.first_name }} {{ s.last_name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+                <div class="container">
+                    {% for group in user.groups.all %}
+                        {%  if group.name == "Super-administrator" %}
+                            {% if s.is_active == True %}
+                                <a class="btn btn-primary" href="{% url 'ban_client' s.id %}">Ban Client</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{% url 'ban_client' s.id %}">UnBan Client</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
     </div>

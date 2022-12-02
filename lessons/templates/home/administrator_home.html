@@ -8,7 +8,12 @@
             <a href="{% url 'open_bookings' student.id %}"
                class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ student.first_name }} {{ student.last_name }}</h5>
+                    {% if student.is_active == True %}
+                        <h5 class="mb-1">{{ student.first_name }} {{ student.last_name }}</h5>
+                    {% endif %}
+                    {% if student.is_active == False %}
+                        <h5 class="mb-1">{{ student.first_name }} {{ student.last_name }} BANNED</h5>
+                    {% endif %}
                 </div>
                 <p class="mb-1">{{ student.email }}</p>
             </a>

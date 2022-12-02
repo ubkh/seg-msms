@@ -41,5 +41,6 @@ urlpatterns = [
     path('children/', views.ChildListView.as_view(), name='children'),
     path('children/create/', views.ChildCreateView.as_view(), name='create_child'),
     path('terms/', views.view_terms, name='terms'),
-    path('term/<int:pk>/edit', views.edit_term, name='edit_term')
+    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
+    path('student/<hashid:pk>/ban_client/', views.ban_client, name='ban_client')
 ]

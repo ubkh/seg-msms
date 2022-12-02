@@ -113,3 +113,5 @@ class LessonFulfillForm(forms.ModelForm):
                 self.fields.pop('start_date')
         else:
             self.fields.pop('start_term')
+
+
