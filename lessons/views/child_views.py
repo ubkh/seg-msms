@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.generic import ListView, CreateView
 
 from lessons.forms import ChildCreateForm
-from lessons.mixins import GroupRestrictedMixin
 from lessons.models import User
+from lessons.views import GroupRestrictedMixin
 
 
 class ChildListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):

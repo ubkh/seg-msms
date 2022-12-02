@@ -12,8 +12,8 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from lessons.forms import RegisterForm, AdminModifyForm
 from lessons.helpers import super_administrator_restricted
-from lessons.mixins import GroupRestrictedMixin
 from lessons.models import User
+from lessons.views.mixins import GroupRestrictedMixin
 
 
 class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):

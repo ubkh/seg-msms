@@ -7,8 +7,8 @@ from django.urls import reverse
 from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
-from lessons.mixins import GroupRestrictedMixin
 from lessons.models import Transfer
+from lessons.views.mixins import GroupRestrictedMixin
 
 
 class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):

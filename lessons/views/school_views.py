@@ -4,10 +4,11 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView
 
 from lessons.forms import SchoolCreateForm
-from lessons.mixins import GroupRestrictedMixin
 from lessons.models import School
+from lessons.views import GroupRestrictedMixin
 
-class SchoolListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+
+class SchoolListView(LoginRequiredMixin, ListView):  # GroupRestrictedMixin
     model = School
     template_name = "school/list_school.html"
     context_object_name = "schools"
@@ -17,7 +18,7 @@ class SchoolListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
         return redirect('home')
 
 
-class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class SchoolCreateView(LoginRequiredMixin, CreateView):  # GroupRestrictedMixin
     model = School
     template_name = "school/create_school.html"
     form_class = SchoolCreateForm
