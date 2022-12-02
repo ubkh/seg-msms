@@ -6,14 +6,18 @@ import datetime
 from django.test import TestCase
 from django import forms
 from lessons.forms import LessonRequestForm
-from lessons.models import Lesson, User
+from lessons.models import Lesson, User, School
 
 
 class RequestFormTestCase(TestCase):
-    fixtures = ['lessons/tests/fixtures/default_user.json']
+    fixtures = [
+        'lessons/tests/fixtures/default_user.json',
+        'lessons/tests/fixtures/default_school.json'
+    ]
     
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')
+        self.school = School.objects.get(id=1)
         self.form_input = {
             'student': self.user,
             'title': 'Music Lesson',
@@ -48,6 +52,7 @@ class RequestFormTestCase(TestCase):
         lesson_count_before = Lesson.objects.count()
         lesson = form.save(commit=False)
         lesson.student = self.user
+        lesson.school = self.school
         lesson.save()
         lesson_count_after = Lesson.objects.count()
         self.assertEqual(lesson_count_before + 1, lesson_count_after)

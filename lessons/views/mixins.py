@@ -1,3 +1,5 @@
+
+
 class GroupRestrictedMixin:
     """
     Mixin that only allows a specified group to access a view to users that are logged in.
@@ -9,3 +11,9 @@ class GroupRestrictedMixin:
         if not self.request.user.groups.filter(name=self.allowed_group).exists():
             return self.handle_no_permission()
         return super().dispatch(*args, **kwargs)
+
+
+class SchoolObjectMixin:
+
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])

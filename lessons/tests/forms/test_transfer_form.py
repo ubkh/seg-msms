@@ -4,7 +4,7 @@ from django.test import TestCase
 from django import forms
 
 from lessons.forms import TransferForm
-from lessons.models import Transfer
+from lessons.models import Transfer, School
 
 
 class TransferFormTestCase(TestCase):
@@ -17,11 +17,13 @@ class TransferFormTestCase(TestCase):
         'lessons/tests/fixtures/default_lesson.json',
         'lessons/tests/fixtures/other_user.json',
         'lessons/tests/fixtures/other_lesson.json',
-        'lessons/tests/fixtures/alternative_lesson.json'
+        'lessons/tests/fixtures/alternative_lesson.json',
+        'lessons/tests/fixtures/default_school.json'
     ]
 
     def setUp(self):
         self.form_input = self._create_form_input()
+        self.school = School.objects.get(id=1)
 
     def _create_form_input(self):
         form_input = {

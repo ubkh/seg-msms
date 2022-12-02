@@ -8,10 +8,10 @@ from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
 from lessons.models import Transfer
-from lessons.views.mixins import GroupRestrictedMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
-class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
 
     model = Transfer
     template_name = "transfer/transfers.html"
