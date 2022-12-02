@@ -12,7 +12,7 @@ from lessons.helpers import administrator_restricted, lesson_fulfilled_restricte
 
 
 @login_required
-def request_lesson(request):
+def request_lesson(request, school):
     """
     View that displays the form allowing users to request a lesson.
     If the form is valid, the user is redirected to the home page and 
@@ -32,7 +32,7 @@ def request_lesson(request):
 
 
 @login_required
-def modify_lesson(request, pk):
+def modify_lesson(request, school, pk):
     """
     View that displays the form allowing users to edit an existing lesson
     request. If the form is valid, the user is redirected to the home page
@@ -99,7 +99,7 @@ def fulfill_lesson(request, pk):
 
 @login_required
 @lesson_fulfilled_restricted
-def booking_invoice(request, pk):
+def booking_invoice(request, school, pk):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """

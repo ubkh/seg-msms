@@ -26,6 +26,11 @@ class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
     context_object_name = "administrators"
     allowed_group = "Super-administrator"
 
+    def get_context_data(self, **kwargs):
+        context = super(AdministratorListView, self).get_context_data(**kwargs)
+        context['school']=self.kwargs['school']
+        return context
+
     def get_queryset(self):
         return User.objects.filter(groups__name='Administrator')
 

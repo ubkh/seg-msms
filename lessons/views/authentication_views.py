@@ -31,7 +31,7 @@ def home(request):
     return render(request, "home/home_refactor.html")
 
 @login_required
-def school_home(request):
+def school_home(request, school):
     """
     View that displays the user's home page.
     """
@@ -41,7 +41,7 @@ def school_home(request):
     transfers = Transfer.objects.filter(user_id=request.user)
 
     return render(request, "home/home.html",
-                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers})
+                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers, 'school': school})
 
 
 @login_prohibited

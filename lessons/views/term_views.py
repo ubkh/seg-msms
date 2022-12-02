@@ -11,7 +11,7 @@ from lessons.forms import TermForm
 
 @login_required
 @administrator_restricted
-def view_terms(request):
+def view_terms(request, school):
     terms = Term.objects.all()
 
     if request.method == "POST":
@@ -21,7 +21,7 @@ def view_terms(request):
             return redirect('terms')
     else:
         form = TermForm()
-    return render(request, "terms/terms.html", {'terms': terms, 'form': form})
+    return render(request, "terms/terms.html", {'terms': terms, 'form': form, 'school': school})
 
 @login_required
 @administrator_restricted

@@ -1,16 +1,16 @@
 {% load static %}
 <div class="list-group col-lg-4 col-md-6 col-sm-6">
-    <a href="{% url 'school_home' %}" class="list-group-item list-group-item-action">Home</a>
+    <a href="{% url 'school_home' school=1 %}" class="list-group-item list-group-item-action">Home</a>
 
     {% for group in user.groups.all %}
 
         {% if group.name == 'Administrator' %}
-            <a href="{% url 'transfers' %}" class="list-group-item list-group-item-action">Transfers</a>
-            <a href="{% url 'terms' %}" class="list-group-item list-group-item-action">Terms</a>
+            <a href="{% url 'transfers' school=1 %}" class="list-group-item list-group-item-action">Transfers</a>
+            <a href="{% url 'terms' school=1 %}" class="list-group-item list-group-item-action">Terms</a>
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}
-            <a href="{% url 'administrators' %}" class="list-group-item list-group-item-action">Administrators</a>
+            <a href="{% url 'administrators' school=1 %}" class="list-group-item list-group-item-action">Administrators</a>
         {% endif %}
 
     {% endfor %}
