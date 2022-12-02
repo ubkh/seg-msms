@@ -1,11 +1,20 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 from lessons.forms import SchoolCreateForm
 from lessons.mixins import GroupRestrictedMixin
 from lessons.models import School
+
+class SchoolListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+    model = School
+    template_name = "school/list_school.html"
+    context_object_name = "schools"
+    allowed_group = "Student"
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
 class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):

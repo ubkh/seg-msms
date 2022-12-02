@@ -1,0 +1,20 @@
+{% extends 'base/base.html' %}
+{% block body %}
+    {% include 'partials/navbar.html' %}
+<div class="container">
+    <h1>Music Schools</h1>
+    <hr>
+    <h2>School List</h2>
+    <div class="list-group">
+        {% for school in schools %}
+            <a href="{% url 'school_home' school.id %}"
+               class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ school.name }}</h5>
+                </div>
+                <p class="mb-1">{{ admin.email }}</p>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
