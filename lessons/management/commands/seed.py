@@ -2,12 +2,19 @@ from django.core.management.base import BaseCommand, CommandError
 from lessons.models import User
 from django.contrib.auth.models import Group
 
+from lessons.models.school import School
+
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("NOTE: The seed command has not been FULLY implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
+
+        # temp
+        school, created = School.objects.get_or_create(
+            name = "KCL Kangaroos"
+        )
 
         student_group, created = Group.objects.get_or_create(name='Student')
         administrator_group, created = Group.objects.get_or_create(name='Administrator')

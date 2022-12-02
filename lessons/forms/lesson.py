@@ -5,7 +5,9 @@ Forms that will be used in the music school management system.
 from django import forms
 from django.db.models import Q
 
-from lessons.models import Lesson, User
+from lessons.models import Lesson, User, Term, School
+
+from datetime import datetime
 
 
 class LessonModifyForm(forms.ModelForm):
@@ -77,8 +79,26 @@ class LessonFulfillForm(forms.ModelForm):
 
     class Meta:
         model = Lesson
-        fields = ['fulfilled']
+        fields = ['fulfilled', 'start_date', 'start_term']
+        widgets = {
+
+        }
+        labels = {}
+    
+    field_order = ['start_date', 'start_term']
 
     def form_valid(self, form):
         form.instance.student = self.request.user
         return super().form_valid(form)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['start_term'].queryset = Term.objects.all()
+
+        school_instance = School.objects.get(name="KCL Kangaroos")
+        term = school_instance.current_term
+        # if mid-term
+        if datetime.now().date() >= term.start_date and datetime.now().date() <= term.end_date:
+            self.fields.pop('start_term')
+        else:
+            self.fields.pop('start_date')

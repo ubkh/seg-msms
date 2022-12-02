@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center mt-5 mb-5">
+            <div class="col-lg-5">
+              <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                  <h2 class="p-3"><b>FULFILL LESSON</b></h2>
+                </div>
+                <div class="card-body">
+                  {% for message in messages %}
+                    <p style="color: red;">
+                        <b>{{ message }}</b>
+                    </p>
+                  {% endfor %}
+                  <form class="row gx-3 gy-3 align-items-center" action="" method="post" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                      <div class="col-auto">
+                        <label class="form-label" id="label_{{ field.name }}">{{ field.label }}</label>
+                        {% for error in field.errors %}
+                            <p style="color: red;">
+                                <strong>{{ error }}</strong>
+                            </p>
+                        {% endfor %}
+                        <div class="form-group">
+                            {{ field }}
+                        </div>
+                        <p class="help-text">{{ field.help_text }} </p>
+                      </div>
+                    {% endfor %}
+                    <div class="d-grid">
+                      <input type="submit" value="Fulfill" class="btn btn-primary">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
