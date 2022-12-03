@@ -8,7 +8,6 @@
               <div class="card shadow">
                 <div class="card-title text-center border-bottom">
                   <h2 class="p-3"><b>FULFILL LESSON</b></h2>
-                  <p>Will add more fields to complete this!</p>
                 </div>
                 <div class="card-body">
                   {% for message in messages %}
@@ -49,9 +48,15 @@
       if (startType.length) {
         $('#id_start_date').hide();
         $('#label_start_date').hide();
+
+        displayCorrectly();
+
+        startType.change(function(){
+          displayCorrectly();
+        });
       }
 
-      startType.change(function(){
+      function displayCorrectly() {
         if (startType.prop('selectedIndex') == 0) {
           $('#id_start_date').hide();
           $('#label_start_date').hide();
@@ -63,6 +68,6 @@
           $('#id_start_term').hide();
           $('#label_start_term').hide();
         }
-      });
+      }
     </script>
 {% endblock %}
