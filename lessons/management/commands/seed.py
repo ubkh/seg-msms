@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
 
         # Generate 3 random Super-Admins
-        for i in range(10):
+        for i in range(3):
             first_name = self.faker.first_name()
             last_name = self.faker.last_name()
             email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
@@ -68,9 +68,6 @@ class Command(BaseCommand):
 
 
         # temp
-        school, created = School.objects.get_or_create(
-            name = "KCL Kangaroos"
-        )
 
         
         # student_group, created = Group.objects.get_or_create(name='Student')
@@ -109,6 +106,11 @@ class Command(BaseCommand):
             password="Password123",
         )
         director_user.set_group_director()
+
+        school, created = School.objects.get_or_create(
+            name = "KCL Kangaroos",
+            director = director_user
+        )
         # director_user.groups.add(director_group)
         # director_user.groups.add(super_administrator_group)
         # director_user.groups.add(administrator_group)

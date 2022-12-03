@@ -96,11 +96,13 @@ class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixi
     context_object_name = "lessons"
     allowed_group = "Administrator"
 
+
     def get_context_data(self, **kwargs):
         context = super(BookingListView, self).get_context_data(**kwargs)
         s = get_object_or_404(User, id=self.kwargs['pk'])
         context['lessons'] = context['lessons'].filter(student=s).order_by('-fulfilled')
         context['transfers'] = Transfer.objects.filter(user=s).filter(school=self.kwargs['school'])
+        context['student'] = s
         return context
 
     def handle_no_permission(self):
