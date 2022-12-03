@@ -31,6 +31,11 @@ class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectM
     http_method_names = ['get', 'post']
     allowed_group = "Administrator"
 
+    def get_form_kwargs(self):
+        kwargs = super(TransferCreateView, self).get_form_kwargs()
+        kwargs['school'] = self.kwargs['school']
+        return kwargs
+
     def form_valid(self, form):
         form.instance.user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
         form.instance.lesson = Lesson.objects.filter(pk=form.cleaned_data.get('lesson_id')).first()
