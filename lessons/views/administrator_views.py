@@ -86,19 +86,35 @@ class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateVi
         return redirect('home')
 
 
-@login_required
-@super_administrator_restricted
-def ban_client(request, pk):
-    """"
-    View used to ban clients
-    """
-    user = get_object_or_404(User, id=pk)
-    form = BanClientForm(instance=user)
+class BanClientView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
 
-    if request.method == "POST":
-        form = BanClientForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+    model = User
+    template_name = "authentication/ban_client.html"
+    form_class = BanClientForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Director"
 
-    return render(request, "authentication/ban_client.html", {'form': form})
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+
+
+# @login_required
+# @super_administrator_restricted
+# def ban_client(request, pk):
+#     """"
+#     View used to ban clients
+#     """
+#     user = get_object_or_404(User, id=pk)
+#     form = BanClientForm(instance=user)
+
+#     if request.method == "POST":
+#         form = BanClientForm(request.POST, instance=user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+
+#     return render(request, "authentication/ban_client.html", {'form': form})
