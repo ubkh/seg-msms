@@ -146,5 +146,3 @@ class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
         return context
 
-    def handle_no_permission(self):
-        return redirect('home')

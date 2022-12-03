@@ -4,19 +4,21 @@ from django.test import TestCase
 from django.urls import reverse
 
 from lessons.forms import RegisterForm
-from lessons.models import User, Transfer
+from lessons.models import User, Transfer, School
 
 
 class DisplayTransferViewTestCase(TestCase):
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
+        'lessons/tests/fixtures/default_school.json',
         'lessons/tests/fixtures/other_user.json',
         'lessons/tests/fixtures/alternative_lesson.json',
-        'lessons/tests/fixtures/default_transfer.json'
+        'lessons/tests/fixtures/default_transfer.json',
     ]
 
     def setUp(self):
-        self.url = reverse('transfers')
+        self.school = School.objects.get(id=1)
+        self.url = reverse('transfers', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='foo@kangaroo.com')
         self.user.set_group_administrator()
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
@@ -24,7 +26,7 @@ class DisplayTransferViewTestCase(TestCase):
         self.transfer = Transfer.objects.get(id='1')
 
     def test_display_administrator_url(self):
-        self.assertEqual(self.url, '/transfers/')
+        self.assertEqual(self.url, f'/school/{self.school.id}/transfers/')
 
     def test_get_transfers(self):
         self.client.login(email=self.user.email, password="Password123")

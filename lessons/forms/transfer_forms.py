@@ -37,3 +37,13 @@ class TransferForm(forms.ModelForm):
             self.add_error('user_id', 'This user could not be found. You should refund this transfer.')
         if not lesson:
             self.add_error('lesson_id', 'This lesson could not be found. You should refund this transfer.')
+
+    def save(self):
+        super().save(commit=False)
+        transfer = Transfer.objects.create(
+            user=User.objects.get(pk=self.cleaned_data.get('user_id')),
+            lesson=Lesson.objects.get(pk=self.cleaned_data.get('lesson_id')),
+            school=School.objects.get(pk=self.school),
+            amount=self.cleaned_data.get('amount')
+        )
+        return transfer

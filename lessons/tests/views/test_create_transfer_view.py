@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from lessons.forms import RegisterForm, TransferForm
-from lessons.models import User, Transfer
+from lessons.models import User, Transfer, School
 
 
 class CreateTransferViewTestCase(TestCase):
@@ -12,10 +12,12 @@ class CreateTransferViewTestCase(TestCase):
         'lessons/tests/fixtures/default_user.json',
         'lessons/tests/fixtures/other_user.json',
         'lessons/tests/fixtures/alternative_lesson.json',
+        'lessons/tests/fixtures/default_school.json'
     ]
     def setUp(self):
         self.form_input = self._create_form_input()
-        self.url = reverse('create_transfer')
+        self.school = School.objects.get(id=1)
+        self.url = reverse('create_transfer', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='foo@kangaroo.com')
         self.user.set_group_administrator()
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
@@ -34,7 +36,7 @@ class CreateTransferViewTestCase(TestCase):
         return form_input
 
     def test_create_transfer_url(self):
-        self.assertEqual(self.url, '/transfers/create/')
+        self.assertEqual(self.url, f'/school/{self.school.id}/transfers/create/')
 
     def get_create_transfer(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -64,7 +66,7 @@ class CreateTransferViewTestCase(TestCase):
         response = self.client.post(self.url, self.form_input, follow=True)
         transfer_count_after = Transfer.objects.count()
         self.assertEqual(transfer_count_before + 1, transfer_count_after)
-        response_url = reverse('transfers')
+        response_url = reverse('transfers', kwargs={'school': self.school.id})
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         saved_user = Transfer.objects.latest('id')
         self.assertEqual(saved_user.amount, self.form_input['amount'])
