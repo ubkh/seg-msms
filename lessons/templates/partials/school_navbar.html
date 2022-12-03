@@ -18,5 +18,12 @@
                class="list-group-item list-group-item-action">Administrators</a>
         {% endif %}
 
+        {% if group.name == 'Director' %}
+            <a href="{% url 'delete_school' school.id %}"
+               class="list-group-item list-group-item-action" style="color:red">Delete School</a>
+        {% endif %}
+
+        
+
     {% endfor %}
 </div>

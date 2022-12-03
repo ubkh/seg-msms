@@ -68,7 +68,8 @@ urlpatterns = [
     path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
 
     # Director
-    path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
+    path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
+    path('school/<int:pk>/delete', views.SchoolDeleteView.as_view(), name='delete_school')
 
     # System-administrator
     # path(name='create_director')
