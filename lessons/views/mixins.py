@@ -15,5 +15,14 @@ class GroupRestrictedMixin:
 
 class SchoolObjectMixin:
 
+    def get_context_data(self, **kwargs):
+        context = super(SchoolObjectMixin, self).get_context_data(**kwargs)
+        context['school'] = self.kwargs['school']
+        return context
+
     def get_queryset(self):
         return super().get_queryset().filter(school=self.kwargs['school'])
+
+    def form_valid(self, form):
+        form.instance.school_id = self.kwargs['school']
+        return super().form_valid(form)

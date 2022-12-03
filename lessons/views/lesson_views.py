@@ -3,105 +3,146 @@ Views that will be used in the music school management system.
 """
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
+from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
-from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
-@login_required
-def request_lesson(request, school):
+class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form allowing users to request a lesson.
-    If the form is valid, the user is redirected to the home page and 
+    If the form is valid, the user is redirected to the home page and
     a Lesson object is created.
     """
-    if request.method == "POST":
-        form = LessonRequestForm(request.POST, user=request.user)
-        if form.is_valid():
-            # form.instance.student = request.user
-            lesson = form.save(commit=False)
-            lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
-            lesson.save()
-            return redirect('home')
-    else:
-        form = LessonRequestForm(user=request.user)
-    return render(request, "lessons/request_lesson.html", {'form': form})
+
+    model = Lesson
+    template_name = "lessons/request_lesson.html"
+    form_class = LessonRequestForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Student"
+
+    def get_form_kwargs(self, **kwargs):
+        form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
+        form_kwargs['user'] = self.request.user
+        return form_kwargs
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        lesson = form.save(commit=False)
+        lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 10
+        lesson.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-def modify_lesson(request, school, pk):
+class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
     """
     View that displays the form allowing users to edit an existing lesson
     request. If the form is valid, the user is redirected to the home page
     and the corresponding Lesson object updated.
     """
-    data = get_object_or_404(Lesson, id=pk)
-    form = LessonModifyForm(instance=data)
 
-    if request.method == "POST":
-        form = LessonModifyForm(request.POST, instance=data)
+    model = Lesson
+    template_name = "lessons/modify_lesson.html"
+    form_class = LessonModifyForm
+    http_method_names = ['get', 'post']
 
-        if form.is_valid():
-            if request.user == form.instance.student or request.user == form.instance.student.parent:
-                # form.instance.student = request.user
-                lesson = form.save(commit=False)
-                lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
-                lesson.save()
-                return redirect('home')
-            else:
-                administrators = User.objects.filter(groups__name='Administrator')
-                for admin in administrators:
-                    if request.user == admin:
-                        lesson = form.save(commit=False)
-                        lesson.price = (lesson.duration/60)*lesson.number_of_lessons*10
-                        lesson.save()
-                        return redirect('home')
-    return render(request, "lessons/modify_lesson.html", {'form': form})
+    def form_valid(self, form):
+        super().form_valid(form)
+        if self.request.user == form.instance.student or self.request.user == form.instance.student.parent:
+            lesson = form.save(commit=False)
+            lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 10
+            lesson.save()
+        else:
+            administrators = User.objects.filter(groups__name='Administrator')
+            for admin in administrators:
+                if self.request.user == admin:
+                    lesson = form.save(commit=False)
+                    lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 10
+                    lesson.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-@administrator_restricted
-def open_bookings(request, pk):
+class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all student bookings.
     """
-    s = get_object_or_404(User, id=pk)
-    current_student = User.objects.filter(id=pk)
-    lessons = Lesson.objects.filter(student=s).order_by('-fulfilled')
-    transfers = Transfer.objects.filter(user=s)
-    return render(request, "lessons/bookings.html",
-                  {'current_student': current_student, 'lessons': lessons, 'transfers': transfers})
+
+    model = Lesson
+    template_name = "lessons/bookings.html"
+    context_object_name = "lessons"
+    allowed_group = "Administrator"
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingListView, self).get_context_data(**kwargs)
+        context['transfers'] = Transfer.objects.all()
+        return context
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-@administrator_restricted
-def fulfill_lesson(request, pk):
+class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     """
     View that displays the form allowing administrators to fulfill a lesson
     request. If the form is valid, the admin is redirected to the home page
     and the corresponding Lesson object updated.
     """
-    data = get_object_or_404(Lesson, id=pk)
-    form = LessonFulfillForm(instance=data)
 
-    if request.method == "POST":
-        form = LessonFulfillForm(request.POST, instance=data)
+    model = Lesson
+    template_name = "lessons/modify_lesson.html"
+    form_class = LessonFulfillForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Administrator"
 
-        if form.is_valid():
-            data.price = (data.duration/60) * data.number_of_lessons * 10
-            form.save()
-            return redirect(home)
-    return render(request, "lessons/modify_lesson.html", {'form': form})
+    def form_valid(self, form):
+        super().form_valid(form)
+        data = form.save(commit=False)
+        data.price = (data.duration / 60) * data.number_of_lessons * 10
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
-@login_required
-@lesson_fulfilled_restricted
-def booking_invoice(request, school, pk):
+@method_decorator(lesson_fulfilled_restricted, name='dispatch')
+class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
-    lessons = Lesson.objects.filter(id=pk)
-    return render(request, "lessons/invoice.html", {'lessons': lessons})
+
+    model = Lesson
+    template_name = "lessons/invoice.html"
+    context_object_name = "lessons"
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolObjectMixin, self).get_context_data(**kwargs)
+        context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
+        return context
+
+    def handle_no_permission(self):
+        return redirect('home')

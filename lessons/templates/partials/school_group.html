@@ -1,5 +1,6 @@
 {% load static %}
-<div class="list-group col-lg-4 col-md-6 col-sm-6">
+<div class="list-group px-5 py-5">
+    <a class="list-group-item list-group-item-action disabled"><b>Music School</b></a>
     <a href="{% url 'school_home' school %}" class="list-group-item list-group-item-action">Home</a>
 
     {% for group in user.groups.all %}
@@ -10,7 +11,8 @@
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}
-            <a href="{% url 'administrators' school %}" class="list-group-item list-group-item-action">Administrators</a>
+            <a href="{% url 'administrators' school %}"
+               class="list-group-item list-group-item-action">Administrators</a>
         {% endif %}
 
     {% endfor %}

@@ -26,17 +26,17 @@ schoolurlpatterns = [
     path('', views.school_home, name='school_home'),  # school_home
 
     # Student
-    path('lesson/request', views.request_lesson, name='request_lesson'),
-    path('lesson/<hashid:pk>/modify/', views.modify_lesson, name='modify_lesson'),
+    path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
+    path('lesson/<hashid:pk>/modify/', views.LessonModifyView.as_view(), name='modify_lesson'),
 
-    path('lesson/<hashid:pk>/invoice/', views.booking_invoice, name='booking_invoice'),
+    path('lesson/<hashid:pk>/invoice/', views.BookingInvoiceView.as_view(), name='booking_invoice'),
 
     # Teacher
 
     # Administrator
 
-    path('student/<hashid:pk>/bookings/', views.open_bookings, name='open_bookings'),
-    path('student/<hashid:pk>/bookings/fulfill', views.fulfill_lesson, name='fulfill_lesson'),
+    path('student/<hashid:pk>/bookings/', views.BookingListView.as_view(), name='open_bookings'),
+    path('student/<hashid:pk>/bookings/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
 
     path('transfers/', views.TransferListView.as_view(), name='transfers'),
     path('transfers/create/', views.TransferCreateView.as_view(), name='create_transfer'),
@@ -65,12 +65,10 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('school/<int:school>/', include(schoolurlpatterns)),
 
-
     # Student
     path('school/', views.SchoolListView.as_view(), name='list_school'),
 
     # Adult-student
-
     path('children/', views.ChildListView.as_view(), name='children'),
     path('children/create/', views.ChildCreateView.as_view(), name='create_child'),
 
@@ -78,5 +76,5 @@ urlpatterns = [
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
 
     # System-administrator
-
+    # path()
 ]
