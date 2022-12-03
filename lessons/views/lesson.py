@@ -89,7 +89,9 @@ def fulfill_lesson(request, pk):
     """
     
     school_instance = School.objects.get(name="KCL Kangaroos")
-    this_term = school_instance.current_term
+    #this_term = school_instance.current_term
+    this_term = school_instance.get_update_current_term
+    print(this_term)
     if this_term != None and Term.objects.count() > 1:
         next_term = Term.get_next_by_start_date(this_term)
         days_to_term_end = (this_term.end_date - datetime.now().date()).days

@@ -16,7 +16,6 @@ class Command(BaseCommand):
         school, created = School.objects.get_or_create(
             name = "KCL Kangaroos"
         )
-
         
         # student_group, created = Group.objects.get_or_create(name='Student')
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
@@ -61,7 +60,7 @@ class Command(BaseCommand):
         Term.objects.all().delete()
         
         # Seed Database with Default Terms
-        Term.objects.create(id=1,start_date=datetime.date(2022, 9, 1), end_date=datetime.date(2022, 10, 21))
+        t = Term.objects.create(id=1,start_date=datetime.date(2022, 9, 1), end_date=datetime.date(2022, 10, 21))
 
         Term.objects.create(id=2,start_date=datetime.date(2022, 10, 31), end_date=datetime.date(2022, 12, 16))
 
@@ -72,3 +71,6 @@ class Command(BaseCommand):
         Term.objects.create(id=5,start_date=datetime.date(2023, 4, 17), end_date=datetime.date(2023, 5, 26))
 
         Term.objects.create(id=6,start_date=datetime.date(2023, 6, 5), end_date=datetime.date(2023, 7, 21))
+
+        setattr(school, 'current_term', t)
+        school.save()

@@ -20,9 +20,8 @@ def view_terms(request):
         if form.is_valid():
             term = form.save()
 
-            school_instance = School.objects.get(name="KCL Kangaroos")
-            if Term.objects.count() == 1:
-                # for now only the first term is set - this may need to be handled manually
+            if Term.objects.count() == 0:
+                school_instance = School.objects.get(name="KCL Kangaroos")
                 setattr(school_instance, 'current_term', term)
                 school_instance.save()
             return redirect('terms')

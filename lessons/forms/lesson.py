@@ -104,7 +104,7 @@ class LessonFulfillForm(forms.ModelForm):
         self.fields['start_term'].queryset = Term.objects.all()
 
         school_instance = School.objects.get(name="KCL Kangaroos")
-        term = school_instance.current_term
+        term = school_instance.get_update_current_term
         if term != None:
             # if mid-term
             if datetime.now().date() >= term.start_date and datetime.now().date() <= term.end_date:
