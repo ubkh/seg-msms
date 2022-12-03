@@ -2,6 +2,9 @@
 Views that will be used in the music school management system.
 """
 
+from ast import And, Not
+from datetime import datetime
+from unicodedata import name
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -13,7 +16,7 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
-from lessons.models import Lesson, User, Transfer
+from lessons.models import Lesson, User, Transfer, School, Term
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
@@ -117,10 +120,35 @@ class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
     http_method_names = ['get', 'post']
     allowed_group = "Administrator"
 
+    def dispatch(self, request, *args, **kwargs):
+
+        school_instance = School.objects.get(name="KCL Kangaroos")
+        self.this_term = school_instance.current_term
+        if self.this_term != None and Term.objects.count() > 1:
+            self.next_term = Term.get_next_by_start_date(self.this_term)
+            days_to_term_end = (self.this_term.end_date - datetime.now().date()).days
+            # we still have a week of term left
+            if days_to_term_end >= 7:
+                self.next_term = self.this_term
+            # we are NOT in a term break/holiday
+            if self.this_term.end_date <= datetime.now().date():
+                self.next_term = self.this_term
+        else:
+            self.next_term = self.this_term
+
+        return super(LessonFulfillView, self).dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        return {'start_term': self.next_term}
+
     def form_valid(self, form):
         super().form_valid(form)
+
+
         data = form.save(commit=False)
         data.price = (data.duration / 60) * data.number_of_lessons * 10
+        if data.end_date == None and self.this_term != None:
+            data.end_date = self.this_term.end_date
         form.save()
         return HttpResponseRedirect(self.get_success_url())
 

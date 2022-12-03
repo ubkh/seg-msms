@@ -2,10 +2,11 @@
 Views that will be used in the music school management system.
 """
 
+import re
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-from lessons.models.term import Term
+from lessons.models import Term, School
 from lessons.helpers import administrator_restricted
 from lessons.forms import TermForm
 
@@ -17,7 +18,13 @@ def view_terms(request):
     if request.method == "POST":
         form = TermForm(request.POST)
         if form.is_valid():
-            form.save()
+            term = form.save()
+
+            school_instance = School.objects.get(name="KCL Kangaroos")
+            if Term.objects.count() == 1:
+                # for now only the first term is set - this may need to be handled manually
+                setattr(school_instance, 'current_term', term)
+                school_instance.save()
             return redirect('terms')
     else:
         form = TermForm()
