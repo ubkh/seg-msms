@@ -3,9 +3,10 @@
         "model": "lessons.lesson",
         "pk": 3,
         "fields": {
-            "fulfilled": false,
+            "fulfilled": true,
             "title": "Test Lesson 3",
             "student": "2",
+            "school": 1,
             "time": "13:00"
         }
     }

@@ -4,18 +4,20 @@ from django.test import TestCase
 from django.urls import reverse
 
 from lessons.forms import RegisterForm
-from lessons.models import User
+from lessons.models import User, School
 
 
 class DisplayAdministratorViewTestCase(TestCase):
 
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
-        'lessons/tests/fixtures/other_user.json'
+        'lessons/tests/fixtures/other_user.json',
+        'lessons/tests/fixtures/default_school.json'
     ]
 
     def setUp(self):
-        self.url = reverse('administrators')
+        self.school = School.objects.get(id=1)
+        self.url = reverse('administrators', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='foo@kangaroo.com')
         self.user.set_group_super_administrator()
         # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
@@ -26,7 +28,7 @@ class DisplayAdministratorViewTestCase(TestCase):
         # self.administrator.groups.add(administrator_group)
 
     def test_display_administrator_url(self):
-        self.assertEqual(self.url, '/administrators/')
+        self.assertEqual(self.url, f'/school/{self.school.id}/administrators/')
 
     def test_get_administrators(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -38,6 +40,6 @@ class DisplayAdministratorViewTestCase(TestCase):
         self.assertContains(response, self.administrator.first_name)
         self.assertContains(response, self.administrator.last_name)
         user = User.objects.get(email=self.administrator.email)
-        modify_administrator_url = reverse('modify_administrator', kwargs={'pk': user.pk})
+        modify_administrator_url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': user.pk})
         self.assertContains(response, modify_administrator_url)
 

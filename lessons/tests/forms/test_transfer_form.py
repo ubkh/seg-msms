@@ -4,7 +4,7 @@ from django.test import TestCase
 from django import forms
 
 from lessons.forms import TransferForm
-from lessons.models import Transfer
+from lessons.models import Transfer, School, Lesson
 
 
 class TransferFormTestCase(TestCase):
@@ -17,11 +17,13 @@ class TransferFormTestCase(TestCase):
         'lessons/tests/fixtures/default_lesson.json',
         'lessons/tests/fixtures/other_user.json',
         'lessons/tests/fixtures/other_lesson.json',
-        'lessons/tests/fixtures/alternative_lesson.json'
+        'lessons/tests/fixtures/alternative_lesson.json',
+        'lessons/tests/fixtures/default_school.json'
     ]
 
     def setUp(self):
         self.form_input = self._create_form_input()
+        self.school = School.objects.get(id=1)
 
     def _create_form_input(self):
         form_input = {
@@ -32,11 +34,11 @@ class TransferFormTestCase(TestCase):
         return form_input
 
     def test_transfer_form_is_valid(self):
-        register_form = TransferForm(data=self.form_input)
-        self.assertTrue(register_form.is_valid())
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
+        self.assertTrue(transfer_form.is_valid())
 
     def test_transfer_from_contains_required_fields(self):
-        transfer_form = TransferForm()
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
         self.assertIn('amount', transfer_form.fields)
         amount_field = transfer_form.fields['amount']
         self.assertTrue(isinstance(amount_field, forms.DecimalField))
@@ -48,7 +50,7 @@ class TransferFormTestCase(TestCase):
         self.assertTrue(isinstance(lesson_id_field, forms.IntegerField))
 
     def test_form_saves_correctly(self):
-        transfer_form = TransferForm(data=self.form_input)
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
         transfer_count_before = Transfer.objects.count()
         transfer_form.save()
         transfer_count_after = Transfer.objects.count()
@@ -60,11 +62,11 @@ class TransferFormTestCase(TestCase):
 
     def test_form_uses_model_amount_validation(self):
         self.form_input['amount'] = -1.001
-        form = TransferForm(data=self.form_input)
-        self.assertFalse(form.is_valid())
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
+        self.assertFalse(transfer_form.is_valid())
 
     def test_student_can_make_multiple_transfers_for_different_lessons(self):
-        transfer_form = TransferForm(data=self.form_input)
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
         transfer_count_before = Transfer.objects.count()
         transfer_form.save()
         second_form_input = {
@@ -72,7 +74,10 @@ class TransferFormTestCase(TestCase):
             'user_id': 1,
             'lesson_id': 2
         }
-        second_transfer_form = TransferForm(data=second_form_input)
+        second_lesson = Lesson.objects.get(id=2)
+        second_lesson.fulfilled = True
+        second_lesson.save()
+        second_transfer_form = TransferForm(self.school.id, data=second_form_input)
         second_transfer_form.save()
         transfer_count_after = Transfer.objects.count()
         self.assertEqual(transfer_count_before + 2, transfer_count_after)
@@ -82,7 +87,7 @@ class TransferFormTestCase(TestCase):
         self.assertEqual(saved_second_transfer.lesson_id, second_form_input['lesson_id'])
 
     def test_student_can_make_multiple_transfers_for_same_lesson(self):
-        transfer_form = TransferForm(data=self.form_input)
+        transfer_form = TransferForm(self.school.id, data=self.form_input)
         transfer_count_before = Transfer.objects.count()
         transfer_form.save()
         second_form_input = {
@@ -90,7 +95,7 @@ class TransferFormTestCase(TestCase):
             'user_id': 1,
             'lesson_id': 1
         }
-        second_transfer_form = TransferForm(data=second_form_input)
+        second_transfer_form = TransferForm(self.school.id, data=second_form_input)
         second_transfer_form.save()
         transfer_count_after = Transfer.objects.count()
         self.assertEqual(transfer_count_before + 2, transfer_count_after)
@@ -101,15 +106,15 @@ class TransferFormTestCase(TestCase):
 
     def test_invalid_if_user_not_found(self):
         self.form_input['user_id'] = 999
-        form = TransferForm(data=self.form_input)
+        form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())
 
     def test_invalid_if_lesson_not_found(self):
         self.form_input['lesson_id'] = 999
-        form = TransferForm(data=self.form_input)
+        form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())
 
     def test_invalid_if_lesson_not_booked_by_user(self):
         self.form_input['lesson_id'] = 3
-        form = TransferForm(data=self.form_input)
+        form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())

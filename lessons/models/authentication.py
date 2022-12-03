@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
-from lessons.mixins import GroupRegistrationMixin
+from lessons.models.mixins import GroupRegistrationMixin
 
 
 class UserManager(BaseUserManager):

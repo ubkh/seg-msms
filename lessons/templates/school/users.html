@@ -1,11 +1,13 @@
+{% extends 'base/school_base.html' %}
+{% block school_body %}
 <div class="container">
-    <h1>Music School Management System AdministratorPanel</h1>
+    <h1>Music School Management System Administrator Panel</h1>
     <hr>
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management system.</p>
     <h2>Student List</h2>
     <div class="list-group">
         {% for student in students %}
-            <a href="{% url 'open_bookings' student.id %}"
+            <a href="{% url 'open_bookings' school.id student.id %}"
                class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     {% if student.is_active == True %}
@@ -20,3 +22,4 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}

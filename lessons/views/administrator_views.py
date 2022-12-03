@@ -12,11 +12,11 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
 from lessons.helpers import super_administrator_restricted
-from lessons.mixins import GroupRestrictedMixin
 from lessons.models import User
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
-class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
 
     """
@@ -33,7 +33,7 @@ class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
         return redirect('home')
 
 
-class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form to register an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
@@ -52,7 +52,7 @@ class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateVi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('administrators')
+        return reverse('administrators', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -80,7 +80,10 @@ class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateVi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('administrators')
+        return reverse('administrators', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
 @login_required

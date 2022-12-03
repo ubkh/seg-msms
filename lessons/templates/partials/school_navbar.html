@@ -1,0 +1,22 @@
+{% load static %}
+<div class="list-group px-5">
+    <a class="list-group-item list-group-item-action disabled"><b>{{ school.name }}</b></a>
+
+    {% for group in user.groups.all %}
+
+        {% if group.name == 'Student' %}
+            <a href="{% url 'school_home' school.id %}" class="list-group-item list-group-item-action">Home</a>
+        {% endif %}
+
+        {% if group.name == 'Administrator' %}
+            <a href="{% url 'users' school.id %}" class="list-group-item list-group-item-action">Users (Manage Lessons & Requests)</a>
+            <a href="{% url 'transfers' school.id %}" class="list-group-item list-group-item-action">Transfers</a>
+        {% endif %}
+
+        {% if group.name == 'Super-administrator' %}
+            <a href="{% url 'administrators' school.id %}"
+               class="list-group-item list-group-item-action">Administrators</a>
+        {% endif %}
+
+    {% endfor %}
+</div>
