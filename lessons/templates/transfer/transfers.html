@@ -4,7 +4,7 @@
     <h1>Transfers</h1>
     <hr>
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can view transfers within the management system.</p>
-    <a class="btn btn-primary" href="{% url 'create_transfer' school=1%}">Add Transaction</a>
+    <a class="btn btn-primary" href="{% url 'create_transfer' school.id %}">Add Transaction</a>
     <h2>Transfer List</h2>
     <div class="list-group">
         {% for transfer in transfers %}

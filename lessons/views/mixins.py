@@ -1,3 +1,4 @@
+from lessons.models import School
 
 
 class GroupRestrictedMixin:
@@ -17,7 +18,8 @@ class SchoolObjectMixin:
 
     def get_context_data(self, **kwargs):
         context = super(SchoolObjectMixin, self).get_context_data(**kwargs)
-        context['school'] = self.kwargs['school']
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
         return context
 
     def get_queryset(self):

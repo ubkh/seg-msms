@@ -24,9 +24,9 @@
                         <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school l.id %}"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' school l.id %}"><i class="bi bi-check"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' school.id l.id %}"><i class="bi bi-check"></i></a>
                     </li>
                 {% endif %}
             {% endfor %}
@@ -44,9 +44,9 @@
                         <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }} &nbsp;
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school l.id %}"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' school l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' school.id l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
                     </li>
                 {% endif %}
             {% endfor %}

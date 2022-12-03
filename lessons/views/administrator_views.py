@@ -13,10 +13,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from lessons.forms import RegisterForm, AdminModifyForm
 from lessons.helpers import super_administrator_restricted
 from lessons.models import User
-from lessons.views.mixins import GroupRestrictedMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
-class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
 
     """
@@ -26,11 +26,6 @@ class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
     context_object_name = "administrators"
     allowed_group = "Super-administrator"
 
-    def get_context_data(self, **kwargs):
-        context = super(AdministratorListView, self).get_context_data(**kwargs)
-        context['school'] = self.kwargs['school']
-        return context
-
     def get_queryset(self):
         return User.objects.filter(groups__name='Administrator')
 
@@ -38,7 +33,7 @@ class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
         return redirect('home')
 
 
-class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form to register an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
