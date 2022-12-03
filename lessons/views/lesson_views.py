@@ -4,6 +4,7 @@ Views that will be used in the music school management system.
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -15,6 +16,39 @@ from lessons.helpers import administrator_restricted, lesson_fulfilled_restricte
 from lessons.models import Lesson, User, Transfer
 from lessons.views import home
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+
+
+class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays the user's home page.
+    """
+    model = Lesson
+    template_name = "home/home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolHomeView, self).get_context_data(**kwargs)
+        context['student'] = User.objects.filter(groups__name='Student')
+        context['lessons'] = Lesson.objects.filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
+        context['administrators'] = User.objects.filter(groups__name='Administrator')
+        context['transfers'] = Transfer.objects.filter(user_id=self.request.user)
+        return context
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+
+@login_required
+def school_home(request, school):
+    """
+    View that displays the user's home page.
+    """
+    students = User.objects.filter(groups__name='Student')
+    lessons = Lesson.objects.filter(Q(student=request.user) | Q(student__parent=request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
+    administrators = User.objects.filter(groups__name='Administrator')
+    transfers = Transfer.objects.filter(user_id=request.user)
+
+    return render(request, "home/home.html",
+                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers, 'school': school})
 
 
 class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
@@ -140,7 +174,7 @@ class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     context_object_name = "lessons"
 
     def get_context_data(self, **kwargs):
-        context = super(SchoolObjectMixin, self).get_context_data(**kwargs)
+        context = super(BookingInvoiceView, self).get_context_data(**kwargs)
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
         return context
 

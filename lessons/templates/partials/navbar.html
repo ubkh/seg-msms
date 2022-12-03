@@ -23,11 +23,12 @@
 
                     {% for group in user.groups.all %}
 
-                        {% if group.name == 'Student' %}
-                        {% endif %}
-
                         {% if group.name == 'Adult-student' %}
                             <a class="nav-link" href="{% url 'children' %}">Children</a>
+                        {% endif %}
+
+                        {% if group.name == 'Administrator' %}
+                            <a class="nav-link" href="{% url 'terms' %}">Terms</a>
                         {% endif %}
 
                         {% if group.name == 'Director' %}

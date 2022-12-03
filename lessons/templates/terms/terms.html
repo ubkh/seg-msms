@@ -22,7 +22,7 @@
     <p>Click on a term to edit it.</p>
     <div class="list-group">
         {% for term in terms %}
-            <a href="{% url 'edit_term' school term.id %}" class="list-group-item list-group-item-action">
+            <a href="{% url 'edit_term' term.id %}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">Term {{ term.id }}</h5>
                     <small class="text-muted">{{ term.start_date }} to {{ term.end_date }}</small>

@@ -7,7 +7,6 @@
 
         {% if group.name == 'Administrator' %}
             <a href="{% url 'transfers' school %}" class="list-group-item list-group-item-action">Transfers</a>
-            <a href="{% url 'terms' school %}" class="list-group-item list-group-item-action">Terms</a>
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}

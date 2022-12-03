@@ -57,7 +57,7 @@ class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateVi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('administrators')
+        return reverse('administrators', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -85,7 +85,7 @@ class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateVi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('administrators')
+        return reverse('administrators', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

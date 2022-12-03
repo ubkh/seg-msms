@@ -26,22 +26,10 @@ def index(request):
         return HttpResponseRedirect(reverse('home'))
     return render(request, "index.html")
 
+
 @login_required
 def home(request):
-    return render(request, "home/home_refactor.html")
-
-@login_required
-def school_home(request, school):
-    """
-    View that displays the user's home page.
-    """
-    students = User.objects.filter(groups__name='Student')
-    lessons = Lesson.objects.filter(Q(student=request.user) | Q(student__parent=request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
-    administrators = User.objects.filter(groups__name='Administrator')
-    transfers = Transfer.objects.filter(user_id=request.user)
-
-    return render(request, "home/home.html",
-                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers, 'school': school})
+    return render(request, "home/home_new.html")
 
 
 @login_prohibited

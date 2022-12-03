@@ -4,7 +4,7 @@ Forms that will be used in the music school management system.
 
 from django import forms
 
-from lessons.models import User, Lesson, Transfer
+from lessons.models import User, Lesson, Transfer, School
 
 
 class TransferForm(forms.ModelForm):
@@ -27,12 +27,3 @@ class TransferForm(forms.ModelForm):
             self.add_error('user_id', 'This user could not be found. You should refund this transfer.')
         if not lesson:
             self.add_error('lesson_id', 'This lesson could not be found. You should refund this transfer.')
-
-    def save(self):
-        super().save(commit=False)
-        transfer = Transfer.objects.create(
-            user=User.objects.filter(pk=self.cleaned_data.get('user_id')).first(),
-            lesson=Lesson.objects.filter(pk=self.cleaned_data.get('lesson_id')).first(),
-            amount=self.cleaned_data.get('amount'),
-        )
-        return transfer

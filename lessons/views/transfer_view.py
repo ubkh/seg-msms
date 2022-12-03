@@ -2,12 +2,13 @@
 Views that will be used in the music school management system.
 """
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
-from lessons.models import Transfer
+from lessons.models import Transfer, Lesson, User
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
@@ -22,7 +23,7 @@ class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMix
         return redirect('home')
 
 
-class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
 
     model = Transfer
     template_name = "transfer/record_transfer.html"
@@ -30,8 +31,14 @@ class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
     http_method_names = ['get', 'post']
     allowed_group = "Administrator"
 
+    def form_valid(self, form):
+        form.instance.user = User.objects.filter(pk=form.cleaned_data.get('user_id')).first()
+        form.instance.lesson = Lesson.objects.filter(pk=form.cleaned_data.get('lesson_id')).first()
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
-        return reverse('transfers')
+        return reverse('transfers', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

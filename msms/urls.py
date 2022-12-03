@@ -22,8 +22,7 @@ register_converter(HashIDConverter, "hashid")
 
 
 schoolurlpatterns = [
-
-    path('', views.school_home, name='school_home'),  # school_home
+    path('', views.SchoolHomeView.as_view(), name='school_home'),  # school_home
 
     # Student
     path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
@@ -31,29 +30,20 @@ schoolurlpatterns = [
 
     path('lesson/<hashid:pk>/invoice/', views.BookingInvoiceView.as_view(), name='booking_invoice'),
 
-    # Teacher
-
     # Administrator
-
     path('student/<hashid:pk>/bookings/', views.BookingListView.as_view(), name='open_bookings'),
     path('student/<hashid:pk>/bookings/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
 
     path('transfers/', views.TransferListView.as_view(), name='transfers'),
     path('transfers/create/', views.TransferCreateView.as_view(), name='create_transfer'),
 
-    path('terms/', views.view_terms, name='terms'),
-    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
-
     # Super-administrator
-
     path('administrators/', views.AdministratorListView.as_view(), name='administrators'),
     path('administrators/create/', views.AdministratorCreateView.as_view(), name='create_administrator'),
     path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
 
     # Director
     # path(modify_school)
-
-
 ]
 
 urlpatterns = [
@@ -71,6 +61,10 @@ urlpatterns = [
     # Adult-student
     path('children/', views.ChildListView.as_view(), name='children'),
     path('children/create/', views.ChildCreateView.as_view(), name='create_child'),
+
+    # Administrator
+    path('terms/', views.view_terms, name='terms'),
+    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
 
     # Director
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
