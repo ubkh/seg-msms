@@ -11,5 +11,5 @@ class Term(models.Model):
     class Meta:
         ordering = ['start_date', ]
 
-    #def __str__(self):
-        
+    def __str__(self):
+        return "Term " + str(self.id)
