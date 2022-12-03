@@ -78,6 +78,18 @@ class LessonFulfillForm(forms.ModelForm):
     Model form for administrators who wish to fulfill a booking.
     """
 
+    START_TYPES = [
+        (0, 'By Term'),
+        (1, 'By Date')
+    ]
+
+    start_type = forms.ChoiceField(choices=START_TYPES,
+        label="Start",
+        widget=forms.Select(attrs={
+            'class': "form-select"
+        })
+    )
+
     class Meta:
         model = Lesson
         fields = ['fulfilled', 'start_date', 'start_term', 'end_date']
@@ -86,7 +98,7 @@ class LessonFulfillForm(forms.ModelForm):
         }
         labels = {}
     
-    field_order = ['start_date', 'start_term', 'end_date']
+    field_order = ['start_type', 'start_date', 'start_term', 'end_date']
 
     def clean(self):
         super().clean()
@@ -105,11 +117,15 @@ class LessonFulfillForm(forms.ModelForm):
 
         school_instance = School.objects.get(name="KCL Kangaroos")
         term = school_instance.get_update_current_term
-        if term != None:
-            # if mid-term
-            if datetime.now().date() >= term.start_date and datetime.now().date() <= term.end_date:
-                self.fields.pop('start_term')
-            else:
-                self.fields.pop('start_date')
-        else:
+        if term == None:
             self.fields.pop('start_term')
+            self.fields.pop('start_type')
+        
+        # if term != None:
+        #     # if mid-term
+        #     if datetime.now().date() >= term.start_date and datetime.now().date() <= term.end_date:
+        #         self.fields.pop('start_term')
+        #     else:
+        #         self.fields.pop('start_date')
+        # else:
+        #     self.fields.pop('start_term')

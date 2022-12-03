@@ -20,7 +20,7 @@ def view_terms(request):
         if form.is_valid():
             term = form.save()
 
-            if Term.objects.count() == 0:
+            if Term.objects.count() == 1:
                 school_instance = School.objects.get(name="KCL Kangaroos")
                 setattr(school_instance, 'current_term', term)
                 school_instance.save()
