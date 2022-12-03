@@ -1,12 +1,11 @@
 {% extends 'base/school_base.html' %}
-{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
 {% block school_body %}
 
     {% for group in user.groups.all %}
         {% if group.name == "Student" %}
             {% include 'school/student_home.html' %}
         {% elif group.name == "Administrator" %}
-            {% include 'school/administrator_home.html' %}
+            {% include 'school/users.html' %}
         {% endif %}
     {% endfor %}
 

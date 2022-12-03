@@ -14,7 +14,6 @@ from django.views.generic import CreateView, UpdateView, ListView
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
 from lessons.models import Lesson, User, Transfer
-from lessons.views import home
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
@@ -96,7 +95,9 @@ class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixi
 
     def get_context_data(self, **kwargs):
         context = super(BookingListView, self).get_context_data(**kwargs)
-        context['transfers'] = Transfer.objects.all()
+        s = get_object_or_404(User, id=self.kwargs['pk'])
+        context['lessons'] = context['lessons'].filter(student=s).order_by('-fulfilled')
+        context['transfers'] = Transfer.objects.filter(user=s).filter(school=self.kwargs['school'])
         return context
 
     def handle_no_permission(self):

@@ -21,8 +21,9 @@ from msms.hash import HashIDConverter
 register_converter(HashIDConverter, "hashid")
 
 
-schoolurlpatterns = [
-    path('', views.SchoolHomeView.as_view(), name='school_home'),  # school_home
+school_urlpatterns = [
+    path('', views.SchoolHomeView.as_view(), name='school_home'),
+    path('users/', views.SchoolUserListView.as_view(), name='users'),
 
     # Student
     path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
@@ -43,20 +44,18 @@ schoolurlpatterns = [
     path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
 
     # Director
-    # path(modify_school)
+    # path(name='modify_school')
 ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('home/', views.HomeView.as_view(), name='home'),
+    path('school/<int:school>/', include(school_urlpatterns)),
+
     path('register/', views.register, name='register'),
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
-    path('home/', views.home, name='home'),
-    path('school/<int:school>/', include(schoolurlpatterns)),
-
-    # Student
-    path('school/', views.SchoolListView.as_view(), name='list_school'),
 
     # Adult-student
     path('children/', views.ChildListView.as_view(), name='children'),
@@ -70,5 +69,5 @@ urlpatterns = [
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
 
     # System-administrator
-    # path()
+    # path(name='create_director')
 ]

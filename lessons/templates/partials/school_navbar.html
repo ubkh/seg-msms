@@ -1,11 +1,15 @@
 {% load static %}
 <div class="list-group px-5">
     <a class="list-group-item list-group-item-action disabled"><b>Music School</b></a>
-    <a href="{% url 'school_home' school %}" class="list-group-item list-group-item-action">Home</a>
 
     {% for group in user.groups.all %}
 
+        {% if group.name == 'Student' %}
+            <a href="{% url 'school_home' school %}" class="list-group-item list-group-item-action">Home</a>
+        {% endif %}
+
         {% if group.name == 'Administrator' %}
+            <a href="{% url 'users' school %}" class="list-group-item list-group-item-action">Users</a>
             <a href="{% url 'transfers' school %}" class="list-group-item list-group-item-action">Transfers</a>
         {% endif %}
 

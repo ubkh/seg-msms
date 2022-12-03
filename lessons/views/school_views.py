@@ -10,36 +10,57 @@ from lessons.views import GroupRestrictedMixin
 from lessons.views.mixins import SchoolObjectMixin
 
 
-class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, ListView):
+class HomeView(LoginRequiredMixin, ListView):
+    model = School
+    template_name = "school/list_school.html"
+    context_object_name = "schools"
+
+    def handle_no_permission(self):
+        return redirect('index')
+
+
+class SchoolHomeView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
-    View that displays the user's home page.
+    View that displays the students school home page.
     """
+
     model = Lesson
-    template_name = "school/school_home.html"
+    template_name = "school/student_home.html"
+    context_object_name = "lessons"
+    allowed_group = "Student"
 
     def get_context_data(self, **kwargs):
         context = super(SchoolHomeView, self).get_context_data(**kwargs)
-        context['student'] = User.objects.filter(groups__name='Student')
-        context['lessons'] = Lesson.objects.filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
-        context['administrators'] = User.objects.filter(groups__name='Administrator')
-        context['transfers'] = Transfer.objects.filter(user_id=self.request.user)
+        context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
+        context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
+        return context
+
+    def handle_no_permission(self):
+        if self.request.user.groups.filter(name='Administrator').exists():
+            return redirect('users', school=self.kwargs['school'])
+        else:
+            return redirect('home')
+
+
+class SchoolUserListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays a list of users to the administrator.
+    """
+    model = User
+    template_name = "school/users.html"
+    context_object_name = "students"
+    allowed_group = "Administrator"
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolUserListView, self).get_context_data(**kwargs)
+        context['students'] = User.objects.filter(groups__name='Student').filter(lesson__school_id=self.kwargs['school'])
         return context
 
     def handle_no_permission(self):
         return redirect('home')
 
 
-class SchoolListView(LoginRequiredMixin, ListView):  # GroupRestrictedMixin
-    model = School
-    template_name = "school/list_school.html"
-    context_object_name = "schools"
-    allowed_group = "Student"
-
-    def handle_no_permission(self):
-        return redirect('home')
-
-
-class SchoolCreateView(LoginRequiredMixin, CreateView):  # GroupRestrictedMixin
+class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
     model = School
     template_name = "school/create_school.html"
     form_class = SchoolCreateForm
