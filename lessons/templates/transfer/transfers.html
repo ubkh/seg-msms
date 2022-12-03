@@ -1,7 +1,7 @@
-{% extends 'base/base.html' %}
-{% block body %}
-    {% include 'partials/navbar.html' %}
+{% extends 'base/school_base.html' %}
+{% block school_body %}
 <div class="container">
+    <h1>Transfers</h1>
     <hr>
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can view transfers within the management system.</p>
     <a class="btn btn-primary" href="{% url 'create_transfer' school=1%}">Add Transaction</a>

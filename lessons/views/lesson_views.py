@@ -18,39 +18,6 @@ from lessons.views import home
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
 
-class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, ListView):
-    """
-    View that displays the user's home page.
-    """
-    model = Lesson
-    template_name = "home/home.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(SchoolHomeView, self).get_context_data(**kwargs)
-        context['student'] = User.objects.filter(groups__name='Student')
-        context['lessons'] = Lesson.objects.filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
-        context['administrators'] = User.objects.filter(groups__name='Administrator')
-        context['transfers'] = Transfer.objects.filter(user_id=self.request.user)
-        return context
-
-    def handle_no_permission(self):
-        return redirect('home')
-
-
-@login_required
-def school_home(request, school):
-    """
-    View that displays the user's home page.
-    """
-    students = User.objects.filter(groups__name='Student')
-    lessons = Lesson.objects.filter(Q(student=request.user) | Q(student__parent=request.user)).order_by('-fulfilled') # (Q(id=self.user.id) | Q(parent=self.user))
-    administrators = User.objects.filter(groups__name='Administrator')
-    transfers = Transfer.objects.filter(user_id=request.user)
-
-    return render(request, "home/home.html",
-                  {'students': students, 'lessons': lessons, 'administrators': administrators, 'transfers': transfers, 'school': school})
-
-
 class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form allowing users to request a lesson.

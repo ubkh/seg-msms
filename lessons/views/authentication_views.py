@@ -29,7 +29,7 @@ def index(request):
 
 @login_required
 def home(request):
-    return render(request, "home/home_new.html")
+    return render(request, "home.html")
 
 
 @login_prohibited
