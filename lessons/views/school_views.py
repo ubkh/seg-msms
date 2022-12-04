@@ -2,9 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView, FormView
 
-from lessons.forms import SchoolCreateForm
+from lessons.forms import SchoolCreateForm, SchoolManageForm
 from lessons.models import School, Lesson, User, Transfer
 from lessons.views import GroupRestrictedMixin
 from lessons.views.mixins import SchoolObjectMixin
@@ -40,6 +40,28 @@ class SchoolHomeView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin
             return redirect('users', school=self.kwargs['school'])
         else:
             return redirect('home')
+
+
+class SchoolManageView(LoginRequiredMixin, FormView):
+    model = School
+    pk_url_kwarg = 'school'
+    template_name = "school/manage.html"
+    form_class = SchoolManageForm
+    http_method_names = ['get', 'post']
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolManageView, self).get_context_data(**kwargs)
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data.get('join_school'):
+            School.objects.get(id=self.kwargs['school']).set_group_client(self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('manage', kwargs={'school': self.kwargs['school']})
 
 
 class SchoolUserListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):

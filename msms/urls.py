@@ -24,13 +24,16 @@ register_converter(HashIDConverter, "hashid")
 
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
-    path('users/', views.SchoolUserListView.as_view(), name='users'),
+    path('manage/', views.SchoolManageView.as_view(), name='manage'),
 
-    # Student
+    # Client
     path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
     path('lesson/<hashid:pk>/modify/', views.LessonModifyView.as_view(), name='modify_lesson'),
 
     path('lesson/<hashid:pk>/invoice/', views.BookingInvoiceView.as_view(), name='booking_invoice'),
+
+    # Teacher
+    # path()
 
     # Administrator
     path('student/<hashid:pk>/bookings/', views.BookingListView.as_view(), name='open_bookings'),
@@ -40,6 +43,7 @@ school_urlpatterns = [
     path('transfers/create/', views.TransferCreateView.as_view(), name='create_transfer'),
 
     # Super-administrator
+    path('users/', views.SchoolUserListView.as_view(), name='users'),
     path('administrators/', views.AdministratorListView.as_view(), name='administrators'),
     path('administrators/create/', views.AdministratorCreateView.as_view(), name='create_administrator'),
     path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
@@ -59,17 +63,18 @@ urlpatterns = [
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
 
-    # Adult-student
+    # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),
     path('children/create/', views.ChildCreateView.as_view(), name='create_child'),
 
-    # Administrator
-    path('terms/', views.view_terms, name='terms'),
-    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
-
     # Director
-    path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
+    path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
 
     # System-administrator
     # path(name='create_director')
+
+    # Administrator (Move inside school?)
+    path('terms/', views.view_terms, name='terms'),
+    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
+
 ]
