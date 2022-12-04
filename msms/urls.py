@@ -48,7 +48,7 @@ school_urlpatterns = [
     path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
 
     # Director
-    path('student/<hashid:pk>/ban_client/', views.ban_client, name='ban_client')
+    path('student/<hashid:pk>/ban_client/', views.BanClientView.as_view(), name='ban_client')
     # path(name='modify_school')
 ]
 
@@ -70,7 +70,8 @@ urlpatterns = [
     
 
     # Director
-    path('school/create/', views.SchoolCreateView.as_view(), name='create_school')
+    path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
+    path('school/<int:pk>/delete', views.SchoolDeleteView.as_view(), name='delete_school')
 
     # System-administrator
     # path(name='create_director')

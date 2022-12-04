@@ -50,25 +50,7 @@ class TermEditView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, 
     http_method_names = ['get', 'post']
     allowed_group = "Administrator"
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     data = get_object_or_404(Term, id=self.kwargs['pk'])
-    #     print(data)
-    #     try:
-    #         term = Term.objects.get(pk=self.kwargs['pk'])
-    #         print(term)
-    #     except Term.DoesNotExist:
-    #         term = None
-    #         print("DOESN'T EXIST")
-
-    #     return super().dispatch(request, *args, **kwargs)
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(TermEditView, self).get_context_data(**kwargs)
-    #     context['school'] = School.objects.filter(id=self.kwargs['school'])[0]
-    #     return context
-
     def form_valid(self, form):
-        #form.instance.term_id = self.kwargs['pk']
         super().form_valid(form)
         form.save()
         return HttpResponseRedirect(self.get_success_url())
