@@ -102,3 +102,18 @@ class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
 
     def handle_no_permission(self):
         return redirect('home')
+
+
+class SchoolUpdateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
+    model = School
+    template_name = "school/create_school.html"
+    form_class = SchoolCreateForm
+    pk_url_kwarg = 'school'
+    http_method_names = ['get', 'post']
+    allowed_group = "Super-administrator"  # Change to director
+
+    def get_success_url(self):
+        return reverse('home')
+
+    def handle_no_permission(self):
+        return redirect('home')

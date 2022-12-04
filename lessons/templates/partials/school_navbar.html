@@ -14,8 +14,9 @@
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}
-            <a href="{% url 'administrators' school.id %}"
-               class="list-group-item list-group-item-action">Administrators</a>
+            <a href="{% url 'administrators' school.id %}" class="list-group-item list-group-item-action">Administrators</a>
+            <a href="{% url 'modify_school' school.id %}" class="list-group-item list-group-item-action">Modify School</a>
+
         {% endif %}
 
     {% endfor %}
