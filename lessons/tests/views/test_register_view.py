@@ -47,7 +47,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
+        self.assertTemplateUsed(response, 'school/list_school.html')
 
     def test_unsuccessful_registration(self):
         self.form_input['email'] = 'kangaroo.com'
@@ -69,7 +69,7 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertEqual(user_count_before + 1, user_count_after)
         response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
+        self.assertTemplateUsed(response, 'school/list_school.html')
         saved_user = User.objects.get(email=self.form_input['email'])
         self.assertEqual(saved_user.first_name, self.form_input['first_name'])
         self.assertEqual(saved_user.last_name, self.form_input['last_name'])
@@ -84,4 +84,4 @@ class RegisterViewTestCase(TestCase, LoginTester):
         self.assertEqual(user_count_before, user_count_after)
         redirect_url = reverse('home')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'home/home.html')
+        self.assertTemplateUsed(response, 'school/list_school.html')

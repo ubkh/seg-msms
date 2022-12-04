@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from lessons.models import User, Lesson, Transfer
+from lessons.models import User, Lesson, Transfer, School
 
 
 class TransferModelTestCase(TestCase):
@@ -9,15 +9,18 @@ class TransferModelTestCase(TestCase):
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
         'lessons/tests/fixtures/default_lesson.json',
+        'lessons/tests/fixtures/default_school.json'
     ]
 
     def setUp(self):
         super(TestCase, self).setUp()
         self.user = User.objects.get(email='foo@kangaroo.com')
         self.lesson = Lesson.objects.get(pk=1)
+        self.school = School.objects.get(pk=1)
         self.transfer = Transfer(
             user=self.user,
             lesson=self.lesson,
+            school=self.school,
             amount='100.00'
         )
 

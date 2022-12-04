@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark bd-navbar sticky-top container-xxl bd-gutter py-3 flex-wrap flex-lg-nowrap"
+<nav class="navbar navbar-expand-lg navbar-dark bd-navbar sticky-top bd-gutter py-3 flex-wrap flex-lg-nowrap"
      style="background-color: #8b572d;">
     <div class="container-fluid">
 
@@ -17,7 +17,8 @@
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'home' %}">Lessons & Requests</a>
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+
 
                     {% for group in user.groups.all %}
 
@@ -26,13 +27,13 @@
                         {% endif %}
 
                         {% if group.name == 'Administrator' %}
-                            <a class="nav-link" href="{% url 'transfers' %}">Transfers</a>
-                            <a class="nav-link" href="{% url 'terms' %}">Terms</a>
+                            
                         {% endif %}
 
-                        {% if group.name == 'Super-administrator' %}
-                            <a class="nav-link" href="{% url 'administrators' %}">Administrators</a>
+                        {% if group.name == 'Director' %}
+                            <a class="nav-link" href="{% url 'create_school' %}">Manage School</a>
                         {% endif %}
+
 
                     {% endfor %}
 

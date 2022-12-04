@@ -1,14 +1,22 @@
-{% extends 'base.html' %}
-{% block head %}
-    {% include 'partials/navbar.html' %}
-{% endblock %}
-{% block body %}
+{% extends 'base/school_base.html' %}
+{% block school_body %}
     <div class="container">
         <h2>Student Lessons</h2>
         <hr>
         <div class="list-group">
             {% for s in current_student %}
                 <p>Welcome {{ s.first_name }} {{ s.last_name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
+                <div class="container">
+                    {% for group in user.groups.all %}
+                        {%  if group.name == "Super-administrator" %}
+                            {% if s.is_active == True %}
+                                <a class="btn btn-primary" href="{% url 'ban_client' s.id %}">Ban Client</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{% url 'ban_client' s.id %}">UnBan Client</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -27,9 +35,9 @@
                         <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' l.id %}"><i class="bi bi-check"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' school.id l.id %}"><i class="bi bi-check"></i></a>
                     </li>
                 {% endif %}
             {% endfor %}
@@ -47,9 +55,9 @@
                         <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }} &nbsp;
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' l.id %}"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>
                         &nbsp;
-                        <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
+                        <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' school.id l.id %}"><i class="bi bi-clipboard-data-fill"></i></a>
                     </li>
                 {% endif %}
             {% endfor %}
@@ -69,22 +77,6 @@
                     </div>
                 </li>
             {% endfor %}
-            <!--
-            {% for curLesson in lessons %}
-                <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
-                    <div class="ms-2 me-auto">
-                        {% if curLesson.paid is True %}
-                            <span class="badge rounded-pill bg-success mb-2">PAID</span>
-                            <div class="fw-bold mb-2">{{ curLesson.title }}</div>
-                            <p class="text-muted mb-2">Successful Transfer: £{{ curLesson.price }}</p>
-                        {% else %}
-                            <span class="badge rounded-pill bg-warning mb-2">PENDING</span>
-                            <div class="fw-bold mb-2">{{ curLesson.title }}</div>
-                        {% endif %}
-                    </div>
-                </li>
-            {% endfor %}
-            -->
         </ul>
     </div>
 {% endblock %}

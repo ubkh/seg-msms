@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
-{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
-
-{% block body %}
+{% extends 'base/school_base.html' %}
+{% block school_body %}
     <div class="container">
         <h1>Booking Invoice:</h1>
         {% for curLesson in lessons %}

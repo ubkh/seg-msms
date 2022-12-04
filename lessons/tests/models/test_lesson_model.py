@@ -11,7 +11,7 @@ class LessonModelTestCase(TestCase):
     Unit tests that will be used to test the User model.
     """
 
-    fixtures = ['lessons/tests/fixtures/default_user.json', 'lessons/tests/fixtures/default_lesson.json', 'lessons/tests/fixtures/other_lesson.json']
+    fixtures = ['lessons/tests/fixtures/default_user.json', 'lessons/tests/fixtures/default_lesson.json', 'lessons/tests/fixtures/other_lesson.json', 'lessons/tests/fixtures/default_school.json']
 
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')

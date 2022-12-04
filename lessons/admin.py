@@ -3,8 +3,9 @@ Configuration of the admin interface for the music school management system.
 Register your models here.
 """
 
+from dataclasses import field
 from django.contrib import admin
-from .models import User, Lesson, Transfer
+from .models import User, Lesson, Transfer, Term
 
 
 @admin.register(User)
@@ -35,4 +36,13 @@ class TransferAdmin(admin.ModelAdmin):
     """
     list_display = [
         'id', 'user', 'lesson', 'amount'
+    ]
+
+@admin.register(Term)
+class TermAdmin(admin.ModelAdmin):
+    """
+    Configuration of the admin interface to display terms.
+    """
+    list_display = [
+        f.name for f in Term._meta.fields
     ]

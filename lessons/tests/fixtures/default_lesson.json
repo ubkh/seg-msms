@@ -6,6 +6,7 @@
             "fulfilled": true,
             "title": "Test Lesson",
             "student": "1",
+            "school": 1,
             "time": "13:00"
         }
     }

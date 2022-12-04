@@ -1,7 +1,7 @@
 """
 Models that will be used in the music school management system.
 """
-
+from django.apps import apps
 from django.urls import reverse
 
 from django.db import models
@@ -45,6 +45,11 @@ class Lesson(models.Model):
         blank=False,
         on_delete=models.CASCADE
     )
+    school = models.ForeignKey(
+        'School',
+        on_delete=models.CASCADE,
+        blank=False
+    )
     day = models.TextField(choices=DAYS_OF_WEEK, default='Monday')
     instrument = models.TextField(choices=INSTRUMENTS, default='Piano')
     time = models.TimeField(default=timezone.now)
@@ -66,7 +71,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=25, default="Music Lesson", )
     information = models.CharField(max_length=280, verbose_name="Further Information", blank=True)
     price = models.DecimalField(default=10.00,max_digits=10,decimal_places=2, validators=[MinValueValidator(5.00)])
-    start_type = models.TextField(choices=START_TYPES, default=0)
+    start_type = models.TextField(choices=START_TYPES, default='Term')
     start_term = models.ForeignKey(
         Term,
         blank=True,
