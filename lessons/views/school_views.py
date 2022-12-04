@@ -142,6 +142,7 @@ class SchoolManageView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateVie
         school = form.save()
         if form.data.get('delete_school'):
             school.delete()
+            return HttpResponseRedirect(reverse('home'))
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
