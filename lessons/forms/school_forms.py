@@ -9,8 +9,15 @@ class SchoolCreateForm(forms.ModelForm):
         fields = ['name', 'description']
 
 
-class SchoolManageForm(forms.Form):
-    join_school = forms.BooleanField(required=False)
+class SchoolManageForm(forms.ModelForm):
+    class Meta:
+        model = School
+        fields = ['name', 'description']
+
+    delete_school = forms.BooleanField(
+        label="Do you want to delete this School?",
+        required=False
+    )
 
 
 class SchoolDeleteForm(forms.ModelForm):

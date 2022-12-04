@@ -78,7 +78,7 @@ class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolO
     model = User
     template_name = "school/users.html"
     context_object_name = "students"
-    allowed_group = "Administrator"
+    allowed_group = "Super-administrator"
 
     def get_queryset(self):
         school = School.objects.get(id=self.kwargs['school'])
@@ -97,6 +97,8 @@ class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.director = self.request.user
+        school = form.save()
+        school.set_group_director(self.request.user)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -130,14 +132,20 @@ class SchoolSubscribeView(LoginRequiredMixin, FormView):
 
 class SchoolManageView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
     model = School
-    template_name = "school/create_school.html"
-    form_class = SchoolCreateForm
+    template_name = "school/manage_school.html"
+    form_class = SchoolManageForm
     pk_url_kwarg = 'school'
     http_method_names = ['get', 'post']
-    allowed_group = "Super-administrator"  # Change to director
+    allowed_group = "Director"  # Change to director
+
+    def form_valid(self, form):
+        school = form.save()
+        if form.data.get('delete_school'):
+            school.delete()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('home')
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
