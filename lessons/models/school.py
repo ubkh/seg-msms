@@ -23,16 +23,19 @@ class AdmissionMixin:
 
     def set_group_super_administrator(self, user):
         super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        self.groups.add(super_administrator_group)
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.groups.add(super_administrator_group)
         self.set_group_administrator(user)
 
     def set_group_administrator(self, user):
         administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.groups.add(administrator_group)
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.groups.add(administrator_group)
 
     def set_group_teacher(self, user):
         teacher_group, created = Group.objects.get_or_create(name='Teacher')
-        self.groups.add(teacher_group)
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.groups.add(teacher_group)
 
     def set_group_client(self, user):
         client_group, created = Group.objects.get_or_create(name='Client')
