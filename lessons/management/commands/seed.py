@@ -105,11 +105,20 @@ class Command(BaseCommand):
             superadmin_user.set_group_user()
             school.set_group_super_administrator(superadmin_user)
 
-        # Seed Database with Default Terms
         Term.objects.all().delete()
-        Term.objects.create(id=1, start_date=datetime.date(2022, 9, 1), end_date=datetime.date(2022, 10, 21))
-        Term.objects.create(id=2, start_date=datetime.date(2022, 10, 31), end_date=datetime.date(2022, 12, 16))
-        Term.objects.create(id=3, start_date=datetime.date(2023, 1, 3), end_date=datetime.date(2023, 2, 10))
-        Term.objects.create(id=4, start_date=datetime.date(2023, 2, 20), end_date=datetime.date(2023, 3, 31))
-        Term.objects.create(id=5, start_date=datetime.date(2023, 4, 17), end_date=datetime.date(2023, 5, 26))
-        Term.objects.create(id=6, start_date=datetime.date(2023, 6, 5), end_date=datetime.date(2023, 7, 21))
+        
+        # Seed Database with Default Terms
+        t = Term.objects.create(id=1,start_date=datetime.date(2022, 9, 1), end_date=datetime.date(2022, 10, 21), school=school)
+
+        Term.objects.create(id=2,start_date=datetime.date(2022, 10, 31), end_date=datetime.date(2022, 12, 16), school=school)
+
+        Term.objects.create(id=3,start_date=datetime.date(2023, 1, 3), end_date=datetime.date(2023, 2, 10), school=school)
+
+        Term.objects.create(id=4,start_date=datetime.date(2023, 2, 20), end_date=datetime.date(2023, 3, 31), school=school)
+
+        Term.objects.create(id=5,start_date=datetime.date(2023, 4, 17), end_date=datetime.date(2023, 5, 26), school=school)
+
+        Term.objects.create(id=6,start_date=datetime.date(2023, 6, 5), end_date=datetime.date(2023, 7, 21), school=school)
+
+        setattr(school, 'current_term', t)
+        school.save()

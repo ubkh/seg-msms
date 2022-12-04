@@ -3,6 +3,7 @@ Models that will be used in the music school management system.
 """
 from django.contrib.auth.models import Group
 from django.db import models
+from datetime import datetime
 
 from lessons.models import Term
 from lessons.models import User
@@ -28,7 +29,6 @@ class AdmissionMixin:
         self.set_group_administrator(user)
 
     def set_group_administrator(self, user):
-        print("running")
         administrator_group, created = Group.objects.get_or_create(name='Administrator')
         user_admission, created = Admission.objects.get_or_create(school=self, client=user)
         user_admission.groups.add(administrator_group)
@@ -62,13 +62,22 @@ class School(AdmissionMixin, models.Model):
         Term,
         blank=True,
         null=True,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='+'
     )
     clients = models.ManyToManyField(
         User,
         through='Admission',
         related_name='enrolled_school'
     )
+
+    @property
+    def get_update_current_term(self):
+        if self.current_term:
+            if datetime.now().date() > self.current_term.end_date:
+                next = Term.get_next_by_start_date(self.current_term)
+                self.current_term = next
+        return self.current_term
 
 
 class Admission(models.Model):
@@ -79,5 +88,3 @@ class Admission(models.Model):
 
     class Meta:
         unique_together = ('school', 'client')
-
-

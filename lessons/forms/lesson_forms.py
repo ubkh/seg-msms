@@ -80,13 +80,49 @@ class LessonFulfillForm(forms.ModelForm):
 
     class Meta:
         model = Lesson
-        fields = ['fulfilled', 'start_date', 'start_term', 'end_date']
+        fields = ['day', 'time', 'duration', 'interval', 'number_of_lessons', 'start_type', 'start_date', 'start_term', 'end_date']
         widgets = {
-
+           'day': forms.Select(attrs={'class': "form-select"}),
+           'start_term': forms.Select(attrs={'class': "form-select"}),
+           'time': forms.TimeInput(format='%H:%M', attrs={
+                'class': "form-control timepicker",
+                'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
+            }),
+            'interval': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'max': '4',
+                'min': '1'
+            }),
+            'duration': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'max': '120',
+                'min': '30',
+                'step': '15'
+            }),
+            'start_date': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'date'
+            }),
+            'end_date': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'date'
+            }),
+            'start_type': forms.Select(attrs={
+                'class': "form-select"
+            })
         }
-        labels = {}
+        labels = {
+            'start_type': "Start"
+        }
     
-    field_order = ['start_date', 'start_term', 'end_date']
+    field_order = ['start_type', 'start_date', 'start_term', 'end_date']
 
     def clean(self):
         super().clean()
@@ -102,16 +138,11 @@ class LessonFulfillForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['start_term'].queryset = Term.objects.all()
+        self.fields['start_term'].empty_label = None
 
         school_instance = School.objects.get(name="KCL Kangaroos")
-        term = school_instance.current_term
-        if term != None:
-            # if mid-term
-            if datetime.now().date() >= term.start_date and datetime.now().date() <= term.end_date:
-                self.fields.pop('start_term')
-            else:
-                self.fields.pop('start_date')
-        else:
+        term = school_instance.get_update_current_term
+        if term == None:
             self.fields.pop('start_term')
-
-
+            self.fields.pop('start_type')
+        

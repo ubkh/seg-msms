@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/school_base.html' %}
 {% block head %} {% include 'partials/navbar.html' %} {% endblock %}
 
 {% block body %}
@@ -8,7 +8,6 @@
               <div class="card shadow">
                 <div class="card-title text-center border-bottom">
                   <h2 class="p-3"><b>FULFILL LESSON</b></h2>
-                  <p>Will add more fields to complete this!</p>
                 </div>
                 <div class="card-body">
                   {% for message in messages %}
@@ -16,7 +15,7 @@
                         <b>{{ message }}</b>
                     </p>
                   {% endfor %}
-                  <form class="row gx-3 gy-3 align-items-center" action="" method="post" novalidate>
+                  <form class="row gx-3 gy-3 align-items-center" action="" method="post" id="fulfillLesson" novalidate>
                     {% csrf_token %}
                     {% for field in form %}
                       <div class="col-auto">
@@ -41,4 +40,34 @@
             </div>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+      const startType = $('#id_start_type')
+      // selector exists
+      if (startType.length) {
+        $('#id_start_date').hide();
+        $('#label_start_date').hide();
+
+        displayCorrectly();
+
+        startType.change(function(){
+          displayCorrectly();
+        });
+      }
+
+      function displayCorrectly() {
+        if (startType.prop('selectedIndex') == 0) {
+          $('#id_start_date').hide();
+          $('#label_start_date').hide();
+          $('#id_start_term').show();
+          $('#label_start_term').show();
+        } else {
+          $('#id_start_date').show();
+          $('#label_start_date').show();
+          $('#id_start_term').hide();
+          $('#label_start_term').hide();
+        }
+      }
+    </script>
 {% endblock %}

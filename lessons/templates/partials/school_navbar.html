@@ -11,6 +11,7 @@
         {% if group.name == 'Administrator' %}
             <a href="{% url 'users' school.id %}" class="list-group-item list-group-item-action">Users (Manage Lessons & Requests)</a>
             <a href="{% url 'transfers' school.id %}" class="list-group-item list-group-item-action">Transfers</a>
+            <a href="{% url 'terms' school.id %}" class="list-group-item list-group-item-action">Terms</a>
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}
@@ -18,6 +19,13 @@
             <a href="{% url 'modify_school' school.id %}" class="list-group-item list-group-item-action">Modify School</a>
 
         {% endif %}
+
+        {% if group.name == 'Director' %}
+            <a href="{% url 'delete_school' school.id %}"
+               class="list-group-item list-group-item-action" style="color:red">Delete School</a>
+        {% endif %}
+
+        
 
     {% endfor %}
 
