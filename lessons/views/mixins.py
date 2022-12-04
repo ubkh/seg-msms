@@ -19,8 +19,11 @@ class SchoolGroupRestrictedMixin:
 
     def dispatch(self, *args, **kwargs):
         school = School.objects.get(id=self.kwargs['school'])
-        admission = Admission.objects.get(school=school, client=self.request.user)
-        if not admission.is_active or not admission.groups.filter(name=self.allowed_group).exists():
+        try:
+            admission = Admission.objects.get(school=school, client=self.request.user)
+        except Admission.DoesNotExist:
+            admission = None
+        if not admission or not admission.is_active or not admission.groups.filter(name=self.allowed_group).exists():
             return self.handle_no_permission()
         return super().dispatch(*args, **kwargs)
 

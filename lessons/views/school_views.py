@@ -37,7 +37,10 @@ class SchoolHomeView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjec
 
     def handle_no_permission(self):
         school = School.objects.get(id=self.kwargs['school'])
-        admission = Admission.objects.get(school=school, client=self.request.user)
+        try:
+            admission = Admission.objects.get(school=school, client=self.request.user)
+        except Admission.DoesNotExist:
+            return redirect('manage', school=self.kwargs['school'])
         if admission.groups.filter(name="Administrator").exists():
             return redirect('users', school=self.kwargs['school'])
         else:
