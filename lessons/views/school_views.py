@@ -78,10 +78,9 @@ class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolO
     context_object_name = "students"
     allowed_group = "Administrator"
 
-    def get_context_data(self, **kwargs):
-        context = super(SchoolUserListView, self).get_context_data(**kwargs)
-        context['students'] = User.objects.filter(groups__name='Student').filter(lesson__school_id=self.kwargs['school'])
-        return context
+    def get_queryset(self):
+        school = School.objects.get(id=self.kwargs['school'])
+        return User.objects.filter(enrolled_school=school, admission__groups__name='Client')
 
     def handle_no_permission(self):
         return redirect('home')

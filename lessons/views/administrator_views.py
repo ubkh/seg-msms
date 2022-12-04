@@ -12,7 +12,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
 from lessons.helpers import super_administrator_restricted
-from lessons.models import User
+from lessons.models import User, School, Admission
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
@@ -27,7 +27,8 @@ class AdministratorListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Scho
     allowed_group = "Super-administrator"
 
     def get_queryset(self):
-        return User.objects.filter(groups__name='Administrator')
+        school = School.objects.get(id=self.kwargs['school'])
+        return User.objects.filter(enrolled_school=school, admission__groups__name='Administrator')
 
     def handle_no_permission(self):
         return redirect('home')

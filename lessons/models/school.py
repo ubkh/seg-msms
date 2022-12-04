@@ -65,7 +65,8 @@ class School(AdmissionMixin, models.Model):
     )
     clients = models.ManyToManyField(
         User,
-        through='Admission'
+        through='Admission',
+        related_name='enrolled_school'
     )
 
 
