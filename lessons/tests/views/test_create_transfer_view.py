@@ -19,11 +19,13 @@ class CreateTransferViewTestCase(TestCase):
         self.school = School.objects.get(id=1)
         self.url = reverse('create_transfer', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='foo@kangaroo.com')
-        self.user.set_group_administrator()
+        self.school.set_group_administrator(self.user)
+        #self.user.set_group_administrator()
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
         # self.user.groups.add(administrator_group)
         self.student = User.objects.get(email='doe@kangaroo.com')
-        self.student.set_group_student()
+        #self.student.set_group_student()
+        self.school.set_group_client(self.student)
         # student_group, created = Group.objects.get_or_create(name='Student')
         # self.student.groups.add(student_group)
 
@@ -36,7 +38,7 @@ class CreateTransferViewTestCase(TestCase):
         return form_input
 
     def test_create_transfer_url(self):
-        self.assertEqual(self.url, f'/school/{self.school.id}/transfers/create/')
+        self.assertEqual(self.url, f'/school/{self.school.id}/transfer/create/')
 
     def get_create_transfer(self):
         self.client.login(email=self.user.email, password="Password123")
@@ -66,7 +68,7 @@ class CreateTransferViewTestCase(TestCase):
         response = self.client.post(self.url, self.form_input, follow=True)
         transfer_count_after = Transfer.objects.count()
         self.assertEqual(transfer_count_before + 1, transfer_count_after)
-        response_url = reverse('transfers', kwargs={'school': self.school.id})
+        response_url = reverse('school_transfers', kwargs={'school': self.school.id})
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         saved_user = Transfer.objects.latest('id')
         self.assertEqual(saved_user.amount, self.form_input['amount'])

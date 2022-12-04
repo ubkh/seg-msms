@@ -46,7 +46,7 @@ class ManageStudentView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView
         school.leave_school(self.kwargs['pk'])
 
         if form.cleaned_data.get('client'):
-            school.set_group_administrator(self.kwargs['pk'])
+            school.set_group_client(self.kwargs['pk'])
 
         if form.cleaned_data.get('teacher'):
             school.set_group_teacher(self.kwargs['pk'])
@@ -77,7 +77,7 @@ class BanClientView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
     template_name = "authentication/ban_client.html"
     form_class = BanClientForm
     http_method_names = ['get', 'post']
-    allowed_group = "Super-administrator" # Change to director
+    allowed_group = "Super-administrator"
 
     def get_success_url(self):
         return reverse('members', kwargs={'school': self.kwargs['school']})

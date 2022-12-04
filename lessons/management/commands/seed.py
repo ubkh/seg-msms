@@ -31,7 +31,8 @@ class Command(BaseCommand):
         School.objects.all().delete()
         school, created = School.objects.get_or_create(
             name="KCL Kangaroos",
-            director=director_user
+            director=director_user,
+            description=self.faker.text(max_nb_chars=1000)
         )
         school.set_group_director(director_user)
 

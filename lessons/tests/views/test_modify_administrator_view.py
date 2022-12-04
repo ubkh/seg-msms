@@ -7,6 +7,8 @@ from lessons.forms import RegisterForm, ChildCreateForm, AdminModifyForm
 from lessons.models import User, School
 from msms.hash import encode
 
+"""
+View is deprecated.
 
 class ModifyAdministratorViewTestCase(TestCase):
 
@@ -20,11 +22,13 @@ class ModifyAdministratorViewTestCase(TestCase):
         self.form_input = self._create_form_input()
         self.school = School.objects.get(id=1)
         self.user = User.objects.get(email='foo@kangaroo.com')
-        self.user.set_group_super_administrator()
+        self.school.set_group_super_administrator(self.user)
+        #self.user.set_group_super_administrator()
         # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
         # self.user.groups.add(super_administrator_group)
         self.administrator = User.objects.get(email='doe@kangaroo.com')
-        self.administrator.set_group_administrator()
+        self.school.set_group_administrator(self.administrator)
+        #self.administrator.set_group_administrator()
         # administrator_group, created = Group.objects.get_or_create(name='Administrator')
         # self.administrator.groups.add(administrator_group)
 
@@ -39,9 +43,9 @@ class ModifyAdministratorViewTestCase(TestCase):
         return form_input
 
     def test_modify_administrator_url(self):
-        url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': self.administrator.pk})
+        url = reverse('manage_member', kwargs={'school': self.school.id, 'pk': self.administrator.pk})
         administrator_id_hash = encode(self.administrator.pk)
-        self.assertEqual(url, f'/school/{self.school.id}/administrators/{administrator_id_hash}/modify/')
+        self.assertEqual(url, f'/school/{self.school.id}/member/{administrator_id_hash}/manage/')
 
     def test_get_modify_administrator(self):
         url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': self.administrator.pk})
@@ -81,3 +85,4 @@ class ModifyAdministratorViewTestCase(TestCase):
         self.assertEqual(saved_user.first_name, self.form_input['first_name'])
         self.assertEqual(saved_user.last_name, self.form_input['last_name'])
         self.assertTrue(check_password('Password123', saved_user.password))
+"""

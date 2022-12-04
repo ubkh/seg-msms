@@ -36,7 +36,7 @@ class ChildCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
         child = form.save()
         child.parent = self.request.user
         child.save()
-        child.set_group_student()
+        child.set_group_user()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

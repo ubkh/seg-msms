@@ -18,6 +18,7 @@ class InvoiceViewTestCase(TestCase):
         self.lesson = Lesson.objects.get(title="Test Lesson")
         self.lesson.student = self.user
         self.school = School.objects.get(id=1)
+        self.school.set_group_client(self.user)
         self.url = reverse('booking_invoice', kwargs={'school': self.school.id, 'pk': self.lesson.id})
         self.lesson.student = self.user
         self.other_lesson = Lesson.objects.get(title="Test Lesson 2")

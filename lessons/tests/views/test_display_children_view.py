@@ -17,12 +17,12 @@ class DisplayChildrenViewTestCase(TestCase):
     def setUp(self):
         self.url = reverse('children')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        self.user.set_group_adult_student()
+        self.user.set_group_adult_user()
         # adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
         # self.user.groups.add(adult_student_group)
         self.child = User.objects.get(id='3')
 
-    def test_display_administrator_url(self):
+    def test_children_url(self):
         self.assertEqual(self.url, '/children/')
 
     def test_get_children(self):
