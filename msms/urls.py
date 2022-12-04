@@ -39,6 +39,9 @@ school_urlpatterns = [
     path('transfers/', views.TransferListView.as_view(), name='transfers'),
     path('transfers/create/', views.TransferCreateView.as_view(), name='create_transfer'),
 
+    path('terms/', views.TermsView.as_view(), name='terms'),
+    path('term/<int:pk>/edit/', views.TermEditView.as_view(), name='edit_term'),
+
     # Super-administrator
     path('administrators/', views.AdministratorListView.as_view(), name='administrators'),
     path('administrators/create/', views.AdministratorCreateView.as_view(), name='create_administrator'),
@@ -64,8 +67,7 @@ urlpatterns = [
     path('children/create/', views.ChildCreateView.as_view(), name='create_child'),
 
     # Administrator
-    path('terms/', views.view_terms, name='terms'),
-    path('term/<int:pk>/edit', views.edit_term, name='edit_term'),
+    
 
     # Director
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),

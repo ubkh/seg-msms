@@ -20,7 +20,7 @@ class TermForm(forms.ModelForm):
                 'type': 'date',
             })
         }
-    
+
     def clean(self):
         cleaned = super(TermForm, self).clean()
         start = cleaned.get('start_date')

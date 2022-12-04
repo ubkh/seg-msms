@@ -30,6 +30,10 @@ INSTRUMENTS = [
     ('Harp','Harp'),
 ]
 
+START_TYPES = [
+    ('Term', 'By Term'),
+    ('Date', 'By Date')
+]
 
 class Lesson(models.Model):
     """
@@ -67,6 +71,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=25, default="Music Lesson", )
     information = models.CharField(max_length=280, verbose_name="Further Information", blank=True)
     price = models.DecimalField(default=10.00,max_digits=10,decimal_places=2, validators=[MinValueValidator(5.00)])
+    start_type = models.TextField(choices=START_TYPES, default='Term')
     start_term = models.ForeignKey(
         Term,
         blank=True,

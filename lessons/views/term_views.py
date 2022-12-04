@@ -2,44 +2,61 @@
 Views that will be used in the music school management system.
 """
 
-import re
+from webbrowser import get
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+from django.views.generic import CreateView, UpdateView
 
 from lessons.models import Term, School
 from lessons.helpers import administrator_restricted
-from lessons.forms import TermForm
+from lessons.forms import TermForm, LessonModifyForm, term_forms
+from lessons.models import School, Term, Lesson, User
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
 
-@login_required
-@administrator_restricted
-def view_terms(request):
-    terms = Term.objects.all()
 
-    if request.method == "POST":
-        form = TermForm(request.POST)
-        if form.is_valid():
-            term = form.save()
+class TermsView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+    model = Term
+    template_name = "terms/terms.html"
+    form_class = TermForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Administrator"
 
+    def form_valid(self, form):
+        super().form_valid(form)
+        term = form.save()
+        if Term.objects.count() == 1:
             school_instance = School.objects.get(name="KCL Kangaroos")
-            if Term.objects.count() == 1:
-                # for now only the first term is set - this may need to be handled manually
-                setattr(school_instance, 'current_term', term)
-                school_instance.save()
-            return redirect('terms')
-    else:
-        form = TermForm()
-    return render(request, "terms/terms.html", {'terms': terms, 'form': form})
+            setattr(school_instance, 'current_term', term)
+            school_instance.save()
+        return HttpResponseRedirect(self.get_success_url())
 
-@login_required
-@administrator_restricted
-def edit_term(request, pk):
-    data = get_object_or_404(Term, id=pk)
+    def get_context_data(self, **kwargs):
+        kwargs['terms'] = Term.objects.all()
+        return super(TermsView, self).get_context_data(**kwargs)
 
-    if request.method == "POST":
-        form = TermForm(request.POST, instance=data)
-        if form.is_valid():
-            form.save()
-            return redirect('terms')
-    else:
-        form = TermForm(instance=data)
-    return render(request, "terms/edit_term.html", {'form': form})
+    def get_success_url(self):
+        return reverse('terms', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+class TermEditView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+    model = Term
+    template_name = "terms/edit_term.html"
+    form_class = TermForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Administrator"
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('terms', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')

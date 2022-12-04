@@ -117,15 +117,16 @@ class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
     """
 
     model = Lesson
-    template_name = "lessons/modify_lesson.html"
+    template_name = "lessons/fulfill_lesson.html"
     form_class = LessonFulfillForm
     http_method_names = ['get', 'post']
     allowed_group = "Administrator"
 
     def dispatch(self, request, *args, **kwargs):
+        print(self.kwargs)
 
         school_instance = School.objects.get(name="KCL Kangaroos")
-        self.this_term = school_instance.current_term
+        self.this_term = school_instance.get_update_current_term
         if self.this_term != None and Term.objects.count() > 1:
             self.next_term = Term.get_next_by_start_date(self.this_term)
             days_to_term_end = (self.this_term.end_date - datetime.now().date()).days
@@ -151,6 +152,7 @@ class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
         data.price = (data.duration / 60) * data.number_of_lessons * 10
         if data.end_date == None and self.this_term != None:
             data.end_date = self.this_term.end_date
+        data.fulfilled = True
         form.save()
         return HttpResponseRedirect(self.get_success_url())
 
