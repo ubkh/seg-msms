@@ -4,7 +4,9 @@ Register your models here.
 """
 
 from django.contrib import admin
-from .models import User, Lesson, Transfer
+from django.contrib.admin import display
+
+from .models import User, Lesson, Transfer, School, Admission
 
 
 @admin.register(User)
@@ -28,6 +30,7 @@ class LessonAdmin(admin.ModelAdmin):
     ]
 
 
+
 @admin.register(Transfer)
 class TransferAdmin(admin.ModelAdmin):
     """
@@ -35,4 +38,18 @@ class TransferAdmin(admin.ModelAdmin):
     """
     list_display = [
         'id', 'user', 'lesson', 'amount'
+    ]
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'name', 'director', 'current_term'
+    ]
+
+
+@admin.register(Admission)
+class AdmissionAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'school', 'client', 'is_active'
     ]
