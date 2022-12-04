@@ -16,8 +16,36 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
-from lessons.models import Lesson, User, Transfer, School, Term
+from lessons.models import Lesson, User, Transfer, School, Term, Admission
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
+
+
+class LessonListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays the students school home page.
+    """
+
+    model = Lesson
+    template_name = "school/student_home.html"
+    context_object_name = "lessons"
+    allowed_group = "Client"
+
+    def get_context_data(self, **kwargs):
+        context = super(LessonListView, self).get_context_data(**kwargs)
+        context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
+        # context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
+        return context
+
+    def handle_no_permission(self):
+        school = School.objects.get(id=self.kwargs['school'])
+        try:
+            admission = Admission.objects.get(school=school, client=self.request.user)
+        except Admission.DoesNotExist:
+            return redirect('manage', school=self.kwargs['school'])
+        if admission.groups.filter(name="Administrator").exists():
+            return redirect('users', school=self.kwargs['school'])
+        else:
+            return redirect('home')
 
 
 class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
@@ -96,13 +124,9 @@ class BookingListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObje
     context_object_name = "lessons"
     allowed_group = "Administrator"
 
-
     def get_context_data(self, **kwargs):
         context = super(BookingListView, self).get_context_data(**kwargs)
-        s = get_object_or_404(User, id=self.kwargs['pk'])
-        context['lessons'] = context['lessons'].filter(student=s).order_by('-fulfilled')
-        context['transfers'] = Transfer.objects.filter(user=s).filter(school=self.kwargs['school'])
-        context['student'] = s
+        context['lessons'] = context['lessons'].order_by('-fulfilled')
         return context
 
     def handle_no_permission(self):
@@ -164,7 +188,7 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
 
 
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """

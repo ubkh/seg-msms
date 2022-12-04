@@ -38,6 +38,7 @@ class SchoolObjectMixin:
         context['school_user_groups'] = admission.groups.all()
         return context
 
+    # Remove vvvvv
     def get_queryset(self):
         return super().get_queryset().filter(school=self.kwargs['school'])
 

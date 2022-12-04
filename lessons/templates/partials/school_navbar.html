@@ -9,13 +9,12 @@
         {% endif %}
 
         {% if group.name == 'Administrator' %}
-            <a href="{% url 'users' school.id %}" class="list-group-item list-group-item-action">Users (Manage Lessons & Requests)</a>
-            <a href="{% url 'transfers' school.id %}" class="list-group-item list-group-item-action">Transfers</a>
+            <a href="{% url 'school_transfers' school.id %}" class="list-group-item list-group-item-action">Transfers</a>
             <a href="{% url 'terms' school.id %}" class="list-group-item list-group-item-action">Terms</a>
         {% endif %}
 
         {% if group.name == 'Super-administrator' %}
-            <a href="{% url 'administrators' school.id %}" class="list-group-item list-group-item-action">Administrators</a>
+            <a href="{% url 'users' school.id %}" class="list-group-item list-group-item-action">Users</a>
             <a href="{% url 'modify_school' school.id %}" class="list-group-item list-group-item-action">Modify School</a>
 
         {% endif %}

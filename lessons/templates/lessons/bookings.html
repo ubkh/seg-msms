@@ -3,6 +3,7 @@
     <div class="container">
         <h2>Student Lessons</h2>
         <hr>
+    {% comment %}
         <div class="list-group">
                 <p>Welcome {{ s.first_name }} {{ s.last_name }}! You can sign up to lessons here and view any pending requests or bookings you may have.</p>
                 <div class="container">
@@ -18,6 +19,7 @@
                     {% endfor %}
                 </div>
         </div>
+        {% endcomment %}
     </div>
     &nbsp;
     <div class="mt-2 container">
@@ -62,7 +64,7 @@
             {% endfor %}
         </ul>
     </div>
-    &nbsp;
+    &nbsp;{% comment %}
     <div class="mt-2 container">
         <h3>Recent Transactions</h3>
         <hr>
@@ -78,4 +80,5 @@
             {% endfor %}
         </ul>
     </div>
+    {% endcomment %}
 {% endblock %}

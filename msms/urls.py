@@ -23,38 +23,33 @@ register_converter(HashIDConverter, "hashid")
 
 
 school_urlpatterns = [
-    path('', views.SchoolHomeView.as_view(), name='school_home'),
-    path('manage/', views.SchoolManageView.as_view(), name='manage'),
+    path('', views.SchoolHomeView.as_view(), name='school_home'),  # (includes image, description, and join and leave button)
 
     # Client
+    path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
     path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
     path('lesson/<hashid:pk>/modify/', views.LessonModifyView.as_view(), name='modify_lesson'),
+    path('lesson/<hashid:pk>/invoice/', views.LessonInvoiceView.as_view(), name='booking_invoice'),
 
-    path('lesson/<hashid:pk>/invoice/', views.BookingInvoiceView.as_view(), name='booking_invoice'),
-
-    # Teacher
-    # path()
+    path('transactions/', views.TransactionsListView.as_view(), name='client_transactions'),
 
     # Administrator
-    path('student/<hashid:pk>/bookings/', views.BookingListView.as_view(), name='open_bookings'),
-    path('student/<hashid:pk>/bookings/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
+    path('bookings/', views.BookingListView.as_view(), name='school_bookings'),
+    path('lesson/<hashid:pk>/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
 
-    path('transfers/', views.TransferListView.as_view(), name='transfers'),
-    path('transfers/create/', views.TransferCreateView.as_view(), name='create_transfer'),
+    path('transfers/', views.SchoolTransferListView.as_view(), name='school_transfers'),
+    path('transfer/create/', views.TransferCreateView.as_view(), name='create_transfer'),
 
     path('terms/', views.TermsView.as_view(), name='terms'),
     path('term/<int:pk>/edit/', views.TermEditView.as_view(), name='edit_term'),
 
     # Super-administrator
-    path('users/', views.SchoolUserListView.as_view(), name='users'),
-    path('administrators/', views.AdministratorListView.as_view(), name='administrators'),
-    path('student/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_student'),
-    # path('administrators/create/', views.AdministratorCreateView.as_view(), name='create_administrator'),
-    # path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
+    path('clients/', views.SchoolUserListView.as_view(), name='clients'),
+    path('client/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_client'),  # (promote / delete student)
 
     # Director
-    path('student/<hashid:pk>/ban_client/', views.BanClientView.as_view(), name='ban_client'),
-    path('update/', views.SchoolUpdateView.as_view(), name='modify_school')
+    path('manage/', views.SchoolManageView.as_view(), name='manage_school')  # (update school fields) or delete
+
 ]
 
 urlpatterns = [
@@ -73,7 +68,7 @@ urlpatterns = [
 
     # Director
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
-    path('school/<int:pk>/delete', views.SchoolDeleteView.as_view(), name='delete_school'),
+    path('school/<int:pk>/delete/', views.SchoolDeleteView.as_view(), name='delete_school'),
 
     # System-administrator
     path('director/create', views.DirectorCreateView.as_view(), name='create_director')

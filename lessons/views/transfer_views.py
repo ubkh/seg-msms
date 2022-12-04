@@ -12,7 +12,23 @@ from lessons.models import Transfer, Lesson, User
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+class TransactionsListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+
+    model = Transfer
+    template_name = "transfer/transfers.html"
+    context_object_name = "transfers"
+    allowed_group = "Client"
+
+    def get_context_data(self, **kwargs):
+        context = super(TransactionsListView, self).get_context_data(**kwargs)
+        context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
+        return context
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+
+class SchoolTransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
 
     model = Transfer
     template_name = "transfer/transfers.html"

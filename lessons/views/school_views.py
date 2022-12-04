@@ -24,54 +24,25 @@ class HomeView(LoginRequiredMixin, ListView):
         return redirect('index')
 
 
-class SchoolHomeView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
-    """
-    View that displays the students school home page.
-    """
-
-    model = Lesson
-    template_name = "school/student_home.html"
-    context_object_name = "lessons"
-    allowed_group = "Client"
+class SchoolHomeView(LoginRequiredMixin, ListView):
+    model = School
+    template_name = "base/school_base.html"
+    context_object_name = "schools"
 
     def get_context_data(self, **kwargs):
         context = super(SchoolHomeView, self).get_context_data(**kwargs)
-        context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
-        context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
+        admission = Admission.objects.get(school=school, client=self.request.user)
+        context['school_user_groups'] = admission.groups.all()
         return context
 
     def handle_no_permission(self):
-        school = School.objects.get(id=self.kwargs['school'])
-        try:
-            admission = Admission.objects.get(school=school, client=self.request.user)
-        except Admission.DoesNotExist:
-            return redirect('manage', school=self.kwargs['school'])
-        if admission.groups.filter(name="Administrator").exists():
-            return redirect('users', school=self.kwargs['school'])
-        else:
-            return redirect('home')
+        return redirect('home')
 
 
-class SchoolManageView(LoginRequiredMixin, FormView):
-    model = School
-    pk_url_kwarg = 'school'
-    template_name = "school/manage.html"
-    form_class = SchoolManageForm
-    http_method_names = ['get', 'post']
 
-    def get_context_data(self, **kwargs):
-        context = super(SchoolManageView, self).get_context_data(**kwargs)
-        school = School.objects.get(id=self.kwargs['school'])
-        context['school'] = school
-        return context
 
-    def form_valid(self, form):
-        if form.cleaned_data.get('join_school'):
-            School.objects.get(id=self.kwargs['school']).set_group_client(self.request.user)
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('manage', kwargs={'school': self.kwargs['school']})
 
 
 class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
@@ -109,7 +80,29 @@ class SchoolCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
         return redirect('home')
 
 
-class SchoolUpdateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
+class SchoolSubscribeView(LoginRequiredMixin, FormView):
+    model = School
+    pk_url_kwarg = 'school'
+    template_name = "base/school_base.html"
+    form_class = SchoolManageForm
+    http_method_names = ['get', 'post']
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolSubscribeView, self).get_context_data(**kwargs)
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data.get('join_school'):
+            School.objects.get(id=self.kwargs['school']).set_group_client(self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('manage', kwargs={'school': self.kwargs['school']})
+
+
+class SchoolManageView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
     model = School
     template_name = "school/create_school.html"
     form_class = SchoolCreateForm
