@@ -45,7 +45,7 @@ school_urlpatterns = [
     # Super-administrator
     path('users/', views.SchoolUserListView.as_view(), name='users'),
     path('administrators/', views.AdministratorListView.as_view(), name='administrators'),
-    path('student/<hashid:pk>/make_administrator/', views.MakeAdministratorView.as_view(), name='make_administrator'),
+    path('student/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_student'),
     # path('administrators/create/', views.AdministratorCreateView.as_view(), name='create_administrator'),
     # path('administrators/<hashid:pk>/modify/', views.AdministratorUpdateView.as_view(), name='modify_administrator'),
 

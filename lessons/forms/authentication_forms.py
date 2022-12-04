@@ -87,7 +87,9 @@ class ChildCreateForm(forms.ModelForm):
 
 
 class MakeAdministratorForm(forms.Form):
+    make_teacher = forms.BooleanField(required=False)
     make_administrator = forms.BooleanField(required=False)
+    make_super_administrator = forms.BooleanField(required=False)
 
 
 class BanClientForm(forms.ModelForm):

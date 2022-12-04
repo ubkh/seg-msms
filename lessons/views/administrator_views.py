@@ -88,17 +88,30 @@ class AdministratorUpdateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Up
         return redirect('home')
 
 
-class MakeAdministratorView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView):
+class ManageStudentView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView):
 
     model = User
-    template_name = "authentication/make_administrator.html"
+    template_name = "authentication/manage_student.html"
     form_class = MakeAdministratorForm
     http_method_names = ['get', 'post']
     allowed_group = "Super-administrator"
 
+    def get_context_data(self, **kwargs):
+        context = super(ManageStudentView, self).get_context_data(**kwargs)
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
+        admission = Admission.objects.get(school=school, client=self.request.user)
+        context['school_user_groups'] = admission.groups.all()
+        return context
+
+
     def form_valid(self, form):
         if form.cleaned_data.get('make_administrator'):
             School.objects.get(id=self.kwargs['school']).set_group_administrator(self.kwargs['pk'])
+        if form.cleaned_data.get('make_super_administrator'):
+            School.objects.get(id=self.kwargs['school']).set_group_super_administrator(self.kwargs['pk'])
+        if form.cleaned_data.get('make_teacher'):
+            School.objects.get(id=self.kwargs['school']).set_group_teacher(self.kwargs['pk'])
         return super().form_valid(form)
 
     def get_success_url(self):

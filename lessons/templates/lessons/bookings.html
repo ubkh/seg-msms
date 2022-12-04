@@ -11,9 +11,9 @@
                             {% if student.is_active == True %}
                                 <a class="btn btn-primary" href="{% url 'ban_client' school.id student.id %}">Ban Client</a>
                             {% else %}
-                                <a class="btn btn-primary" href="{% url 'ban_client' school.id student.id %}">UnBan Client</a>
+                                <a class="btn btn-primary" href="{% url 'ban_client' school.id student.id %}">Unban Client</a>
                             {% endif %}
-                            <a class="btn btn-primary" href="{% url 'make_administrator' school.id student.id %}">Make Administrator</a>
+                            <a class="btn btn-primary" href="{% url 'manage_student' school.id student.id %}">Manage Student</a>
                         {% endif %}
                     {% endfor %}
                 </div>
