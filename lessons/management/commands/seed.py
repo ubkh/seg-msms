@@ -33,7 +33,7 @@ class Command(BaseCommand):
             name="KCL Kangaroos",
             director=director_user
         )
-        school.set_group_super_administrator(director_user)
+        school.set_group_director(director_user)
 
         # Create Student
         User.objects.filter(email="john.doe@example.org").delete()

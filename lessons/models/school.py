@@ -8,12 +8,15 @@ from datetime import datetime
 from lessons.models import Term
 from lessons.models import User
 
+
 class AdmissionMixin:
     """
-    Mixin that allows a school to add a client to a specified user.
+    Mixin that allows a school to add a group to a specified user.
 
     School Groups
     ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃        Director        ┃
+    ┃           ↓ (inherits) ┃
     ┃   Super-administrator  ┃
     ┃           ↓ (inherits) ┃
     ┃     Administrator      ┃
@@ -21,6 +24,20 @@ class AdmissionMixin:
     ┃         Client         ┃
     ┗━━━━━━━━━━━━━━━━━━━━━━━━┛
     """
+
+    def has_member(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.count()
+
+    def leave_school(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.groups.clear()
+
+    def set_group_director(self, user):
+        director_group, created = Group.objects.get_or_create(name='Director')
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.groups.add(director_group)
+        self.set_group_super_administrator(user)
 
     def set_group_super_administrator(self, user):
         super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
@@ -70,6 +87,7 @@ class School(AdmissionMixin, models.Model):
         through='Admission',
         related_name='enrolled_school'
     )
+    description = models.CharField(max_length=1000)
 
     @property
     def get_update_current_term(self):

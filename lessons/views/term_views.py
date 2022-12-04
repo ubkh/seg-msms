@@ -14,10 +14,10 @@ from lessons.models import Term, School
 from lessons.helpers import administrator_restricted
 from lessons.forms import TermForm, LessonModifyForm, term_forms
 from lessons.models import School, Term, Lesson, User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TermsView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class TermsView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     model = Term
     template_name = "terms/terms.html"
     form_class = TermForm
@@ -43,7 +43,8 @@ class TermsView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, Cre
     def handle_no_permission(self):
         return redirect('home')
 
-class TermEditView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+
+class TermEditView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     model = Term
     template_name = "terms/edit_term.html"
     form_class = TermForm

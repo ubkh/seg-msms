@@ -6,7 +6,7 @@ from lessons.models import School
 class SchoolCreateForm(forms.ModelForm):
     class Meta:
         model = School
-        fields = ['name']
+        fields = ['name', 'description']
 
 
 class SchoolManageForm(forms.Form):

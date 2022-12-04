@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from django.views.generic import FormView
+from django.views.generic.edit import FormMixin
 
 from lessons.forms import SchoolCreateForm, SchoolDeleteForm
 from lessons.forms import SchoolManageForm
@@ -24,10 +26,17 @@ class HomeView(LoginRequiredMixin, ListView):
         return redirect('index')
 
 
-class SchoolHomeView(LoginRequiredMixin, ListView):
+class TestForm(forms.Form):
+    pass
+
+
+class SchoolHomeView(LoginRequiredMixin, FormView):
+
     model = School
-    template_name = "base/school_base.html"
-    context_object_name = "schools"
+    template_name = "school/home.html"
+    pk_url_kwarg = 'school'
+    http_method_names = ['get', 'post']
+    form_class = TestForm
 
     def get_context_data(self, **kwargs):
         context = super(SchoolHomeView, self).get_context_data(**kwargs)
@@ -35,14 +44,22 @@ class SchoolHomeView(LoginRequiredMixin, ListView):
         context['school'] = school
         admission = Admission.objects.get(school=school, client=self.request.user)
         context['school_user_groups'] = admission.groups.all()
+        context['in_school'] = school.has_member(self.request.user)
         return context
+
+    def form_valid(self, form):
+        school = School.objects.get(id=self.kwargs['school'])
+        if form.data['follow']:
+            school.set_group_client(self.request.user)
+        else:
+            school.leave_school(self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
-
-
-
-
 
 
 class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):

@@ -44,8 +44,8 @@ school_urlpatterns = [
     path('term/<int:pk>/edit/', views.TermEditView.as_view(), name='edit_term'),
 
     # Super-administrator
-    path('clients/', views.SchoolUserListView.as_view(), name='clients'),
-    path('client/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_client'),  # (promote / delete student)
+    path('members/', views.SchoolUserListView.as_view(), name='members'),
+    path('members/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_member'),  # (promote / delete student)
 
     # Director
     path('manage/', views.SchoolManageView.as_view(), name='manage_school')  # (update school fields) or delete
