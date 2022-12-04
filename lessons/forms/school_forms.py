@@ -6,7 +6,19 @@ from lessons.models import School
 class SchoolCreateForm(forms.ModelForm):
     class Meta:
         model = School
-        fields = ['name']
+        fields = ['name', 'description']
+
+
+class SchoolManageForm(forms.ModelForm):
+    class Meta:
+        model = School
+        fields = ['name', 'description']
+
+    delete_school = forms.BooleanField(
+        label="Do you want to delete this School?",
+        required=False
+    )
+
 
 class SchoolDeleteForm(forms.ModelForm):
 

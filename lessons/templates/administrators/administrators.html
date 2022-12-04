@@ -4,12 +4,10 @@
     <h1>Music School Management System Director Panel</h1>
     <hr>
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage the administrators within the management system.</p>
-    <a class="btn btn-primary" href="{% url 'create_administrator' school.id %}">Create administrator</a>
     <h2>Administrator List</h2>
     <div class="list-group">
         {% for admin in administrators %}
-            <a href="{% url 'modify_administrator' school.id admin.id %}"
-               class="list-group-item list-group-item-action flex-column align-items-start">
+            <a class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ admin.first_name }} {{ admin.last_name }}</h5>
                 </div>

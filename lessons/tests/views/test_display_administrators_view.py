@@ -6,6 +6,8 @@ from django.urls import reverse
 from lessons.forms import RegisterForm
 from lessons.models import User, School
 
+"""
+View is deprecated.
 
 class DisplayAdministratorViewTestCase(TestCase):
 
@@ -43,3 +45,4 @@ class DisplayAdministratorViewTestCase(TestCase):
         modify_administrator_url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': user.pk})
         self.assertContains(response, modify_administrator_url)
 
+"""

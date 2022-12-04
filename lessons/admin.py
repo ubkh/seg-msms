@@ -5,7 +5,9 @@ Register your models here.
 
 from dataclasses import field
 from django.contrib import admin
-from .models import User, Lesson, Transfer, Term
+from django.contrib.admin import display
+
+from .models import User, Lesson, Transfer, Term, School, Admission
 
 
 @admin.register(User)
@@ -37,6 +39,21 @@ class TransferAdmin(admin.ModelAdmin):
     list_display = [
         'id', 'user', 'lesson', 'amount'
     ]
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'name', 'director', 'current_term'
+    ]
+
+
+@admin.register(Admission)
+class AdmissionAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'school', 'client', 'is_active'
+    ]
+
 
 @admin.register(Term)
 class TermAdmin(admin.ModelAdmin):

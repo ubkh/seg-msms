@@ -14,7 +14,7 @@ class CreateChildViewTestCase(TestCase):
         self.form_input = self._create_form_input()
         self.url = reverse('create_child')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
+        adult_student_group, created = Group.objects.get_or_create(name='Adult-user')
         self.user.groups.add(adult_student_group)
 
     def _create_form_input(self):

@@ -8,94 +8,79 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, FormView
 
-from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
+from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm, ManageMemberForm
 from lessons.helpers import super_administrator_restricted
-from lessons.models import User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.models import User, School, Admission
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
-    """
+class ManageStudentView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView):
 
-    """
-
-    model = User
-    template_name = "administrators/administrators.html"
-    context_object_name = "administrators"
-    allowed_group = "Super-administrator"
-
-    def get_queryset(self):
-        return User.objects.filter(groups__name='Administrator')
-
-    def handle_no_permission(self):
-        return redirect('home')
-
-
-class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
-    """
-    View that displays the form to register an administrator. If a valid
-    form is submitted the director is redirected to the home page, else they are
-    directed to resubmit the form again.
-    """
-
-    model = User
-    template_name = "authentication/register.html"
-    form_class = RegisterForm
+    template_name = "authentication/manage_student.html"
+    form_class = ManageMemberForm
     http_method_names = ['get', 'post']
-    allowed_group = "Super-administrator"
+    allowed_group = "Director"
+
+    def get_context_data(self, **kwargs):
+        context = super(ManageStudentView, self).get_context_data(**kwargs)
+        school = School.objects.get(id=self.kwargs['school'])
+        context['school'] = school
+        admission = Admission.objects.get(school=school, client=self.request.user)
+        context['school_user_groups'] = admission.groups.all()
+        return context
+
+    def get_initial(self):
+        initial = super().get_initial()
+        school = School.objects.get(id=self.kwargs['school'])
+        initial['client'] = school.is_client(self.kwargs['pk'])
+        initial['teacher'] = school.is_teacher(self.kwargs['pk'])
+        initial['administrator'] = school.is_administrator(self.kwargs['pk'])
+        initial['super_administrator'] = school.is_super_administrator(self.kwargs['pk'])
+        initial['ban_member'] = school.get_ban(self.kwargs['pk'])
+        return initial
 
     def form_valid(self, form):
-        administrator = form.save()
-        administrator.set_group_administrator()
-        return HttpResponseRedirect(self.get_success_url())
+        school = School.objects.get(id=self.kwargs['school'])
+        school.leave_school(self.kwargs['pk'])
+
+        if form.cleaned_data.get('client'):
+            school.set_group_client(self.kwargs['pk'])
+
+        if form.cleaned_data.get('teacher'):
+            school.set_group_teacher(self.kwargs['pk'])
+
+        if form.cleaned_data.get('administrator'):
+            school.set_group_administrator(self.kwargs['pk'])
+
+        if form.cleaned_data.get('super_administrator'):
+            school.set_group_super_administrator(self.kwargs['pk'])
+
+        if form.cleaned_data.get('ban_member'):
+            school.ban_member(self.kwargs['pk'])
+        else:
+            school.unban_member(self.kwargs['pk'])
+
+        return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('administrators', kwargs={'school': self.kwargs['school']})
+        return reverse('members', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
 
 
-class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
-    """
-    View that displays the form to edit an administrator. If a valid
-    form is submitted the director is redirected to the home page, else they are
-    directed to resubmit the form again.
-    """
-    model = User
-    template_name = "authentication/register.html"
-    form_class = AdminModifyForm
-    http_method_names = ['get', 'post']
-    allowed_group = "Super-administrator"
-
-    def form_valid(self, form):
-        user = form.save()
-        if form.data.get('make_account_super_administrator'):
-            user.groups.clear()
-            user.set_group_super_administrator()
-        if form.data.get('delete_account'):
-            user.delete()
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('administrators', kwargs={'school': self.kwargs['school']})
-
-    def handle_no_permission(self):
-        return redirect('home')
-
-
-class BanClientView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
+class BanClientView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
 
     model = User
     template_name = "authentication/ban_client.html"
     form_class = BanClientForm
     http_method_names = ['get', 'post']
-    allowed_group = "Director"
+    allowed_group = "Super-administrator"
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('members', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

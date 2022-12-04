@@ -86,6 +86,14 @@ class ChildCreateForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
 
 
+class ManageMemberForm(forms.Form):
+    client = forms.BooleanField(required=False)
+    teacher = forms.BooleanField(required=False)
+    administrator = forms.BooleanField(required=False)
+    super_administrator = forms.BooleanField(required=False)
+    ban_member = forms.BooleanField(required=False)
+
+
 class BanClientForm(forms.ModelForm):
     class Meta:
         model = User
