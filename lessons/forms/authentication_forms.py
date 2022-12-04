@@ -86,6 +86,10 @@ class ChildCreateForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
 
 
+class MakeAdministratorForm(forms.Form):
+    make_administrator = forms.BooleanField(required=False)
+
+
 class BanClientForm(forms.ModelForm):
     class Meta:
         model = User

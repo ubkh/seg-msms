@@ -8,9 +8,9 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, FormView
 
-from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
+from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm, MakeAdministratorForm
 from lessons.helpers import super_administrator_restricted
 from lessons.models import User, School, Admission
 from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
@@ -83,6 +83,26 @@ class AdministratorUpdateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Up
 
     def get_success_url(self):
         return reverse('administrators', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+
+class MakeAdministratorView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView):
+
+    model = User
+    template_name = "authentication/make_administrator.html"
+    form_class = MakeAdministratorForm
+    http_method_names = ['get', 'post']
+    allowed_group = "Super-administrator"
+
+    def form_valid(self, form):
+        if form.cleaned_data.get('make_administrator'):
+            School.objects.get(id=self.kwargs['school']).set_group_administrator(self.kwargs['pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('school_home', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

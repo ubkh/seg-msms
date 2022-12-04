@@ -28,6 +28,7 @@ class AdmissionMixin:
         self.set_group_administrator(user)
 
     def set_group_administrator(self, user):
+        print("running")
         administrator_group, created = Group.objects.get_or_create(name='Administrator')
         user_admission, created = Admission.objects.get_or_create(school=self, client=user)
         user_admission.groups.add(administrator_group)

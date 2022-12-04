@@ -1,0 +1,34 @@
+{% extends 'base/school_base.html' %}
+{% block head %} {% include 'partials/navbar.html' %} {% endblock %}
+
+{% block body %}
+{% for field in form %}
+<div class="container">
+    <div class="row justify-content-center mt-5 mb-5">
+        <div class="col-lg-5">
+          <div class="card shadow">
+            <div class="card-title text-center border-bottom">
+              <h2 class="p-3"><b>MAKE ADMINISTRATOR</b></h2>
+            </div>
+            <div class="card-body">
+                <form class="row gx-3 gy-3 align-items-center" action="" method="post" novalidate>
+                {% csrf_token %}
+                    <div class="col-auto">
+                        <label class="form-label" id="label_{{ field.name }}">{{ field.label }}</label>
+                            <div class="form-group">
+                            {{ field }}
+                            </div>
+                        </div>
+                {% endfor %}
+                <div class="d-grid">
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

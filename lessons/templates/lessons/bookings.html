@@ -13,6 +13,7 @@
                             {% else %}
                                 <a class="btn btn-primary" href="{% url 'ban_client' school.id student.id %}">UnBan Client</a>
                             {% endif %}
+                            <a class="btn btn-primary" href="{% url 'make_administrator' school.id student.id %}">Make Administrator</a>
                         {% endif %}
                     {% endfor %}
                 </div>

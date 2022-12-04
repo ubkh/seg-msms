@@ -8,5 +8,6 @@ class SchoolCreateForm(forms.ModelForm):
         model = School
         fields = ['name']
 
+
 class SchoolManageForm(forms.Form):
     join_school = forms.BooleanField(required=False)
