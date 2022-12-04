@@ -49,7 +49,8 @@ class AdministratorCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Sc
 
     def form_valid(self, form):
         administrator = form.save()
-        administrator.set_group_administrator()
+        school = School.objects.get(id=self.kwargs['school'])
+        school.set_group_administrator(administrator)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

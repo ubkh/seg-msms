@@ -34,6 +34,10 @@
                             <a class="nav-link" href="{% url 'create_school' %}">Manage School</a>
                         {% endif %}
 
+                        {% if group.name == 'System-administrator' %}
+                            <a class="nav-link" href="{% url 'create_director' %}">Create Directors</a>
+                        {% endif %}
+
 
                     {% endfor %}
 

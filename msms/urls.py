@@ -71,7 +71,7 @@ urlpatterns = [
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
 
     # System-administrator
-    # path(name='create_director')
+    path('director/create', views.DirectorCreateView.as_view(), name='create_director'),
 
     # Administrator (Move inside school?)
     path('terms/', views.view_terms, name='terms'),
