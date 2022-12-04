@@ -15,7 +15,7 @@ from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, School
 class TransactionsListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
 
     model = Transfer
-    template_name = "transfer/transfers.html"
+    template_name = "transfer/client_transfers.html"
     context_object_name = "transfers"
     allowed_group = "Client"
 
@@ -59,7 +59,7 @@ class TransferCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolO
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('transfers', kwargs={'school': self.kwargs['school']})
+        return reverse('school_transfers', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

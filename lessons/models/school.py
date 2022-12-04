@@ -33,6 +33,40 @@ class AdmissionMixin:
         user_admission, created = Admission.objects.get_or_create(school=self, client=user)
         user_admission.groups.clear()
 
+    def ban_member(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.is_active = False
+        user_admission.save()
+
+    def unban_member(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        user_admission.is_active = True
+        user_admission.save()
+
+    def get_ban(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return not user_admission.is_active
+
+    def is_director(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.filter(name='Director').exists()
+
+    def is_super_administrator(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.filter(name='Super-administrator').exists()
+
+    def is_administrator(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.filter(name='Administrator').exists()
+
+    def is_teacher(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.filter(name='Teacher').exists()
+
+    def is_client(self, user):
+        user_admission, created = Admission.objects.get_or_create(school=self, client=user)
+        return user_admission.groups.filter(name='Client').exists()
+
     def set_group_director(self, user):
         director_group, created = Group.objects.get_or_create(name='Director')
         user_admission, created = Admission.objects.get_or_create(school=self, client=user)

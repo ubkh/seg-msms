@@ -23,7 +23,7 @@ register_converter(HashIDConverter, "hashid")
 
 
 school_urlpatterns = [
-    path('', views.SchoolHomeView.as_view(), name='school_home'),  # (includes image, description, and join and leave button)
+    path('', views.SchoolHomeView.as_view(), name='school_home'),
 
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
@@ -45,7 +45,7 @@ school_urlpatterns = [
 
     # Super-administrator
     path('members/', views.SchoolUserListView.as_view(), name='members'),
-    path('members/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_member'),  # (promote / delete student)
+    path('member/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_member'),
 
     # Director
     path('manage/', views.SchoolManageView.as_view(), name='manage_school')  # (update school fields) or delete

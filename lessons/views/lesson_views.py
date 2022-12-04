@@ -26,26 +26,17 @@ class LessonListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjec
     """
 
     model = Lesson
-    template_name = "school/student_home.html"
+    template_name = "lessons/student_lessons.html"
     context_object_name = "lessons"
     allowed_group = "Client"
 
     def get_context_data(self, **kwargs):
         context = super(LessonListView, self).get_context_data(**kwargs)
         context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
-        # context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
         return context
 
     def handle_no_permission(self):
-        school = School.objects.get(id=self.kwargs['school'])
-        try:
-            admission = Admission.objects.get(school=school, client=self.request.user)
-        except Admission.DoesNotExist:
-            return redirect('manage', school=self.kwargs['school'])
-        if admission.groups.filter(name="Administrator").exists():
-            return redirect('users', school=self.kwargs['school'])
-        else:
-            return redirect('home')
+        return redirect('school_home', school=self.kwargs['school'])
 
 
 class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
@@ -74,7 +65,7 @@ class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -108,7 +99,7 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -181,7 +172,7 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('school_bookings', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -198,7 +189,7 @@ class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     context_object_name = "lessons"
 
     def get_context_data(self, **kwargs):
-        context = super(BookingInvoiceView, self).get_context_data(**kwargs)
+        context = super(LessonInvoiceView, self).get_context_data(**kwargs)
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
         return context
 

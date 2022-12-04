@@ -42,13 +42,22 @@ class SchoolHomeView(LoginRequiredMixin, FormView):
         context = super(SchoolHomeView, self).get_context_data(**kwargs)
         school = School.objects.get(id=self.kwargs['school'])
         context['school'] = school
-        admission = Admission.objects.get(school=school, client=self.request.user)
-        context['school_user_groups'] = admission.groups.all()
+        try:
+            admission = Admission.objects.get(school=school, client=self.request.user)
+            context['school_user_groups'] = admission.groups.all()
+
+        except:
+            admission = None
         context['in_school'] = school.has_member(self.request.user)
+        context['is_not_director'] = not school.is_director(self.request.user)
+        context['is_banned'] = school.get_ban(self.request.user)
+
         return context
 
     def form_valid(self, form):
         school = School.objects.get(id=self.kwargs['school'])
+        if school.is_director(self.request.user):
+            return super().form_valid(form)
         if form.data['follow']:
             school.set_group_client(self.request.user)
         else:
@@ -73,7 +82,7 @@ class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolO
 
     def get_queryset(self):
         school = School.objects.get(id=self.kwargs['school'])
-        return User.objects.filter(enrolled_school=school, admission__groups__name='Client')
+        return User.objects.filter(Q(enrolled_school=school), ~Q(admission__groups__name='Director'))
 
     def handle_no_permission(self):
         return redirect('home')

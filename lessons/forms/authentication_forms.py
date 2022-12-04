@@ -86,10 +86,12 @@ class ChildCreateForm(forms.ModelForm):
         fields = ['first_name', 'last_name']
 
 
-class MakeAdministratorForm(forms.Form):
-    make_teacher = forms.BooleanField(required=False)
-    make_administrator = forms.BooleanField(required=False)
-    make_super_administrator = forms.BooleanField(required=False)
+class ManageMemberForm(forms.Form):
+    client = forms.BooleanField(required=False)
+    teacher = forms.BooleanField(required=False)
+    administrator = forms.BooleanField(required=False)
+    super_administrator = forms.BooleanField(required=False)
+    ban_member = forms.BooleanField(required=False)
 
 
 class BanClientForm(forms.ModelForm):
