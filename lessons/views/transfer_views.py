@@ -9,10 +9,10 @@ from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
 from lessons.models import Transfer, Lesson, User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class TransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
 
     model = Transfer
     template_name = "transfer/transfers.html"
@@ -23,7 +23,7 @@ class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMix
         return redirect('home')
 
 
-class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class TransferCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
 
     model = Transfer
     template_name = "transfer/record_transfer.html"

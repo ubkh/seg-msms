@@ -55,7 +55,7 @@ class Command(BaseCommand):
             password="Password123",
         )
         administrator_user.set_group_user()
-        school.set_group_super_administrator(administrator_user)
+        school.set_group_administrator(administrator_user)
 
         # Generate 100 random students
         for i in range(100):
@@ -87,7 +87,7 @@ class Command(BaseCommand):
             )
             print(f'Seeding Admin User {i}', end='\r')
             admin_user.set_group_user()
-            school.set_group_super_administrator(admin_user)
+            school.set_group_administrator(admin_user)
 
         # Generate 3 random Super-Admins
         for i in range(3):

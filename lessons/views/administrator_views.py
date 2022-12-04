@@ -13,10 +13,10 @@ from django.views.generic import ListView, CreateView, UpdateView
 from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm
 from lessons.helpers import super_administrator_restricted
 from lessons.models import User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class AdministratorListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
 
     """
@@ -33,7 +33,7 @@ class AdministratorListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObje
         return redirect('home')
 
 
-class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class AdministratorCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form to register an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
@@ -58,7 +58,7 @@ class AdministratorCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolOb
         return redirect('home')
 
 
-class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
+class AdministratorUpdateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
     """
     View that displays the form to edit an administrator. If a valid
     form is submitted the director is redirected to the home page, else they are
@@ -86,13 +86,13 @@ class AdministratorUpdateView(LoginRequiredMixin, GroupRestrictedMixin, UpdateVi
         return redirect('home')
 
 
-class BanClientView(LoginRequiredMixin, GroupRestrictedMixin, UpdateView):
+class BanClientView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
 
     model = User
     template_name = "authentication/ban_client.html"
     form_class = BanClientForm
     http_method_names = ['get', 'post']
-    allowed_group = "Director"
+    allowed_group = "Super-administrator" # Change to director
 
     def get_success_url(self):
         return reverse('school_home', kwargs={'school': self.kwargs['school']})

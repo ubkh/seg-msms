@@ -15,7 +15,7 @@ class ChildListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
     model = User
     template_name = "children/children.html"
     context_object_name = "children"
-    allowed_group = "Adult-student"
+    allowed_group = "Adult-user"
 
     def get_queryset(self):
         return User.objects.filter(parent=self.request.user)
@@ -30,7 +30,7 @@ class ChildCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
     template_name = "children/create_child.html"
     form_class = ChildCreateForm
     http_method_names = ['get', 'post']
-    allowed_group = "Adult-student"
+    allowed_group = "Adult-user"
 
     def form_valid(self, form):
         child = form.save()

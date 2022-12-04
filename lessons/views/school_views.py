@@ -5,9 +5,9 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView, FormView
 
 from lessons.forms import SchoolCreateForm, SchoolManageForm
-from lessons.models import School, Lesson, User, Transfer
+from lessons.models import School, Lesson, User, Transfer, Admission
 from lessons.views import GroupRestrictedMixin
-from lessons.views.mixins import SchoolObjectMixin
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
 class HomeView(LoginRequiredMixin, ListView):
@@ -19,7 +19,7 @@ class HomeView(LoginRequiredMixin, ListView):
         return redirect('index')
 
 
-class SchoolHomeView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class SchoolHomeView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays the students school home page.
     """
@@ -27,7 +27,7 @@ class SchoolHomeView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin
     model = Lesson
     template_name = "school/student_home.html"
     context_object_name = "lessons"
-    allowed_group = "Student"
+    allowed_group = "Client"
 
     def get_context_data(self, **kwargs):
         context = super(SchoolHomeView, self).get_context_data(**kwargs)
@@ -36,7 +36,9 @@ class SchoolHomeView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin
         return context
 
     def handle_no_permission(self):
-        if self.request.user.groups.filter(name='Administrator').exists():
+        school = School.objects.get(id=self.kwargs['school'])
+        admission = Admission.objects.get(school=school, client=self.request.user)
+        if admission.groups.filter(name="Administrator").exists():
             return redirect('users', school=self.kwargs['school'])
         else:
             return redirect('home')
@@ -64,7 +66,7 @@ class SchoolManageView(LoginRequiredMixin, FormView):
         return reverse('manage', kwargs={'school': self.kwargs['school']})
 
 
-class SchoolUserListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class SchoolUserListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays a list of users to the administrator.
     """

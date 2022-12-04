@@ -17,10 +17,10 @@ from django.views.generic import CreateView, UpdateView, ListView
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
 from lessons.models import Lesson, User, Transfer, School, Term
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form allowing users to request a lesson.
     If the form is valid, the user is redirected to the home page and
@@ -31,7 +31,7 @@ class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
     template_name = "lessons/request_lesson.html"
     form_class = LessonRequestForm
     http_method_names = ['get', 'post']
-    allowed_group = "Student"
+    allowed_group = "Client"
 
     def get_form_kwargs(self, **kwargs):
         form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
@@ -86,7 +86,7 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
         return redirect('home')
 
 
-class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class BookingListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all student bookings.
     """
@@ -109,7 +109,7 @@ class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixi
         return redirect('home')
 
 
-class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     """
     View that displays the form allowing administrators to fulfill a lesson
     request. If the form is valid, the admin is redirected to the home page
