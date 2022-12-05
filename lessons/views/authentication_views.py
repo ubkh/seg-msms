@@ -4,17 +4,17 @@ Views that will be used in the music school management system.
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
-from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from lessons.forms import LoginForm
-from lessons.forms import RegisterForm, AdminModifyForm
-from lessons.helpers import login_prohibited, super_administrator_restricted
-from lessons.models import Lesson, User, Transfer
+from lessons.forms import RegisterForm, EditUserForm
+from lessons.helpers import login_prohibited
+from lessons.models import User
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import UpdateView
 
 
 @login_prohibited
@@ -42,12 +42,8 @@ def register(request):
         if form.is_valid():
             user = form.save()
             user.set_group_user()
-            # student_group, created = Group.objects.get_or_create(name='Student')
-            # user.groups.add(student_group)
             if form.data.get('make_account_adult_student'):
                 user.set_group_adult_user()
-                # adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
-                # user.groups.add(adult_student_group)
             login(request, user)
             return redirect('home')
     else:
@@ -85,6 +81,24 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect('index')
+
+
+class EditUserView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+    model = User
+    template_name = "authentication/edit_profile.html"
+    form_class = EditUserForm
+    http_method_names = ['get', 'post']
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('edit_profile', kwargs={'school': self.kwargs['school']})
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
 

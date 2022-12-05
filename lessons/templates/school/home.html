@@ -9,15 +9,21 @@
           <p class="mb-0">Please contact the director for more information.</p>
         </div>
     {% endif %}
-
-    <h1><b>Account Details:</b></h1>
-    <hp class="text-muted">
-        <b>First name: {{ user.first_name }}</b> 
-        <br>
-        <b>Last name: {{user.last_name}}</b>
-        <br>
-        <b>Email: {{ user.email }}</b>
-    </p>
+    
+    <h1><b>Account Details</b></h1>
+    <h3 class="text-muted"><b>User ID: {{ user.id }}</b></h3>
+    <hr class="border border-dark border-2 opacity-100">
+    <blockquote class="blockquote">
+        First name: {{ user.first_name }}<br>
+        Last name: {{user.last_name}}<br>
+        Email: {{ user.email }}<br>
+        Enrolled at {{ school.name }}
+    </blockquote>
+    <hr class="border border-dark border-2 opacity-100">
+    <form method="post">
+        {% csrf_token %}
+        <a class="btn btn-danger" href="{% url 'edit_profile' school.id user.id %}">Edit Profile</a>
+    </form>
     <hr class="border border-dark border-2 opacity-100">
 
     <h1><b>{{ school.name }}</b></h1>

@@ -24,6 +24,7 @@ register_converter(HashIDConverter, "hashid")
 
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
+    path('edit_profile/<hashid:pk>/', views.EditUserView.as_view(), name='edit_profile'),
 
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
