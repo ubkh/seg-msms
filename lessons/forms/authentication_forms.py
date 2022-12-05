@@ -60,6 +60,19 @@ class LoginForm(forms.Form):
     email = forms.CharField(label="Email")
     password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
+class UserModifyForm(forms.ModelForm):
+    """
+    Model form to modify an existing administrator by a director.
+    """
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    delete_account = forms.BooleanField(
+        label="Would you like to delete this account?",
+        required=False
+    )
 
 class AdminModifyForm(forms.ModelForm):
     """
