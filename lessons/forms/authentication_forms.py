@@ -20,11 +20,11 @@ class EditUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email', 'instrument']
 
     delete_account = forms.BooleanField(
         label="Would you like to delete this account?",
-        required=False
+        required=False,
     )
 
 

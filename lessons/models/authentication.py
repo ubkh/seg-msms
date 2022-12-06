@@ -100,8 +100,8 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
         verbose_name="If you are interested in teaching, which instruments would you be able to teach?",
         max_length=1000,
         choices=INSTRUMENTS,
-        default='Piano',
         null=False,
+        blank=True
     )
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, verbose_name='Active Account')

@@ -22,6 +22,10 @@
 
                     {% for group in user.groups.all %}
 
+                        {% if group.name == 'User' %}
+                            <a class="btn btn-danger" href="{% url 'edit_profile' user.id %}">Edit Profile</a>
+                        {% endif %}
+
                         {% if group.name == 'Adult-user' %}
                             <a class="nav-link" href="{% url 'children' %}">Children</a>
                         {% endif %}
@@ -37,7 +41,6 @@
 
                     {% endfor %}
 
-                    <div class="vr"></div>
                     <span class="navbar-text">&nbsp&nbspLogged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
                     <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}

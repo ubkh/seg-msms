@@ -11,7 +11,7 @@ from django.urls import reverse
 from lessons.forms import LoginForm, RegisterForm, EditUserForm
 from lessons.helpers import login_prohibited
 from lessons.models import User
-from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin, GroupRestrictedMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, TemplateView
 
@@ -82,22 +82,23 @@ def log_out(request):
     return redirect('index')
 
 
-class EditUserView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
+class EditUserView(GroupRestrictedMixin, UpdateView):
     model = User
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
     http_method_names = ['get', 'post']
+    allowed_group = "User"
 
     def form_valid(self, form):
         super().form_valid(form)
         form.save()
+        if form.cleaned_data['delete_account']:
+            self.request.user.is_active = False
+            self.request.user.save()
+            logout(self.request)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.school_id})
-
-    def handle_no_permission(self):
-        return redirect('home')
-
+        return reverse('home')
 
 
