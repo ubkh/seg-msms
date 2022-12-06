@@ -5,7 +5,7 @@
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="card shadow">
                     <div class="card-title text-center border-bottom">
-                        <h2 class="p-3"><b>REGISTER</b></h2>
+                        <h2 class="p-3"><b>REGISTER AS TEACHER</b></h2>
                     </div>
                     <div class="card-body">
                         {% for message in messages %}
@@ -23,18 +23,9 @@
                                             <strong>{{ error }}</strong>
                                         </p>
                                     {% endfor %}
-                                    <input type="{{ field.field.widget.input_type }}"
-                                            {% if field.field.widget.input_type == 'checkbox' %}
-                                           class='form-check form-switch form-check-input'
-                                           value="{{ field.value }}"
-                                            {% else %}
-                                           class="form-control"
-                                           value="{{ field.value|default:'' }}"
-                                            {% endif %}
-                                           name="{{ field.name }}"
-                                           id="id_{{ field.name }}"
-
-                                    />
+                                    <div class="form-group">
+                                        {{ field }}
+                                    </div>
                                     <p class="help-text">{{ field.help_text }} </p>
                                 </div>
                             {% endfor %}
@@ -42,12 +33,6 @@
                                 <input type="submit" value="Register" class="btn btn-primary">
                             </div>
                         </form>
-                    </div>
-                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                        Want to be a teacher?&nbsp;<a href="{% url 'teacher_register' %}"><b>Register</b></a>
-                    </div>
-                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                        Already have an account?&nbsp;<a href="{% url 'login' %}"><b>Login</b></a>
                     </div>
                 </div>
             </div>

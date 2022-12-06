@@ -8,8 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from lessons.forms import LoginForm
-from lessons.forms import RegisterForm, EditUserForm
+from lessons.forms import LoginForm, RegisterForm, TeacherRegisterForm, EditUserForm
 from lessons.helpers import login_prohibited
 from lessons.models import User
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
@@ -49,6 +48,28 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})
+
+
+@login_prohibited
+def teacher_register(request):
+    """
+    View that displays the teacher's registration page and registration forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('home'))
+
+    if request.method == "POST":
+        form = TeacherRegisterForm(request.POST)
+        if form.is_valid():
+            teacher = form.save()
+            teacher.set_group_teacher()
+            login(request, teacher)
+            return redirect('home')
+    else:
+        form = TeacherRegisterForm()
+    return render(request, 'teachers/teacher_register.html', {'form': form})
 
 
 @login_prohibited

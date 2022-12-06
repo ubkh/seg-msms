@@ -17,7 +17,12 @@
         First name: {{ user.first_name }}<br>
         Last name: {{user.last_name}}<br>
         Email: {{ user.email }}<br>
-        Enrolled at {{ school.name }}
+        Enrolled at {{ school.name }}<br>
+        {% for group in user.groups.all %}
+            {%  if group.name == 'Teacher' %}
+                Teaches: {{ user.instrument}}
+            {% endif %}
+        {% endfor %}
     </blockquote>
     <hr class="border border-dark border-2 opacity-100">
     <form method="post">

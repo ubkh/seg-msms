@@ -14,8 +14,7 @@ class Command(BaseCommand):
         self.faker = Faker('en_GB')
 
     def handle(self, *args, **options):
-        print("NOTE: The seed command has not been FULLY implemented yet!")
-        print("TO DO: Create a seed command following the instructions of the assignment carefully.")
+        print("The database is seeding...")
 
         User.objects.all().delete()
         # Create Director
@@ -46,6 +45,18 @@ class Command(BaseCommand):
         )
         student_user.set_group_user()
         school.set_group_client(student_user)
+
+        # Create Teacher
+        User.objects.filter(email="sylvia.plath@example.org").delete()
+        teacher_user = User.objects.create_teacher(
+            email="sylvia.plath@example.org",
+            first_name="Sylvia",
+            last_name="Plath",
+            instrument=["Piano", "Violin"],
+            password="Password123",
+        )
+        teacher_user.set_group_user()
+        school.set_group_teacher(teacher_user)
 
         # Create Administrator
         User.objects.filter(email="petra.pickles@example.org").delete()
@@ -89,6 +100,23 @@ class Command(BaseCommand):
             print(f'Seeding Admin User {i}', end='\r')
             admin_user.set_group_user()
             school.set_group_administrator(admin_user)
+        
+        # Generate 10 random Teachers
+        for i in range(10):
+            first_name = self.faker.first_name()
+            last_name = self.faker.last_name()
+            email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
+            password = User.objects.make_random_password()
+            teacher_user = User.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+                #Implement random instruments...
+            )
+            print(f'Seeding Teacher User {i}', end='\r')
+            teacher_user.set_group_user()
+            school.set_group_teacher(teacher_user)
 
         # Generate 3 random Super-Admins
         for i in range(3):
