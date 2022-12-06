@@ -22,7 +22,8 @@ class RequestFormTestCase(TestCase):
             'student': self.user,
             'title': 'Music Lesson',
             'day': 'Monday',
-            'instrument': 'Piano',
+            'instrument': ['Piano'],
+            'teacher': 'Albert Camus',
             'time': '13:00',
             'number_of_lessons': 2,
             'interval': 1,
@@ -46,6 +47,8 @@ class RequestFormTestCase(TestCase):
         self.assertTrue(isinstance(day_field, forms.ChoiceField))
         instrument_field = form.fields['instrument']
         self.assertTrue(isinstance(instrument_field, forms.ChoiceField))
+        teacher_field = form.fields['teacher']
+        self.assertTrue(isinstance(teacher_field, forms.ChoiceField))
 
     def test_form_saves_correctly(self):
         form = LessonRequestForm(data=self.form_input, user=self.user)
@@ -60,6 +63,7 @@ class RequestFormTestCase(TestCase):
         self.assertEqual(saved_lesson.title, self.form_input['title'])
         self.assertEqual(saved_lesson.day, self.form_input['day'])
         self.assertEqual(saved_lesson.instrument, self.form_input['instrument'])
+        self.assertEqual(saved_lesson.teacher, self.form_input['teacher'])
         self.assertEqual(saved_lesson.time, datetime.time(13,0))
         self.assertEqual(saved_lesson.number_of_lessons, self.form_input['number_of_lessons'])
         self.assertEqual(saved_lesson.interval, self.form_input['interval'])
@@ -78,6 +82,11 @@ class RequestFormTestCase(TestCase):
 
     def test_form_uses_instrument_validation(self):
         self.form_input['instrument'] = 'Wrong_Instrument'
+        form = LessonRequestForm(data=self.form_input, user=self.user)
+        self.assertFalse(form.is_valid())
+    
+    def test_form_uses_teacher_validation(self):
+        self.form_input['teacher'] = 'Wrong_teacher'
         form = LessonRequestForm(data=self.form_input, user=self.user)
         self.assertFalse(form.is_valid())
 
