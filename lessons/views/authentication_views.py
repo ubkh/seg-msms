@@ -63,9 +63,9 @@ def teacher_register(request):
     if request.method == "POST":
         form = TeacherRegisterForm(request.POST)
         if form.is_valid():
-            teacher = form.save()
-            teacher.set_group_teacher()
-            login(request, teacher)
+            user = form.save()
+            user.set_group_teacher()
+            login(request, user)
             return redirect('home')
     else:
         form = TeacherRegisterForm()

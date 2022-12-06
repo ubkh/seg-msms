@@ -34,6 +34,9 @@ school_urlpatterns = [
 
     path('transactions/', views.TransactionsListView.as_view(), name='client_transactions'),
 
+    # Teacher
+    path('timetable/', views.TimetableView.as_view(), name='timetable'),
+
     # Administrator
     path('bookings/', views.BookingListView.as_view(), name='school_bookings'),
     path('lesson/<hashid:pk>/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),

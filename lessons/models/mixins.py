@@ -23,6 +23,11 @@ class GroupRegistrationMixin:
         director_group, created = Group.objects.get_or_create(name='Director')
         self.groups.add(director_group)
 
+    def set_group_teacher(self):
+        teacher_group, created = Group.objects.get_or_create(name='Teacher')
+        self.groups.add(teacher_group)
+        self.set_group_user()
+
     def set_group_adult_user(self):
         adult_user_group, created = Group.objects.get_or_create(name='Adult-user')
         self.groups.add(adult_user_group)

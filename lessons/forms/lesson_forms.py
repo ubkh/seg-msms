@@ -16,10 +16,10 @@ class LessonModifyForm(forms.ModelForm):
     Model form used for students who wish to request a new lesson or change their preferences
     for an existing lesson request.
     """
-
+    teacher = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
     class Meta:
         model = Lesson
-        fields = ['title', 'instrument', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']
+        fields = ['title', 'instrument', 'teacher', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']
         widgets = {
             'instrument': forms.Select(attrs={'class': "form-select"}),
             'day': forms.Select(attrs={'class': "form-select"}),
@@ -77,7 +77,6 @@ class LessonFulfillForm(forms.ModelForm):
     """
     Model form for administrators who wish to fulfill a booking.
     """
-
     class Meta:
         model = Lesson
         fields = ['day', 'time', 'duration', 'interval', 'number_of_lessons', 'start_type', 'start_date', 'start_term', 'end_date']
