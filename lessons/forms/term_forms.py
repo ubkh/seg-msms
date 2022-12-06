@@ -3,6 +3,7 @@ Forms that will be used in the music school management system.
 """
 
 from django import forms
+from django.db.models import Q
 
 from lessons.models import Term
 
@@ -25,13 +26,15 @@ class TermForm(forms.ModelForm):
         cleaned = super(TermForm, self).clean()
         start = cleaned.get('start_date')
         end = cleaned.get('end_date')
-        print(cleaned.get('school'))
-        print(self.data)
         conflicts = Term.objects.filter(
             school_id=self.school,
             start_date__lte=end,
             end_date__gte=start
         )
+        # we are editing a term in this case
+        if self.term:
+            # remove this term from conflicts as we are editing it
+            conflicts = conflicts.filter(~Q(id=self.term.id))
         if any(conflicts):
             raise forms.ValidationError("These dates overlap with existing terms.")
         if end <= start:
@@ -40,4 +43,5 @@ class TermForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.school = kwargs['initial']['school']
+        self.term = kwargs['instance']
         super(TermForm, self).__init__(*args, **kwargs)
