@@ -1,4 +1,17 @@
-{% load widget_tweaks %}
+{% for field in form %}
+    <div class="mb-4">
+        <label class="form-label">{{ field.label }}</label>
+        {% for error in field.errors %}
+            <p style="color: red;">
+                <strong>{{ error }}</strong>
+            </p>
+        {% endfor %}
+        {{ field }}
+        <p class="help-text">{{ field.help_text }} </p>
+    </div>
+{% endfor %}
+
+{% comment %}
 
 {% for field in form %}
     <div class="mb-3 form-floating">
@@ -25,3 +38,5 @@
         </div>
     </div>
 {% endfor %}
+
+{% endcomment %}

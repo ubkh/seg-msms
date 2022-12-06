@@ -5,7 +5,7 @@ Forms that will be used in the music school management system.
 from django import forms
 from django.core.validators import RegexValidator
 
-from lessons.models import User, School
+from lessons.models import User, School, Admission
 
 
 class LoginForm(forms.Form):

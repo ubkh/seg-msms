@@ -3,6 +3,7 @@ Models that will be used in the music school management system.
 """
 from django.db import models
 from datetime import datetime
+from django.utils.text import slugify
 
 from lessons.models import Term
 from lessons.models import User
@@ -17,7 +18,8 @@ class School(AdmissionMixin, models.Model):
     The School model holds shared state for a particular school.
     """
     name = models.CharField(max_length=30, blank=False)
-    director = models.ForeignKey(
+    slug = models.SlugField(unique=True, default=name)
+    director = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         blank=False,
@@ -45,5 +47,9 @@ class School(AdmissionMixin, models.Model):
                 self.current_term = next
         return self.current_term
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(AdmissionMixin, self).save(*args, **kwargs)
+
     def __str__(self):
-        return str(f"{self.name} managed by {self.director}")
+        return str(f"{self.name}")

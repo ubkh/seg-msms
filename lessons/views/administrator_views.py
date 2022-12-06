@@ -3,7 +3,7 @@ Views that will be used in the music school management system.
 """
 from django.db.models import Q
 from django.urls import reverse
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, UpdateView
 
 from lessons.forms import ManageMemberForm
 from lessons.models import User, School, Admission
@@ -15,6 +15,12 @@ class ManageStudentView(SchoolGroupRestrictedMixin, FormView): # SchoolObjectMix
     form_class = ManageMemberForm
     http_method_names = ['get', 'post']
     allowed_group = "Director"
+
+    def dispatch(self, *args, **kwargs):
+        school = School.objects.get(id=self.kwargs['school'])
+        if self.kwargs['pk'] == school.director_id:
+            return self.handle_no_permission()
+        return super().dispatch(*args, **kwargs)
 
     def form_valid(self, **kwargs):
         pass
@@ -70,9 +76,8 @@ class SchoolUserListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView
     """
     model = User
     template_name = "school/users.html"
-    context_object_name = "students"
+    context_object_name = "school_admissions"
     allowed_group = "Super-administrator"
 
     def get_queryset(self):
-        school = School.objects.get(id=self.kwargs['school'])
-        return User.objects.filter(Q(enrolled_school=school), ~Q(admission__groups__name='Director'))
+        return Admission.objects.filter(Q(school=self.school_instance), ~Q(school=self.school_instance, groups__name='Director'))

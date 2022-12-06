@@ -44,7 +44,7 @@ class TransferAdmin(admin.ModelAdmin):
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'name', 'director', 'current_term'
+        'id', 'name', 'slug', 'director', 'current_term'
     ]
 
 
