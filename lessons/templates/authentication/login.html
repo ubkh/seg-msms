@@ -13,7 +13,7 @@
                         <b>{{ message }}</b>
                     </p>
                   {% endfor %}
-                  <form action="{% url 'login' %}" method="post">
+                  <form action="{% url 'log_in' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ next }}">
                     {% for field in form %}
@@ -24,10 +24,10 @@
                                 <strong>{{ error }}</strong>
                             </p>
                         {% endfor %}
-                        <input type="{{ field.field.widget.input_type }}" 
-                               class="form-control" 
+                        <input type="{{ field.field.widget.input_type }}"
+                               class="form-control"
                                name="{{ field.name }}"
-                               id="id_{{ field.name }}" 
+                               id="id_{{ field.name }}"
                                value="{{ field.value|default:'' }}"
                         />
                         <p class="help-text">{{ field.help_text }} </p>

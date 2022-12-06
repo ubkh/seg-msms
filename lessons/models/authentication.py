@@ -10,6 +10,16 @@ from django.db import models
 from multiselectfield import MultiSelectField
 from lessons.models.mixins import GroupRegistrationMixin
 
+INSTRUMENTS = [
+    ('Piano', 'Piano'),
+    ('Guitar', 'Guitar'),
+    ('Drums', 'Drums'),
+    ('Violin', 'Violin'),
+    ('Trumpet', 'Trumpet'),
+    ('Flute', 'Flute'),
+    ('Harp', 'Harp'),
+]
+
 
 class UserManager(BaseUserManager):
     """
@@ -37,12 +47,6 @@ class UserManager(BaseUserManager):
         Create a standard user.
         """
         return self._create_user(email, password, False, False, **extra_fields)
-    
-    def create_teacher(self, email, password, **extra_fields):
-        """
-        Create a standard teacher.
-        """
-        return self._create_user(email, password, True, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
         """
@@ -92,20 +96,11 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
         on_delete=models.CASCADE
     )
     is_staff = models.BooleanField(default=False)
-    INSTRUMENTS = [
-        ('Piano', 'Piano'),
-        ('Guitar','Guitar'),
-        ('Drums','Drums'),
-        ('Violin','Violin'),
-        ('Trumpet','Trumpet'),
-        ('Flute','Flute'),
-        ('Harp','Harp'),
-    ]
     instrument = MultiSelectField(
-        verbose_name="What can you teach?",
-        max_length=1000, 
-        choices=INSTRUMENTS, 
-        default='Piano', 
+        verbose_name="If you are interested in teaching, which instruments are you able to teach?",
+        max_length=1000,
+        choices=INSTRUMENTS,
+        default='Piano',
         null=False,
     )
     is_superuser = models.BooleanField(default=False)

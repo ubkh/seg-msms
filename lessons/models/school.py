@@ -45,4 +45,5 @@ class School(AdmissionMixin, models.Model):
                 self.current_term = next
         return self.current_term
 
-
+    def __str__(self):
+        return str(f"{self.name} managed by {self.director}")
