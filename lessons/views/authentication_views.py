@@ -104,7 +104,7 @@ def log_out(request):
     return redirect('index')
 
 
-class EditUserView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+class EditUserView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
     model = User
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
@@ -116,7 +116,7 @@ class EditUserView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectM
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('edit_profile', kwargs={'school': self.kwargs['school']})
+        return reverse('school_home', kwargs={'school': self.school_id})
 
     def handle_no_permission(self):
         return redirect('home')

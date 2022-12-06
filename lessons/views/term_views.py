@@ -2,22 +2,17 @@
 Views that will be used in the music school management system.
 """
 
-from webbrowser import get
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 
-from lessons.models import Term, School
-from lessons.helpers import administrator_restricted
-from lessons.forms import TermForm, LessonModifyForm, term_forms
-from lessons.models import School, Term, Lesson, User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.forms import TermForm
+from lessons.models import School, Term
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TermsView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     model = Term
     template_name = "terms/terms.html"
     form_class = TermForm
@@ -42,13 +37,10 @@ class TermsView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixi
         return super(TermsView, self).get_context_data(**kwargs)
 
     def get_success_url(self):
-        return reverse('terms', kwargs={'school': self.kwargs['school']})
-
-    def handle_no_permission(self):
-        return redirect('home')
+        return reverse('terms', kwargs={'school': self.school_id})
 
 
-class TermEditView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+class TermEditView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     model = Term
     template_name = "terms/edit_term.html"
     form_class = TermForm
@@ -62,9 +54,6 @@ class TermEditView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectM
 
     def get_initial(self):
         return {'school': self.kwargs['school']}
-        
-    def get_success_url(self):
-        return reverse('terms', kwargs={'school': self.kwargs['school']})
 
-    def handle_no_permission(self):
-        return redirect('home')
+    def get_success_url(self):
+        return reverse('terms', kwargs={'school': self.school_id})
