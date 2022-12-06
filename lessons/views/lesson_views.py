@@ -2,8 +2,10 @@
 Views that will be used in the music school management system.
 """
 
-from datetime import datetime
-
+from datetime import datetime, timedelta
+from time import time
+from unicodedata import name
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -11,10 +13,12 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, ListView
+from django.utils.timezone import make_aware
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import lesson_fulfilled_restricted
 from lessons.models import Lesson, User, School, Term
+from lessons.models.lesson import ScheduledLesson
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
@@ -160,13 +164,39 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
         data.price = (data.duration / 60) * data.number_of_lessons * 10
         if data.end_date == None and self.this_term != None:
             data.end_date = self.this_term.end_date
+        if data.start_type == "Term":
+            term = Term.objects.get(pk=data.start_term_id)
+            data.start_date = term.start_date
         data.fulfilled = True
         form.save()
+
+        self.calculateSchedule(data)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('school_bookings', kwargs={'school': self.kwargs['school']})
 
+    def handle_no_permission(self):
+        return redirect('home')
+
+    def calculateSchedule(self, lesson):
+        duration = timedelta(minutes=lesson.duration)
+        interval = timedelta(weeks=lesson.interval)
+        date = lesson.start_date
+        
+        while date.strftime('%A') != lesson.day:
+            date += timedelta(days=1)
+
+        current = datetime.combine(date, lesson.time)
+        
+        while current.date() <= lesson.end_date:
+            sl = ScheduledLesson.objects.create(
+                lesson = Lesson.objects.get(pk=lesson.id),
+                start = make_aware(current),
+                end = make_aware(current + duration)
+            )
+
+            current += interval
 
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
 class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions
