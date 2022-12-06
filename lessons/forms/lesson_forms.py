@@ -2,9 +2,9 @@
 Forms that will be used in the music school management system.
 """
 
-from xml.dom import ValidationErr
 from django import forms
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from lessons.models import Lesson, User, Term, School
 
@@ -127,7 +127,8 @@ class LessonFulfillForm(forms.ModelForm):
     def clean(self):
         super().clean()
         if self.fields['end_date'] == None:
-            if Term.objects.count() < 1:
+            print(self.data)
+            if Term.objects.filter(school_id=self.data['school']).count() < 1:
                 raise forms.ValidationError("End date cannot be blank if a term does not exist.")
                 
 
@@ -137,10 +138,10 @@ class LessonFulfillForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['start_term'].queryset = Term.objects.all()
+        self.fields['start_term'].queryset = Term.objects.filter(school_id=kwargs['initial']['school'])
         self.fields['start_term'].empty_label = None
 
-        school_instance = School.objects.get(name="KCL Kangaroos")
+        school_instance = get_object_or_404(School, pk=kwargs['initial']['school'])
         term = school_instance.get_update_current_term
         if term == None:
             self.fields.pop('start_term')

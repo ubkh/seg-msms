@@ -103,10 +103,6 @@ class Command(BaseCommand):
         )
         director_user.set_group_director()
 
-        school, created = School.objects.get_or_create(
-            name = "KCL Kangaroos",
-            director = director_user
-        )
         # director_user.groups.add(director_group)
         # director_user.groups.add(super_administrator_group)
         # director_user.groups.add(administrator_group)
