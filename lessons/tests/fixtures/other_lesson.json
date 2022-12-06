@@ -7,7 +7,8 @@
             "title": "Test Lesson 2",
             "student": "1",
             "school": 1,
-            "time": "13:00"
+            "time": "13:00",
+            "teacher": "1"
         }
     }
 ]

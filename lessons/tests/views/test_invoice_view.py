@@ -81,6 +81,11 @@ class InvoiceViewTestCase(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertContains(response, self.lesson.instrument)
+    
+    def test_invoice_contains_teacher(self):
+        self.client.login(email=self.user.email, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.lesson.teacher)
 
     def test_invoice_not_accessible_when_not_fulfilled(self):
         other_url = reverse('booking_invoice', kwargs={'school': self.school.id, 'pk': self.other_lesson.id})

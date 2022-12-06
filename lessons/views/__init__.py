@@ -6,3 +6,4 @@ from .child_views import *
 from .term_views import *
 from .school_views import *
 from .director_views import *
+from .teacher_view import *

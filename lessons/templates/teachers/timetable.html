@@ -1,0 +1,29 @@
+{% extends 'base/school_base.html' %}
+{% block school_body %}
+    <div class="container">
+        <h2>Timetable</h2>
+        <hr>
+        <div class="list-group">
+            <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can see your up and coming classes here.</p>
+        </div>
+    </div>
+    <div class="mt-2 container">
+        <ul class="list-group list-group-light">
+            <h5>Upcoming</h5>
+            {% for l in lessons %}
+                {% if l.fulfilled is True %}
+                    {% if l.teacher == user %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start px-2 rounded-3 mb-3 shadow-sm">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold mb-2">{{ l.title }} - {{ l.instrument }} with {{ l.student }}</div>
+                                <p class="text-muted mb-2">{{ l.information }}</p>
+                            </div>
+                            <i class="bi bi-calendar" style="padding-right: 5px;"></i> {{ l.day }} &nbsp;
+                            <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>At {{ l.time }} for {{ l.duration }}m &nbsp;
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

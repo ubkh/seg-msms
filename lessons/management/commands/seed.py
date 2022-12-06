@@ -3,6 +3,7 @@ from lessons.models import User, Term
 from django.contrib.auth.models import Group
 import datetime
 from faker import Faker
+import random
 
 from lessons.models.school import School
 
@@ -14,8 +15,7 @@ class Command(BaseCommand):
         self.faker = Faker('en_GB')
 
     def handle(self, *args, **options):
-        print("NOTE: The seed command has not been FULLY implemented yet!")
-        print("TO DO: Create a seed command following the instructions of the assignment carefully.")
+        print("The database is seeding...")
 
         User.objects.all().delete()
         # Create Director
@@ -47,6 +47,19 @@ class Command(BaseCommand):
         student_user.set_group_user()
         school.set_group_client(student_user)
 
+        # Create Teacher
+        User.objects.filter(email="sylvia.plath@example.org").delete()
+        teacher_user = User.objects.create_teacher(
+            email="sylvia.plath@example.org",
+            first_name="Sylvia",
+            last_name="Plath",
+            instrument=["Piano", "Violin"],
+            password="Password123",
+        )
+        teacher_user.set_group_user()
+        teacher_user.set_group_teacher()
+        school.set_group_teacher(teacher_user)
+
         # Create Administrator
         User.objects.filter(email="petra.pickles@example.org").delete()
         administrator_user = User.objects.create_user(
@@ -58,8 +71,8 @@ class Command(BaseCommand):
         administrator_user.set_group_user()
         school.set_group_administrator(administrator_user)
 
-        # Generate 100 random students
-        for i in range(100):
+        # Generate 50 random students
+        for i in range(50):
             first_name = self.faker.first_name()
             last_name = self.faker.last_name()
             email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
@@ -74,8 +87,8 @@ class Command(BaseCommand):
             student_user.set_group_user()
             school.set_group_client(student_user)
 
-        # Generate 10 random Admins
-        for i in range(10):
+        # Generate 5 random Admins
+        for i in range(5):
             first_name = self.faker.first_name()
             last_name = self.faker.last_name()
             email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
@@ -89,6 +102,36 @@ class Command(BaseCommand):
             print(f'Seeding Admin User {i}', end='\r')
             admin_user.set_group_user()
             school.set_group_administrator(admin_user)
+        
+
+        INSTRUMENTS = [
+            ('Piano', 'Piano'),
+            ('Guitar','Guitar'),
+            ('Drums','Drums'),
+            ('Violin','Violin'),
+            ('Trumpet','Trumpet'),
+            ('Flute','Flute'),
+            ('Harp','Harp'),
+        ]
+
+        # Generate 5 random Teachers
+        for i in range(5):
+            first_name = self.faker.first_name()
+            last_name = self.faker.last_name()
+            email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
+            instrument = random.sample(INSTRUMENTS, k=random.randint(1, len(INSTRUMENTS)))
+            password = User.objects.make_random_password()
+            teacher_user = User.objects.create_teacher(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password,
+                instrument=instrument
+            )
+            print(f'Seeding Teacher User {i}', end='\r')
+            teacher_user.set_group_user()
+            teacher_user.set_group_teacher()
+            school.set_group_teacher(teacher_user)
 
         # Generate 3 random Super-Admins
         for i in range(3):
