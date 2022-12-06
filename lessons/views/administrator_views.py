@@ -1,27 +1,23 @@
 """
 Views that will be used in the music school management system.
 """
-
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView, FormView
+from django.views.generic import ListView, FormView
 
-from lessons.forms import RegisterForm, AdminModifyForm, BanClientForm, ManageMemberForm
-from lessons.helpers import super_administrator_restricted
+from lessons.forms import ManageMemberForm
 from lessons.models import User, School, Admission
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class ManageStudentView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView):
-
+class ManageStudentView(SchoolGroupRestrictedMixin, FormView): # SchoolObjectMixin
     template_name = "authentication/manage_student.html"
     form_class = ManageMemberForm
     http_method_names = ['get', 'post']
     allowed_group = "Director"
+
+    def form_valid(self, **kwargs):
+        pass
 
     def get_context_data(self, **kwargs):
         context = super(ManageStudentView, self).get_context_data(**kwargs)
@@ -65,24 +61,18 @@ class ManageStudentView(LoginRequiredMixin, SchoolGroupRestrictedMixin, FormView
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('members', kwargs={'school': self.kwargs['school']})
-
-    def handle_no_permission(self):
-        return redirect('home')
+        return reverse('members', kwargs={'school': self.kwargs['school']})  # self.school_id
 
 
-class BanClientView(LoginRequiredMixin, SchoolGroupRestrictedMixin, UpdateView):
-
+class SchoolUserListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays a list of users to the administrator.
+    """
     model = User
-    template_name = "authentication/ban_client.html"
-    form_class = BanClientForm
-    http_method_names = ['get', 'post']
+    template_name = "school/users.html"
+    context_object_name = "students"
     allowed_group = "Super-administrator"
 
-    def get_success_url(self):
-        return reverse('members', kwargs={'school': self.kwargs['school']})
-
-    def handle_no_permission(self):
-        return redirect('home')
-
-
+    def get_queryset(self):
+        school = School.objects.get(id=self.kwargs['school'])
+        return User.objects.filter(Q(enrolled_school=school), ~Q(admission__groups__name='Director'))

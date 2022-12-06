@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from lessons.models import Lesson
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
-class TimetableView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all teacher lessons.
     """

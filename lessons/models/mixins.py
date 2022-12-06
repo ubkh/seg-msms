@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from django.apps import apps
 
 
 class GroupRegistrationMixin:
@@ -9,67 +10,124 @@ class GroupRegistrationMixin:
     ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
     ┃  System-administrator  ┃
     ┃        Director        ┃
+    ┃           ↓ (inherits) ┃
     ┃       Adult-user       ┃
     ┃           ↓ (inherits) ┃
     ┃          User          ┃
     ┗━━━━━━━━━━━━━━━━━━━━━━━━┛
     """
 
+    def _set_group(self, group):
+        group, created = Group.objects.get_or_create(name=group)
+        self.groups.add(group)
+
     def set_group_system_administrator(self):
-        system_administrator_group, created = Group.objects.get_or_create(name='System-administrator')
-        self.groups.add(system_administrator_group)
+        self._set_group('System-administrator')
 
     def set_group_director(self):
-        director_group, created = Group.objects.get_or_create(name='Director')
-        self.groups.add(director_group)
+        self._set_group('Director')
+        self.set_group_adult_user()
 
     def set_group_teacher(self):
-        teacher_group, created = Group.objects.get_or_create(name='Teacher')
+        teacher_group, created = Group.objects.get_or_create(name='Teacher')  # Move to school groups
         self.groups.add(teacher_group)
         self.set_group_user()
 
     def set_group_adult_user(self):
-        adult_user_group, created = Group.objects.get_or_create(name='Adult-user')
-        self.groups.add(adult_user_group)
+        self._set_group('Adult-user')
         self.set_group_user()
 
     def set_group_user(self):
-        user_group, created = Group.objects.get_or_create(name='User')
-        self.groups.add(user_group)
+        self._set_group('User')
 
-    """
-    Deprecated Groups (DO NOT USE)
-    """
 
+class AdmissionMixin:
     """
-    def set_group_director(self):
-        director_group, created = Group.objects.get_or_create(name='Director')
-        self.groups.add(director_group)
-        self.set_group_super_administrator()
-    """
+    Mixin that allows a school to add a group to a specified user.
 
-    """
-    def set_group_super_administrator(self):
-        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        self.groups.add(super_administrator_group)
-        self.set_group_administrator()
+    School Groups
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃        Director        ┃
+    ┃           ↓ (inherits) ┃
+    ┃   Super-administrator  ┃
+    ┃           ↓ (inherits) ┃
+    ┃     Administrator      ┃
+    ┃         Teacher        ┃
+    ┃         Client         ┃
+    ┗━━━━━━━━━━━━━━━━━━━━━━━━┛
     """
 
-    """
-    def set_group_administrator(self):
-        administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        self.groups.add(administrator_group)
-    """
+    def _get_user_admission(self, user):
+        user_admission, created = apps.get_model('lessons.Admission').objects.get_or_create(school=self, client=user)
+        return user_admission
+
+    def leave_school(self, user):
+        user_admission = self._get_user_admission(user)
+        user_admission.groups.clear()
+
+    def ban_member(self, user):
+        user_admission = self._get_user_admission(user)
+        user_admission.is_active = False
+        user_admission.save()
+
+    def unban_member(self, user):
+        user_admission = self._get_user_admission(user)
+        user_admission.is_active = True
+        user_admission.save()
+
+    def has_member(self, user):
+        user_admission = self._get_user_admission(user)
+        return user_admission.groups.count()
+
+    def get_ban(self, user):
+        user_admission = self._get_user_admission(user)
+        return not user_admission.is_active
 
     """
-    def set_group_adult_student(self):
-        adult_student_group, created = Group.objects.get_or_create(name='Adult-student')
-        self.groups.add(adult_student_group)
-        self.set_group_student()
+    Group getters
     """
 
+    def _is_group(self, user, group):
+        user_admission = self._get_user_admission(user)
+        return user_admission.groups.filter(name=group).exists()
+
+    def is_director(self, user):
+        return self._is_group(user, 'Director')
+
+    def is_super_administrator(self, user):
+        return self._is_group(user, 'Super-administrator')
+
+    def is_administrator(self, user):
+        return self._is_group(user, 'Administrator')
+
+    def is_teacher(self, user):
+        return self._is_group(user, 'Teacher')
+
+    def is_client(self, user):
+        return self._is_group(user, 'Client')
+
     """
-    def set_group_student(self):
-        student_group, created = Group.objects.get_or_create(name='Student')
-        self.groups.add(student_group)
+    Group setters
     """
+
+    def _set_group(self, user, group):
+        group, created = Group.objects.get_or_create(name=group)
+        user_admission = self._get_user_admission(user)
+        user_admission.groups.add(group)
+
+    def set_group_director(self, user):
+        self._set_group(user, 'Director')
+        self.set_group_super_administrator(user)
+
+    def set_group_super_administrator(self, user):
+        self._set_group(user, 'Super-administrator')
+        self.set_group_administrator(user)
+
+    def set_group_administrator(self, user):
+        self._set_group(user, 'Administrator')
+
+    def set_group_teacher(self, user):
+        self._set_group(user, 'Teacher')
+
+    def set_group_client(self, user):
+        self._set_group(user, 'Client')
