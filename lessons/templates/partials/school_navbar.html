@@ -11,6 +11,10 @@
             <a href="{% url 'client_transactions' school.id %}" class="list-group-item list-group-item-action">Transactions</a>
         {% endif %}
 
+        {% if group.name == 'Teacher' %}
+            <a href="{% url 'timetable' school.id %}" class="list-group-item list-group-item-action">See Timetable</a>
+        {% endif %}
+
         {% if group.name == 'Administrator' %}
             <a href="{% url 'school_bookings' school.id %}" class="list-group-item list-group-item-action">School Bookings</a>
             <a href="{% url 'school_transfers' school.id %}" class="list-group-item list-group-item-action">School Transfers</a>

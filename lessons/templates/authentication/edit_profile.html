@@ -5,7 +5,7 @@
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="card shadow">
                     <div class="card-title text-center border-bottom">
-                        <h2 class="p-3"><b>REGISTER</b></h2>
+                        <h2 class="p-3"><b>EDIT</b></h2>
                     </div>
                     <div class="card-body">
                         {% for message in messages %}
@@ -39,15 +39,9 @@
                                 </div>
                             {% endfor %}
                             <div class="d-grid">
-                                <input type="submit" value="Register" class="btn btn-primary">
+                                <input type="submit" value="Edit" class="btn btn-primary">
                             </div>
                         </form>
-                    </div>
-                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                        Want to be a teacher?&nbsp;<a href="{% url 'teacher_register' %}"><b>Register</b></a>
-                    </div>
-                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                        Already have an account?&nbsp;<a href="{% url 'login' %}"><b>Login</b></a>
                     </div>
                 </div>
             </div>

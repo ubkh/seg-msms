@@ -33,7 +33,7 @@
                             <div class="fw-bold mb-2">{{ l.title }} - {{ l.instrument }}</div>
                             <p class="text-muted mb-2">{{ l.information }}</p>
                         </div>
-                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
+                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i> {{ l.Teacher }} &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
                         &nbsp;
                         <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>
@@ -53,7 +53,7 @@
                             <div class="fw-bold mb-2">{{ l.title }} - {{ l.instrument }} - £{{ l.price }}</div>
                             <p class="text-muted mb-2">{{ l.information }}</p>
                         </div>
-                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i>Teacher &nbsp;
+                        <i class="bi bi-person-fill" style="padding-right: 5px;"></i>{{ l.Teacher }} &nbsp;
                         <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }} &nbsp;
                         &nbsp;
                         <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><i class="bi bi-pencil"></i></a>

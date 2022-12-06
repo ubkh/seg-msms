@@ -9,6 +9,27 @@
           <p class="mb-0">Please contact the director for more information.</p>
         </div>
     {% endif %}
+    
+    <h1><b>Account Details</b></h1>
+    <h3 class="text-muted"><b>User ID: {{ user.id }}</b></h3>
+    <hr class="border border-dark border-2 opacity-100">
+    <blockquote class="blockquote">
+        First name: {{ user.first_name }}<br>
+        Last name: {{user.last_name}}<br>
+        Email: {{ user.email }}<br>
+        Enrolled at {{ school.name }}<br>
+        {% for group in user.groups.all %}
+            {%  if group.name == 'Teacher' %}
+                Teaches: {{ user.instrument}}
+            {% endif %}
+        {% endfor %}
+    </blockquote>
+    <hr class="border border-dark border-2 opacity-100">
+    <form method="post">
+        {% csrf_token %}
+        <a class="btn btn-danger" href="{% url 'edit_profile' school.id user.id %}">Edit Profile</a>
+    </form>
+    <hr class="border border-dark border-2 opacity-100">
 
     <h1><b>{{ school.name }}</b></h1>
     <h3 class="text-muted"><b>Director: {{ school.director }}</b></h3>

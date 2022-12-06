@@ -24,6 +24,7 @@ register_converter(HashIDConverter, "hashid")
 
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
+    path('edit_profile/<hashid:pk>/', views.EditUserView.as_view(), name='edit_profile'),
 
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
@@ -32,6 +33,9 @@ school_urlpatterns = [
     path('lesson/<hashid:pk>/invoice/', views.LessonInvoiceView.as_view(), name='booking_invoice'),
 
     path('transactions/', views.TransactionsListView.as_view(), name='client_transactions'),
+
+    # Teacher
+    path('timetable/', views.TimetableView.as_view(), name='timetable'),
 
     # Administrator
     path('bookings/', views.BookingListView.as_view(), name='school_bookings'),
@@ -61,6 +65,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
+    path('teacher_register/', views.teacher_register, name='teacher_register'),
 
     # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),
