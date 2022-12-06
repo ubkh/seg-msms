@@ -138,12 +138,10 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
     allowed_group = "Administrator"
 
     def dispatch(self, request, *args, **kwargs):
-        print(self.kwargs)
-
-        school_instance = School.objects.get(name="KCL Kangaroos")
+        school_instance = get_object_or_404(School, pk=self.kwargs['school'])
         self.this_term = school_instance.get_update_current_term
-        if self.this_term != None and Term.objects.count() > 1:
-            self.next_term = Term.get_next_by_start_date(self.this_term)
+        if self.this_term != None and Term.objects.filter(school_id=self.kwargs['school']).count() > 1:
+            self.next_term = Term.get_next_by_start_date(self.this_term, school=school_instance)
             days_to_term_end = (self.this_term.end_date - datetime.now().date()).days
             # we still have a week of term left
             if days_to_term_end >= 7:
@@ -157,7 +155,7 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
         return super(LessonFulfillView, self).dispatch(request, *args, **kwargs)
 
     def get_initial(self):
-        return {'start_term': self.next_term}
+        return {'start_term': self.next_term, 'school': self.kwargs['school']}
 
     def form_valid(self, form):
         super().form_valid(form)

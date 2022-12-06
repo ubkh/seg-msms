@@ -27,14 +27,18 @@ class TermsView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixi
     def form_valid(self, form):
         super().form_valid(form)
         term = form.save()
-        if Term.objects.count() == 1:
-            school_instance = School.objects.get(name="KCL Kangaroos")
+        print("ohhhhhhhh")
+        if Term.objects.filter(school_id=self.kwargs['school']).count() == 1:
+            school_instance = get_object_or_404(School, pk=self.kwargs['school'])
             setattr(school_instance, 'current_term', term)
             school_instance.save()
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_initial(self):
+        return {'school': self.kwargs['school']}
+
     def get_context_data(self, **kwargs):
-        kwargs['terms'] = Term.objects.all()
+        kwargs['terms'] = Term.objects.filter(school_id=self.kwargs['school'])
         return super(TermsView, self).get_context_data(**kwargs)
 
     def get_success_url(self):
@@ -56,6 +60,9 @@ class TermEditView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectM
         form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_initial(self):
+        return {'school': self.kwargs['school']}
+        
     def get_success_url(self):
         return reverse('terms', kwargs={'school': self.kwargs['school']})
 

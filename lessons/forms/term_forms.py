@@ -25,7 +25,10 @@ class TermForm(forms.ModelForm):
         cleaned = super(TermForm, self).clean()
         start = cleaned.get('start_date')
         end = cleaned.get('end_date')
+        print(cleaned.get('school'))
+        print(self.data)
         conflicts = Term.objects.filter(
+            school_id=self.school,
             start_date__lte=end,
             end_date__gte=start
         )
@@ -34,3 +37,7 @@ class TermForm(forms.ModelForm):
         if end <= start:
             raise forms.ValidationError("The end date cannot be earlier or equal to the start date!")
         return cleaned
+
+    def __init__(self, *args, **kwargs):
+        self.school = kwargs['initial']['school']
+        super(TermForm, self).__init__(*args, **kwargs)
