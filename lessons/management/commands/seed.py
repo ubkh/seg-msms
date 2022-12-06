@@ -18,6 +18,46 @@ class Command(BaseCommand):
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
 
         User.objects.all().delete()
+        # Create Director
+        User.objects.filter(email="marty.major@example.org").delete()
+        director_user = User.objects.create_user(
+            email="marty.major@example.org",
+            first_name="Marty",
+            last_name="Major",
+            password="Password123",
+        )
+        director_user.set_group_director()
+
+        School.objects.all().delete()
+        school, created = School.objects.get_or_create(
+            name="KCL Kangaroos",
+            director=director_user,
+            description=self.faker.text(max_nb_chars=1000)
+        )
+        school.set_group_director(director_user)
+
+        # Create Student
+        User.objects.filter(email="john.doe@example.org").delete()
+        student_user = User.objects.create_user(
+            email="john.doe@example.org",
+            first_name="John",
+            last_name="Doe",
+            password="Password123",
+        )
+        student_user.set_group_user()
+        school.set_group_client(student_user)
+
+        # Create Administrator
+        User.objects.filter(email="petra.pickles@example.org").delete()
+        administrator_user = User.objects.create_user(
+            email="petra.pickles@example.org",
+            first_name="Petra",
+            last_name="Pickles",
+            password="Password123",
+        )
+        administrator_user.set_group_user()
+        school.set_group_administrator(administrator_user)
+
         # Generate 100 random students
         for i in range(100):
             first_name = self.faker.first_name()
@@ -31,8 +71,8 @@ class Command(BaseCommand):
                 password=password
             )
             print(f'Seeding User {i}', end='\r')
-            student_user.set_group_student()
-
+            student_user.set_group_user()
+            school.set_group_client(student_user)
 
         # Generate 10 random Admins
         for i in range(10):
@@ -47,8 +87,8 @@ class Command(BaseCommand):
                 password=password
             )
             print(f'Seeding Admin User {i}', end='\r')
-            admin_user.set_group_administrator()
-
+            admin_user.set_group_user()
+            school.set_group_administrator(admin_user)
 
         # Generate 3 random Super-Admins
         for i in range(3):
@@ -63,56 +103,8 @@ class Command(BaseCommand):
                 password=password
             )
             print(f'Seeding Super Admin User {i}', end='\r')
-            superadmin_user.set_group_super_administrator()
-
-        
-        # student_group, created = Group.objects.get_or_create(name='Student')
-        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        # director_group, created = Group.objects.get_or_create(name='Director')
-
-        # Create Student
-        User.objects.filter(email="john.doe@example.org").delete()
-        student_user = User.objects.create_user(
-            email="john.doe@example.org",
-            first_name="John",
-            last_name="Doe",
-            password="Password123",
-        )
-        student_user.set_group_student()
-        # student_user.groups.add(student_group)
-
-        # Create Administrator
-        User.objects.filter(email="petra.pickles@example.org").delete()
-        administrator_user = User.objects.create_user(
-            email="petra.pickles@example.org",
-            first_name="Petra",
-            last_name="Pickles",
-            password="Password123",
-        )
-        administrator_user.set_group_administrator()
-        # administrator_user.groups.add(administrator_group)
-
-        # Create Director
-        User.objects.filter(email="marty.major@example.org").delete()
-        director_user = User.objects.create_user(
-            email="marty.major@example.org",
-            first_name="Marty",
-            last_name="Major",
-            password="Password123",
-        )
-        director_user.set_group_director()
-
-        # director_user.groups.add(director_group)
-        # director_user.groups.add(super_administrator_group)
-        # director_user.groups.add(administrator_group)
-
-
-        # temp
-        school, created = School.objects.get_or_create(
-            name = "KCL Kangaroos",
-            director = director_user
-        )
+            superadmin_user.set_group_user()
+            school.set_group_super_administrator(superadmin_user)
 
         Term.objects.all().delete()
         

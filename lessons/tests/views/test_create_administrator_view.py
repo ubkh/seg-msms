@@ -6,6 +6,8 @@ from django.urls import reverse
 from lessons.forms import RegisterForm
 from lessons.models import User, School
 
+"""
+View is deprecated.
 
 class CreateAdministratorViewTestCase(TestCase):
     fixtures = [
@@ -69,4 +71,5 @@ class CreateAdministratorViewTestCase(TestCase):
         saved_user = User.objects.get(email=self.form_input['email'])
         self.assertEqual(saved_user.first_name, self.form_input['first_name'])
         self.assertEqual(saved_user.last_name, self.form_input['last_name'])
-        self.assertTrue(check_password('Password123', saved_user.password))
+        self.assertTrue(check_password('Password123', saved_user.password))  
+"""

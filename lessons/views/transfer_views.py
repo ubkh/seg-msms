@@ -9,10 +9,26 @@ from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
 from lessons.models import Transfer, Lesson, User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class TransactionsListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+
+    model = Transfer
+    template_name = "transfer/client_transfers.html"
+    context_object_name = "transfers"
+    allowed_group = "Client"
+
+    def get_context_data(self, **kwargs):
+        context = super(TransactionsListView, self).get_context_data(**kwargs)
+        context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
+        return context
+
+    def handle_no_permission(self):
+        return redirect('home')
+
+
+class SchoolTransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
 
     model = Transfer
     template_name = "transfer/transfers.html"
@@ -23,7 +39,7 @@ class TransferListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMix
         return redirect('home')
 
 
-class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class TransferCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
 
     model = Transfer
     template_name = "transfer/record_transfer.html"
@@ -43,7 +59,7 @@ class TransferCreateView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectM
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('transfers', kwargs={'school': self.kwargs['school']})
+        return reverse('school_transfers', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')

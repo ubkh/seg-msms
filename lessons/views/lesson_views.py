@@ -16,11 +16,30 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
-from lessons.models import Lesson, User, Transfer, School, Term
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin
+from lessons.models import Lesson, User, Transfer, School, Term, Admission
+from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class LessonListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays the students school home page.
+    """
+
+    model = Lesson
+    template_name = "lessons/student_lessons.html"
+    context_object_name = "lessons"
+    allowed_group = "Client"
+
+    def get_context_data(self, **kwargs):
+        context = super(LessonListView, self).get_context_data(**kwargs)
+        context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
+        return context
+
+    def handle_no_permission(self):
+        return redirect('school_home', school=self.kwargs['school'])
+
+
+class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form allowing users to request a lesson.
     If the form is valid, the user is redirected to the home page and
@@ -31,7 +50,7 @@ class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
     template_name = "lessons/request_lesson.html"
     form_class = LessonRequestForm
     http_method_names = ['get', 'post']
-    allowed_group = "Student"
+    allowed_group = "Client"
 
     def get_form_kwargs(self, **kwargs):
         form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
@@ -46,7 +65,7 @@ class LessonRequestView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
@@ -80,13 +99,13 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
 
 
-class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, ListView):
+class BookingListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all student bookings.
     """
@@ -96,20 +115,16 @@ class BookingListView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixi
     context_object_name = "lessons"
     allowed_group = "Administrator"
 
-
     def get_context_data(self, **kwargs):
         context = super(BookingListView, self).get_context_data(**kwargs)
-        s = get_object_or_404(User, id=self.kwargs['pk'])
-        context['lessons'] = context['lessons'].filter(student=s).order_by('-fulfilled')
-        context['transfers'] = Transfer.objects.filter(user=s).filter(school=self.kwargs['school'])
-        context['student'] = s
+        context['lessons'] = context['lessons'].order_by('-fulfilled')
         return context
 
     def handle_no_permission(self):
         return redirect('home')
 
 
-class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     """
     View that displays the form allowing administrators to fulfill a lesson
     request. If the form is valid, the admin is redirected to the home page
@@ -155,14 +170,14 @@ class LessonFulfillView(LoginRequiredMixin, GroupRestrictedMixin, SchoolObjectMi
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.kwargs['school']})
+        return reverse('school_bookings', kwargs={'school': self.kwargs['school']})
 
     def handle_no_permission(self):
         return redirect('home')
 
 
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
@@ -172,7 +187,7 @@ class BookingInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     context_object_name = "lessons"
 
     def get_context_data(self, **kwargs):
-        context = super(BookingInvoiceView, self).get_context_data(**kwargs)
+        context = super(LessonInvoiceView, self).get_context_data(**kwargs)
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
         return context
 
