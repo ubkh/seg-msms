@@ -2,25 +2,23 @@
 Views that will be used in the music school management system.
 """
 
-from ast import And, Not
 from datetime import datetime
-from unicodedata import name
-from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
-from lessons.helpers import administrator_restricted, lesson_fulfilled_restricted
-from lessons.models import Lesson, User, Transfer, School, Term, Admission
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.helpers import lesson_fulfilled_restricted
+from lessons.models import Lesson, User, School, Term
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class LessonListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+class LessonListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays the students school home page.
     """
@@ -32,14 +30,12 @@ class LessonListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjec
 
     def get_context_data(self, **kwargs):
         context = super(LessonListView, self).get_context_data(**kwargs)
-        context['lessons'] = context['lessons'].filter(Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
+        context['lessons'] = context['lessons'].filter(
+            Q(student=self.request.user) | Q(student__parent=self.request.user)).order_by('-fulfilled')
         return context
 
-    def handle_no_permission(self):
-        return redirect('school_home', school=self.kwargs['school'])
 
-
-class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
+class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     """
     View that displays the form allowing users to request a lesson.
     If the form is valid, the user is redirected to the home page and
@@ -65,13 +61,10 @@ class LessonRequestView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
-
-    def handle_no_permission(self):
-        return redirect('home')
+        return reverse('client_lessons', kwargs={'school': self.school_id})
 
 
-class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
+class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Required Permissions
     """
     View that displays the form allowing users to edit an existing lesson
     request. If the form is valid, the user is redirected to the home page
@@ -99,13 +92,13 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('client_lessons', kwargs={'school': self.kwargs['school']})
+        return reverse('client_lessons', kwargs={'school': self.school_id})
 
     def handle_no_permission(self):
         return redirect('home')
 
 
-class BookingListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+class BookingListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all student bookings.
     """
@@ -120,11 +113,8 @@ class BookingListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObje
         context['lessons'] = context['lessons'].order_by('-fulfilled')
         return context
 
-    def handle_no_permission(self):
-        return redirect('home')
 
-
-class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     """
     View that displays the form allowing administrators to fulfill a lesson
     request. If the form is valid, the admin is redirected to the home page
@@ -160,7 +150,6 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
     def form_valid(self, form):
         super().form_valid(form)
 
-
         data = form.save(commit=False)
         data.price = (data.duration / 60) * data.number_of_lessons * 10
         if data.end_date == None and self.this_term != None:
@@ -172,12 +161,9 @@ class LessonFulfillView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolOb
     def get_success_url(self):
         return reverse('school_bookings', kwargs={'school': self.kwargs['school']})
 
-    def handle_no_permission(self):
-        return redirect('home')
-
 
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
@@ -190,4 +176,3 @@ class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
         context = super(LessonInvoiceView, self).get_context_data(**kwargs)
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
         return context
-

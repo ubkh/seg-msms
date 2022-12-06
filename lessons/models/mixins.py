@@ -10,6 +10,7 @@ class GroupRegistrationMixin:
     ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
     ┃  System-administrator  ┃
     ┃        Director        ┃
+    ┃           ↓ (inherits) ┃
     ┃       Adult-user       ┃
     ┃           ↓ (inherits) ┃
     ┃          User          ┃

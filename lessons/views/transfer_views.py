@@ -1,7 +1,6 @@
 """
 Views that will be used in the music school management system.
 """
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -9,11 +8,10 @@ from django.views.generic import ListView, CreateView
 
 from lessons.forms import TransferForm
 from lessons.models import Transfer, Lesson, User
-from lessons.views.mixins import GroupRestrictedMixin, SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class TransactionsListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
-
+class TransactionsListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     model = Transfer
     template_name = "transfer/client_transfers.html"
     context_object_name = "transfers"
@@ -28,8 +26,7 @@ class TransactionsListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Schoo
         return redirect('home')
 
 
-class SchoolTransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
-
+class SchoolTransferListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     model = Transfer
     template_name = "transfer/transfers.html"
     context_object_name = "transfers"
@@ -39,8 +36,7 @@ class SchoolTransferListView(LoginRequiredMixin, SchoolGroupRestrictedMixin, Sch
         return redirect('home')
 
 
-class TransferCreateView(LoginRequiredMixin, SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
-
+class TransferCreateView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     model = Transfer
     template_name = "transfer/record_transfer.html"
     form_class = TransferForm

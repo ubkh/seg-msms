@@ -9,7 +9,7 @@ from lessons.models import User
 from lessons.views import GroupRestrictedMixin
 
 
-class DirectorCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class DirectorCreateView(GroupRestrictedMixin, CreateView):
     model = User
     template_name = "authentication/register.html"
     form_class = RegisterForm

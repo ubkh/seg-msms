@@ -7,10 +7,10 @@ from django.views.generic import ListView, CreateView
 
 from lessons.forms import ChildCreateForm
 from lessons.models import User
-from lessons.views import GroupRestrictedMixin
+from lessons.views.mixins import GroupRestrictedMixin
 
 
-class ChildListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
+class ChildListView(GroupRestrictedMixin, ListView):
 
     model = User
     template_name = "children/children.html"
@@ -24,7 +24,7 @@ class ChildListView(LoginRequiredMixin, GroupRestrictedMixin, ListView):
         return redirect('home')
 
 
-class ChildCreateView(LoginRequiredMixin, GroupRestrictedMixin, CreateView):
+class ChildCreateView(GroupRestrictedMixin, CreateView):
 
     model = User
     template_name = "children/create_child.html"

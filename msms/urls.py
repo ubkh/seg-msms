@@ -13,14 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from unicodedata import name
 from django.contrib import admin
 from django.urls import path, register_converter, include
+
 from lessons import views
 from msms.hash import HashIDConverter
 
 register_converter(HashIDConverter, "hashid")
-
 
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
@@ -48,7 +47,7 @@ school_urlpatterns = [
     path('member/<hashid:pk>/manage/', views.ManageStudentView.as_view(), name='manage_member'),
 
     # Director
-    path('manage/', views.SchoolManageView.as_view(), name='manage_school')  # (update school fields) or delete
+    path('manage/', views.SchoolManageView.as_view(), name='manage_school')
 
 ]
 
@@ -68,7 +67,6 @@ urlpatterns = [
 
     # Director
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
-    path('school/<int:pk>/delete/', views.SchoolDeleteView.as_view(), name='delete_school'),
 
     # System-administrator
     path('director/create', views.DirectorCreateView.as_view(), name='create_director')

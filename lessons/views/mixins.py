@@ -1,7 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+
 from lessons.models import School, Admission
 
 
-class GroupRestrictedMixin:
+class GroupRestrictedMixin(LoginRequiredMixin):
     """
     Mixin that only allows a specified group to access a view to users that are logged in.
     """
@@ -14,10 +17,12 @@ class GroupRestrictedMixin:
         return super().dispatch(*args, **kwargs)
 
 
-class SchoolGroupRestrictedMixin:
+class SchoolGroupRestrictedMixin(LoginRequiredMixin):
     allowed_group = None
 
     def dispatch(self, *args, **kwargs):
+        if self.request.user.is_anonymous:
+            return self.handle_no_permission()
         school = School.objects.get(id=self.kwargs['school'])
         try:
             admission = Admission.objects.get(school=school, client=self.request.user)
@@ -30,18 +35,33 @@ class SchoolGroupRestrictedMixin:
 
 class SchoolObjectMixin:
 
+    def dispatch(self, request, *args, **kwargs):
+        self.school_id = self.kwargs['school']
+        self.school_instance = get_object_or_404(School, id=self.school_id)
+        try:
+            admission = Admission.objects.get(school=self.school_instance, client=self.request.user)
+            self.admission_groups = admission.groups.all()
+        except Admission.DoesNotExist:
+            self.admission_groups = None
+        return super(SchoolObjectMixin, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(SchoolObjectMixin, self).get_context_data(**kwargs)
-        school = School.objects.get(id=self.kwargs['school'])
-        context['school'] = school
-        admission = Admission.objects.get(school=school, client=self.request.user)
-        context['school_user_groups'] = admission.groups.all()
+        context['school'] = self.school_instance
+        context['school_user_groups'] = self.admission_groups
+        context['in_school'] = self.school_instance.has_member(self.request.user)
+        context['is_not_director'] = not self.school_instance.is_director(self.request.user)
+        context['is_banned'] = self.school_instance.get_ban(self.request.user)
         return context
 
-    # Remove vvvvv
+    def form_valid(self, form):
+        form.instance.school_id = self.school_id
+        return super().form_valid(form)
+
+
+"""
+where SchoolObjectMixin && ListView && super().get_queryset
+
     def get_queryset(self):
         return super().get_queryset().filter(school=self.kwargs['school'])
-
-    def form_valid(self, form):
-        form.instance.school_id = self.kwargs['school']
-        return super().form_valid(form)
+"""
