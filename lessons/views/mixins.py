@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from lessons.models import School, Admission
 
@@ -31,6 +31,9 @@ class SchoolGroupRestrictedMixin(LoginRequiredMixin):
         if not admission or not admission.is_active or not admission.groups.filter(name=self.allowed_group).exists():
             return self.handle_no_permission()
         return super().dispatch(*args, **kwargs)
+
+    def handle_no_permission(self):
+        return redirect('home')
 
 
 class SchoolObjectMixin:
