@@ -56,7 +56,7 @@ class SchoolCreateView(GroupRestrictedMixin, CreateView):
         return reverse('home')
 
 
-class SchoolManageView(SchoolGroupRestrictedMixin, UpdateView):
+class SchoolManageView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
     model = School
     template_name = "school/manage_school.html"
     form_class = SchoolManageForm

@@ -57,11 +57,3 @@ class SchoolObjectMixin:
     def form_valid(self, form):
         form.instance.school_id = self.school_id
         return super().form_valid(form)
-
-
-"""
-where SchoolObjectMixin && ListView && super().get_queryset
-
-    def get_queryset(self):
-        return super().get_queryset().filter(school=self.kwargs['school'])
-"""

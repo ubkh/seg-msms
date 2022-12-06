@@ -17,6 +17,9 @@ class TransactionsListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListVi
     context_object_name = "transfers"
     allowed_group = "Client"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])
+
     def get_context_data(self, **kwargs):
         context = super(TransactionsListView, self).get_context_data(**kwargs)
         context['transfers'] = Transfer.objects.filter(user_id=self.request.user).filter(school=self.kwargs['school'])
@@ -31,6 +34,9 @@ class SchoolTransferListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, List
     template_name = "transfer/transfers.html"
     context_object_name = "transfers"
     allowed_group = "Administrator"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])
 
     def handle_no_permission(self):
         return redirect('home')

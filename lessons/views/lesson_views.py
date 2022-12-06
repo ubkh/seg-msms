@@ -28,6 +28,9 @@ class LessonListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     context_object_name = "lessons"
     allowed_group = "Client"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])
+
     def get_context_data(self, **kwargs):
         context = super(LessonListView, self).get_context_data(**kwargs)
         context['lessons'] = context['lessons'].filter(
@@ -108,6 +111,9 @@ class BookingListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     context_object_name = "lessons"
     allowed_group = "Administrator"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])
+
     def get_context_data(self, **kwargs):
         context = super(BookingListView, self).get_context_data(**kwargs)
         context['lessons'] = context['lessons'].order_by('-fulfilled')
@@ -171,6 +177,9 @@ class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Req
     model = Lesson
     template_name = "lessons/invoice.html"
     context_object_name = "lessons"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(school=self.kwargs['school'])
 
     def get_context_data(self, **kwargs):
         context = super(LessonInvoiceView, self).get_context_data(**kwargs)

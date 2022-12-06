@@ -35,7 +35,7 @@ class School(AdmissionMixin, models.Model):
         through='Admission',
         related_name='enrolled_school'
     )
-    description = models.CharField(max_length=1000)
+    description = models.TextField(max_length=1000)
 
     @property
     def get_update_current_term(self):

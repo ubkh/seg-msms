@@ -10,11 +10,14 @@ from lessons.models import User, School, Admission
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class ManageStudentView(SchoolGroupRestrictedMixin, FormView):
+class ManageStudentView(SchoolGroupRestrictedMixin, FormView): # SchoolObjectMixin
     template_name = "authentication/manage_student.html"
     form_class = ManageMemberForm
     http_method_names = ['get', 'post']
     allowed_group = "Director"
+
+    def form_valid(self, **kwargs):
+        pass
 
     def get_context_data(self, **kwargs):
         context = super(ManageStudentView, self).get_context_data(**kwargs)
@@ -58,7 +61,7 @@ class ManageStudentView(SchoolGroupRestrictedMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('members', kwargs={'school': self.school_id})
+        return reverse('members', kwargs={'school': self.kwargs['school']})  # self.school_id
 
 
 class SchoolUserListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
