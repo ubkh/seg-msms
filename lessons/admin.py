@@ -7,6 +7,8 @@ from dataclasses import field
 from django.contrib import admin
 from django.contrib.admin import display
 
+from lessons.models.lesson import ScheduledLesson
+
 from .models import User, Lesson, Transfer, Term, School, Admission
 
 
@@ -62,4 +64,13 @@ class TermAdmin(admin.ModelAdmin):
     """
     list_display = [
         f.name for f in Term._meta.fields
+    ]
+
+@admin.register(ScheduledLesson)
+class ScheduledLessonAdmin(admin.ModelAdmin):
+    """
+    Configuration of the admin interface to display scheduled lessons.
+    """
+    list_display = [
+        f.name for f in ScheduledLesson._meta.fields
     ]
