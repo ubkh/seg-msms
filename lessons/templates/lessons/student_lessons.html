@@ -18,7 +18,7 @@
                         <span class="badge badge-secondary mb-2" style="background-color: black;"> {{ l.student.first_name }} {{ l.student.last_name }}</span>
                         <span class="badge rounded-pill mb-2" style="background-color: orange;">REQUESTED</span>
                         <div class="mb-2">
-                            <b>{{ l.title }} - {{ l.instrument }}</b> with Teacher for {{ l.duration }}m
+                            <b>{{ l.title }} - {{ l.instrument }}</b> with {{ l.teacher }} for {{ l.duration }}m
                             {% if l.information %}
                             - <span class="text-muted">{{ l.information|truncatechars:140}}</span>
                             {% endif %}
@@ -47,7 +47,7 @@
                         <span class="badge badge-secondary mb-2" style="background-color: black;"> {{ l.student.first_name }} {{ l.student.last_name }}</span>
                         <span class="badge rounded-pill bg-success mb-2">BOOKED</span>
                         <div class="mb-2">
-                            <b>{{ l.title }}</b> with Teacher for {{ l.duration }}m - £{{ l.price|floatformat:2 }} 
+                            <b>{{ l.title }}</b> with {{ l.teacher }} for {{ l.duration }}m - £{{ l.price|floatformat:2 }} 
                             {% if l.information %}
                             - <span class="text-muted">{{ l.information|truncatechars:140}}</span>
                             {% endif %}
