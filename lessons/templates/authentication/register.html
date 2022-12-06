@@ -1,40 +1,44 @@
 {% extends 'base/base.html' %}
+{% load widget_tweaks %}
 {% block body %}
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="card shadow">
-                    <div class="card-title text-center border-bottom">
-                        <h2 class="p-3"><b>REGISTER</b></h2>
-                    </div>
-                    <div class="card-body">
-                        {% for message in messages %}
-                            <p style="color: red;">
-                                <b>{{ message }}</b>
-                            </p>
-                        {% endfor %}
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <div class="mb-4">
-                                    <label class="form-label">{{ field.label }}</label>
-                                    {% for error in field.errors %}
-                                        <p style="color: red;">
-                                            <strong>{{ error }}</strong>
-                                        </p>
-                                    {% endfor %}
-                                    {{ field }}
-                                    <p class="help-text">{{ field.help_text }} </p>
-                                </div>
-                            {% endfor %}
-                            <div class="d-grid">
-                                <input type="submit" value="Register" class="btn btn-primary">
+            <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                    <h2 class="p-3"><b>REGISTER</b></h2>
+                    <h6 class="card-subtitle mb-2 text-muted">Hey, so you are now ready to sign up to the system! Just
+                        fill in your details and if you are you would like to teach as well, then fill in your
+                        instruments. You can join a music school as a client and further request to the director that
+                        you would like to be a teacher or and administrator.</h6>
+                </div>
+                <div class="card-body">
+
+                    {% for message in messages %}
+                        <p style="color: red;">
+                            <b>{{ message }}</b>
+                        </p>
+                    {% endfor %}
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="mb-4">
+                                <label class="form-label">{{ field.label }}</label>
+                                {% for error in field.errors %}
+                                    <p style="color: red;">
+                                        <strong>{{ error }}</strong>
+                                    </p>
+                                {% endfor %}
+                                {% render_field field %}
+                                <p class="help-text">{{ field.help_text }} </p>
                             </div>
-                        </form>
-                    </div>
-                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                        Already have an account?&nbsp;<a href="{% url 'log_in' %}"><b>Login</b></a>
-                    </div>
+                        {% endfor %}
+                        <div class="d-grid">
+                            <input type="submit" value="Register" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                    Already have an account?&nbsp;<a href="{% url 'log_in' %}"><b>Login</b></a>
                 </div>
             </div>
         </div>
