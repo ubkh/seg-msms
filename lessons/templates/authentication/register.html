@@ -7,26 +7,13 @@
                 <div class="card-title text-center border-bottom">
                     <h2 class="p-3"><b>REGISTER</b></h2>
                     <h6 class="card-subtitle mb-2 text-muted">Hey, so you are now ready to sign up to the system! Just
-                        fill in your details and if you are you would like to teach as well, then fill in your
-                        instruments. You can join a music school as a client and further request to the director that
+                        fill in your details and if you would like to teach with in the system, then fill in what instruments
+                        you can teach. You can join a music school as a client and further ask the director that
                         you would like to be a teacher or and administrator.</h6>
                 </div>
-                <div class="card-body">
 
-                    {% for message in messages %}
-                        <p style="color: red;">
-                            <b>{{ message }}</b>
-                        </p>
-                    {% endfor %}
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        {% include 'partials/form.html' with form=form %}
+                {% include 'partials/form.html' with form=form %}
 
-                        <div class="d-grid">
-                            <input type="submit" value="Register" class="btn btn-primary">
-                        </div>
-                    </form>
-                </div>
                 <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
                     Already have an account?&nbsp;<a href="{% url 'log_in' %}"><b>Login</b></a>
                 </div>

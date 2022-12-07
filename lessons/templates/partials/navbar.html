@@ -23,7 +23,7 @@
                     {% for group in user.groups.all %}
 
                         {% if group.name == 'User' %}
-                            <a class="btn btn-danger" href="{% url 'edit_profile' user.id %}">Edit Profile</a>
+                            <a class="nav-link" href="{% url 'edit_profile' user.id %}">Edit Profile</a>
                         {% endif %}
 
                         {% if group.name == 'Adult-user' %}
@@ -42,10 +42,10 @@
                     {% endfor %}
 
                     <span class="navbar-text">&nbsp&nbspLogged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm pt-2" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_in' %}">Log In</a>
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'register' %}">Register</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm py-2" role="button" href="{% url 'log_in' %}">Log In</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm py-2" role="button" href="{% url 'register' %}">Register</a>
                 {% endif %}
             </div>
         </div>

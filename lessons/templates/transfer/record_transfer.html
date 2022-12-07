@@ -8,15 +8,7 @@
                     <div class="card-title text-center border-bottom">
                         <h2 class="p-3"><b>Record Transfer</b></h2>
                     </div>
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            {% include 'partials/form.html' with form=form %}
-                            <div class="d-grid">
-                                <input type="submit" value="Record Transfer" class="btn btn-primary">
-                            </div>
-                        </form>
-                    </div>
+                    {% include 'partials/form.html' with form=form %}
                 </div>
             </div>
         </div>

@@ -8,15 +8,7 @@
                     <h2 class="p-3"><b>Create School</b></h2>
                     <h6 class="card-subtitle mb-2 text-muted">You many create as many schools as you would like!</h6>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {% include 'partials/form.html' with form=form %}
-                        <div class="d-grid">
-                            <input type="submit" value="Create School" class="btn btn-primary">
-                        </div>
-                    </form>
-                </div>
+                {% include 'partials/form.html' with form=form %}
             </div>
         </div>
     </div>

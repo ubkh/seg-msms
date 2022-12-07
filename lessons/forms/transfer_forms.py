@@ -14,6 +14,13 @@ class TransferForm(forms.ModelForm):
     class Meta:
         model = Transfer
         fields = ['amount']
+        widgets = {
+            'amount': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '0'
+            }),
+        }
 
     def __init__(self, school, *args, **kwargs):
         self.school = school
@@ -21,6 +28,7 @@ class TransferForm(forms.ModelForm):
         super(TransferForm, self).__init__(*args, **kwargs)
 
     transfer_id = forms.CharField(
+        widget=forms.TextInput(attrs={'class': "form-control"}),
         validators=[RegexValidator(
             regex=re.compile(r'^[0-9]+-[0-9]+$'),
             message="Transfer must be in the format XXXX-YYYY where X is a user reference number and Y is the lesson "

@@ -3,26 +3,11 @@
 {% block body %}
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="card shadow">
-                    <div class="card-title text-center border-bottom">
-                        <h2 class="p-3"><b>Account Details</b></h2>
-                    </div>
-                    <div class="card-body">
-                        {% for message in messages %}
-                            <p style="color: red;">
-                                <b>{{ message }}</b>
-                            </p>
-                        {% endfor %}
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {% include 'partials/form.html' with form=form %}
-                            <div class="d-grid">
-                                <input type="submit" value="Modify" class="btn btn-primary">
-                            </div>
-                        </form>
-                    </div>
+            <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                    <h2 class="p-3"><b>Account Details</b></h2>
                 </div>
+                {% include 'partials/form.html' with form=form %}
             </div>
         </div>
     </div>

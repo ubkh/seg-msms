@@ -9,8 +9,8 @@ from lessons.models import User, School, Admission
 
 
 class LoginForm(forms.Form):
-    email = forms.CharField(label="Email")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput())
+    email = forms.CharField(label="Email", widget=forms.TextInput(attrs={'class': "form-control"}))
+    password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': "form-control"}))
 
 
 class EditUserForm(forms.ModelForm):
@@ -21,10 +21,17 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'instrument']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': "form-control"}),
+            'last_name': forms.TextInput(attrs={'class': "form-control"}),
+            'email': forms.EmailInput(attrs={'class': "form-control"}),
+            'instrument': forms.CheckboxSelectMultiple()
+        }
 
     delete_account = forms.BooleanField(
         label="Would you like to delete this account?",
         required=False,
+        widget=forms.CheckboxInput(attrs={'class': "form-check-input"})
     )
 
 
@@ -32,14 +39,18 @@ class ChildCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': "form-control"}),
+            'last_name': forms.TextInput(attrs={'class': "form-control"}),
+        }
 
 
 class ManageMemberForm(forms.Form):
-    client = forms.BooleanField(required=False)
-    teacher = forms.BooleanField(required=False)
-    administrator = forms.BooleanField(required=False)
-    super_administrator = forms.BooleanField(required=False)
-    ban_member = forms.BooleanField(required=False)
+    client = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
+    teacher = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
+    administrator = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
+    super_administrator = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
+    ban_member = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': "form-check-input"}))
 
 
 class RegisterForm(forms.ModelForm):
@@ -71,7 +82,8 @@ class RegisterForm(forms.ModelForm):
                                        widget=forms.PasswordInput(attrs={'class': "form-control"}))
     make_account_adult_student = forms.BooleanField(
         label="Would you like to make this account an adult account?",
-        required=False
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': "form-check-input"})
     )
 
     def clean(self):

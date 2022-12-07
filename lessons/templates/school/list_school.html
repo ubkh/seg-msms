@@ -1,10 +1,12 @@
 {% extends 'base/base.html' %}
 {% block head %}<title>Schools - Kangaroo Music</title>{% endblock %}
 {% block body %}
-    {% include 'partials/navbar.html' %}
 <div class="container">
-    <h1>Music Schools</h1>
-    <hr>
+    <h1><b>Music Schools</b></h1>
+    <blockquote class="blockquote">
+        <p style="text-align: justify">Welcome! You can see a list of available schools in the system!</p>
+    </blockquote>
+    <hr class="border border-dark border-2 opacity-100">
     <h2>School List</h2>
     <div class="list-group">
         {% for school in schools %}
