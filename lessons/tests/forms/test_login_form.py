@@ -1,5 +1,5 @@
 """
-Unit tests of the login form
+Tests that will be used to test the Login form.
 """
 
 from django.test import TestCase
@@ -7,6 +7,10 @@ from django import forms
 from lessons.forms import LoginForm
 
 class LoginFormTestCase(TestCase):
+    """
+    Unit tests that will be used to test the Login form.
+    """
+
     def setUp(self):
         self.form_input = {'name': 'Foo', 'email': 'fookangaroo@example.com', 'password': 'Password123'}
     
