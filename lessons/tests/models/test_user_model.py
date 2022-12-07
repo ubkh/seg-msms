@@ -195,3 +195,31 @@ class UserModelTestCase(TestCase, LoginTester):
                        '©', '«', '¬', '®', '¯', '°', '±', '´', '¶', '·', '¸', '»', '¿', '\\']:
             self.user.last_name = symbol
             self._assert_user_is_invalid(self.user)
+
+    """
+    Test parent
+    """
+
+    def test_parent_can_be_blank(self):
+        self.user.parent = None
+        self._assert_user_is_valid(self.user)
+
+    def test_parent_can_be_assigned(self):
+        self.user.parent = self.secondary_user
+        self._assert_user_is_valid(self.user)
+
+    """
+    Test instrument
+    """
+
+    def test_instrument_can_be_blank(self):
+        self.user.instrument = (None)
+        self._assert_user_is_valid(self.user)
+
+    def test_instrument_can_be_one(self):
+        self.user.instrument = ('Trumpet', 'Trumpet')
+        self._assert_user_is_valid(self.user)
+
+    def test_instrument_can_be_multiple(self):
+        self.user.instrument = (('Trumpet', 'Trumpet'), ('Violin', 'Violin'))
+        self._assert_user_is_valid(self.user)

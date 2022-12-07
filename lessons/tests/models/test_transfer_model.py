@@ -1,3 +1,7 @@
+"""
+Tests that will be used to test the Transfer model.
+"""
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -5,6 +9,9 @@ from lessons.models import User, Lesson, Transfer, School
 
 
 class TransferModelTestCase(TestCase):
+    """
+    Unit tests that will be used to test the Transfer model.
+    """
 
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
@@ -47,6 +54,14 @@ class TransferModelTestCase(TestCase):
 
     def test_user_must_not_be_blank(self):
         self.transfer.user = None
+        self._assert_transfer_is_invalid(self.transfer)
+
+    """
+    Test School
+    """
+
+    def test_school_must_not_be_blank(self):
+        self.transfer.school = None
         self._assert_transfer_is_invalid(self.transfer)
 
     """

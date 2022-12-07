@@ -1,5 +1,5 @@
 """
-Models that will be used in the music school management system.
+User model that will be used in the music school management system to authenticate clients.
 """
 
 import re
@@ -8,6 +8,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 from multiselectfield import MultiSelectField
+
 from lessons.models.mixins import GroupRegistrationMixin
 
 INSTRUMENTS = [
@@ -27,9 +28,6 @@ class UserManager(BaseUserManager):
     """
 
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
-        """
-        Create a generic user according to its attributes.
-        """
         if not email:
             raise ValueError("Users must have an email address")
         user = self.model(

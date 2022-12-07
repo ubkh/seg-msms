@@ -2,23 +2,24 @@
 Tests that will be used to test the Lesson model.
 """
 
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
+
 from lessons.models import Lesson, User
+
 
 class LessonModelTestCase(TestCase):
     """
-    Unit tests that will be used to test the User model.
+    Unit tests that will be used to test the Lesson model.
     """
 
-    fixtures = ['lessons/tests/fixtures/default_user.json', 'lessons/tests/fixtures/default_lesson.json', 'lessons/tests/fixtures/other_lesson.json', 'lessons/tests/fixtures/default_school.json']
+    fixtures = ['lessons/tests/fixtures/default_user.json', 'lessons/tests/fixtures/default_lesson.json',
+                'lessons/tests/fixtures/other_lesson.json', 'lessons/tests/fixtures/default_school.json']
 
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')
         self.lesson = Lesson.objects.get(title='Test Lesson')
         self.other_lesson = Lesson.objects.get(title='Test Lesson 2')
-
-
 
     def _assert_lesson_is_valid(self, lesson):
         try:
@@ -30,14 +31,12 @@ class LessonModelTestCase(TestCase):
         with self.assertRaises(ValidationError):
             lesson.full_clean()
 
-
     """
     Test user
     """
 
     def test_lesson_is_valid(self):
         self._assert_lesson_is_valid(self.lesson)
-
 
     """
     Test Title
@@ -53,23 +52,20 @@ class LessonModelTestCase(TestCase):
         self._assert_lesson_is_valid(self.lesson)
 
     def test_title_can_be_25_characters(self):
-        self.lesson.title = 'a'*25
+        self.lesson.title = 'a' * 25
         self._assert_lesson_is_valid(self.lesson)
 
     def test_title_cannot_be_greater_than_25_characters(self):
-        self.lesson.title = 'a'*26
+        self.lesson.title = 'a' * 26
         self._assert_lesson_is_invalid(self.lesson)
 
     def test_title_can_contain_numbers(self):
         self.lesson.title = 'Lesson 1'
         self._assert_lesson_is_valid(self.lesson)
 
-
     def test_title_can_contain_special_characters(self):
         self.lesson.title = '#Lesson 1 $5'
         self._assert_lesson_is_valid(self.lesson)
-
-
 
     """
     Test Information
@@ -86,17 +82,16 @@ class LessonModelTestCase(TestCase):
         self._assert_lesson_is_valid(self.lesson)
 
     def test_information_can_be_280_characters(self):
-        self.lesson.lesson = 'a'*280
+        self.lesson.lesson = 'a' * 280
         self._assert_lesson_is_valid(self.lesson)
 
     def test_information_cannot_be_greater_than_280_characters(self):
-        self.lesson.information = 'a'*281
+        self.lesson.information = 'a' * 281
         self._assert_lesson_is_invalid(self.lesson)
 
     def test_information_can_contain_numbers(self):
         self.lesson.information = 'Lesson 1'
         self._assert_lesson_is_valid(self.lesson)
-
 
     def test_information_can_contain_special_characters(self):
         self.lesson.information = '#Lesson 1 $5'
@@ -182,7 +177,6 @@ class LessonModelTestCase(TestCase):
         self.lesson.day = 'MadeUpInstrument'
         self._assert_lesson_is_invalid(self.lesson)
 
-
     """
     Test Duration
     """
@@ -194,7 +188,7 @@ class LessonModelTestCase(TestCase):
     def test_duration_cannot_be_negative(self):
         self.lesson.duration = -60
         self._assert_lesson_is_invalid(self.lesson)
-    
+
     def test_duration_cannot_be_fractional(self):
         self.lesson.duration = 41.3
         self._assert_lesson_is_invalid(self.lesson)
@@ -202,7 +196,6 @@ class LessonModelTestCase(TestCase):
     def test_duration_30_minimum(self):
         self.lesson.duration = 30
         self._assert_lesson_is_valid(self.lesson)
-
 
     def test_duration_cannot_be_less_than_30(self):
         self.lesson.duration = 15
@@ -258,7 +251,6 @@ class LessonModelTestCase(TestCase):
         self.lesson.interval = 0
         self._assert_lesson_is_invalid(self.lesson)
 
-
     def test_interval_cannot_be_negative(self):
         self.lesson.number_of_lessons = -1
         self._assert_lesson_is_invalid(self.lesson)
@@ -281,7 +273,6 @@ class LessonModelTestCase(TestCase):
         self._assert_lesson_is_valid(self.lesson)
         self._assert_lesson_is_valid(self.other_lesson)
 
-
     """
     Test Price Field
     """
@@ -301,7 +292,7 @@ class LessonModelTestCase(TestCase):
     def test_price_5_minimum(self):
         self.lesson.price = 5.00
         self._assert_lesson_is_valid(self.lesson)
-    
+
     def test_price_cannot_be_less_than_5(self):
         self.lesson.price = 4.00
         self._assert_lesson_is_invalid(self.lesson)
