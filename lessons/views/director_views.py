@@ -11,7 +11,7 @@ from lessons.views import GroupRestrictedMixin
 
 class DirectorCreateView(GroupRestrictedMixin, CreateView):
     model = User
-    template_name = "authentication/register.html"
+    template_name = "authentication/create_director.html"
     form_class = RegisterForm
     http_method_names = ['get', 'post']
     allowed_group = "System-administrator"

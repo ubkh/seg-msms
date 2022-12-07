@@ -97,7 +97,7 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
     )
     is_staff = models.BooleanField(default=False)
     instrument = MultiSelectField(
-        verbose_name="If you are interested in teaching, which instruments would you be able to teach?",
+        verbose_name="Interested in teaching? Select the following instruments that could be taught.",
         max_length=1000,
         choices=INSTRUMENTS,
         null=False,

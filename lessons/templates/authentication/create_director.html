@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+{% block head %}<title>Register Director - Kangaroo Music</title>{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                    <h2 class="p-3"><b>REGISTER DIRECTOR</b></h2>
+                    <h6 class="card-subtitle mb-2 text-muted">This form should be used to create a director who is
+                        able to create their own music school.</h6>
+                </div>
+
+                {% include 'partials/form.html' with form=form %}
+
+                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                    Already have an account?&nbsp;<a href="{% url 'log_in' %}"><b>Login</b></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
