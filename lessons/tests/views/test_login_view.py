@@ -14,11 +14,11 @@ class LoginViewTestCase(TestCase, LoginTester):
     fixtures = ['lessons/tests/fixtures/default_user.json']
     
     def setUp(self):
-        self.url = reverse('login')
+        self.url = reverse('log_in')
         self.user = User.objects.get(email='foo@kangaroo.com')
     
     def test_login_url(self):
-        self.assertEqual(self.url, '/login/')
+        self.assertEqual(self.url, '/log_in/')
     
     def test_get_login(self):
         response = self.client.get(self.url)
@@ -34,7 +34,7 @@ class LoginViewTestCase(TestCase, LoginTester):
     
     def test_get_login_with_redirect(self):
         destination_url = reverse('home')
-        self.url = reverse_with_next('login', destination_url)
+        self.url = reverse_with_next('log_in', destination_url)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'authentication/login.html')

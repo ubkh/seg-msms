@@ -134,7 +134,7 @@ AUTH_USER_MODEL = 'lessons.User'
 
 # Login URL for redirecting users to login view
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'log_in'
 
 # URL where login_prohibited redirects to
 

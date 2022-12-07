@@ -23,7 +23,7 @@ register_converter(HashIDConverter, "hashid")
 
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
-    path('edit_profile/<hashid:pk>/', views.EditUserView.as_view(), name='edit_profile'),
+
 
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
@@ -56,16 +56,17 @@ school_urlpatterns = [
 ]
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('admin/', admin.site.urls),
     path('home/', views.HomeView.as_view(), name='home'),
     path('school/<int:school>/', include(school_urlpatterns)),
 
-    path('register/', views.register, name='register'),
-    path('login/', views.log_in, name='login'),
+    path('register/', views.register_view, name='register'),  # RegisterView
+    path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
-    path('teacher_register/', views.teacher_register, name='teacher_register'),
-    path('password_change/', views.ChangePasswordView.as_view(), name='password_change'),
+    path('<hashid:pk>/profile/', views.EditUserView.as_view(), name='edit_profile'),
+    path('<hashid:pk>/profile/edit', views.EditUserView.as_view(), name='edit_profile'),
+    path('<hashid:pk>/profile/password_change', views.ChangePasswordView.as_view(), name='password_change'),
 
     # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),

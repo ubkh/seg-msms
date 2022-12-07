@@ -53,7 +53,7 @@ class RegisterFormTestCase(TestCase):
         make_account_adult_student_field = register_form.fields['make_account_adult_student']
         self.assertTrue(isinstance(make_account_adult_student_field, forms.BooleanField))
 
-    def tests_form_saves_correctly(self):
+    def test_form_saves_correctly(self):
         register_form = RegisterForm(data=self.form_input)
         user_count_before = User.objects.count()
         register_form.save()

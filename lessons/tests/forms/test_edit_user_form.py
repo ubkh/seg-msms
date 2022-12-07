@@ -1,5 +1,5 @@
 """
-Tests that will be used to test the Edit form.
+Tests that will be used to test the Edit User form.
 """
 
 from django import forms
@@ -11,7 +11,7 @@ from lessons.forms import EditUserForm
 
 class EditFormTestCase(TestCase):
     """
-    Unit tests that will be used to test the Edit form.
+    Unit tests that will be used to test the Edit User form.
     """
 
     def setUp(self):

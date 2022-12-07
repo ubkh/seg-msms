@@ -1,5 +1,5 @@
 """
-Models that will be used in the music school management system.
+School models that will be used in the music school management system.
 """
 from django.db import models
 from datetime import datetime
@@ -9,15 +9,12 @@ from lessons.models import User
 from lessons.models.mixins import AdmissionMixin
 
 
-# more needs to be added
-
-
 class School(AdmissionMixin, models.Model):
     """
     The School model holds shared state for a particular school.
     """
     name = models.CharField(max_length=30, blank=False)
-    director = models.ForeignKey(
+    director = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         blank=False,
@@ -35,7 +32,7 @@ class School(AdmissionMixin, models.Model):
         through='Admission',
         related_name='enrolled_school'
     )
-    description = models.TextField(max_length=1000)
+    description = models.TextField()
 
     @property
     def get_update_current_term(self):
@@ -45,4 +42,5 @@ class School(AdmissionMixin, models.Model):
                 self.current_term = next
         return self.current_term
 
-
+    def __str__(self):
+        return str(f"{self.name}")

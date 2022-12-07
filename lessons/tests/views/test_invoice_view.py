@@ -31,7 +31,7 @@ class InvoiceViewTestCase(TestCase):
 
 
     def test_invoice_not_accessible_not_logged_in(self):
-        redirect_url = reverse_with_next('login', self.url)
+        redirect_url = reverse_with_next('log_in', self.url)
         response = self.client.get(self.url,follow=True)
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'authentication/login.html')

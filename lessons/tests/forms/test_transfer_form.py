@@ -28,8 +28,7 @@ class TransferFormTestCase(TestCase):
     def _create_form_input(self):
         form_input = {
             'amount': 100.00,
-            'user_id': 1,
-            'lesson_id': 1
+            'transfer_id': "1-1",
         }
         return form_input
 
@@ -42,12 +41,9 @@ class TransferFormTestCase(TestCase):
         self.assertIn('amount', transfer_form.fields)
         amount_field = transfer_form.fields['amount']
         self.assertTrue(isinstance(amount_field, forms.DecimalField))
-        self.assertIn('user_id', transfer_form.fields)
-        user_id_field = transfer_form.fields['user_id']
-        self.assertTrue(isinstance(user_id_field, forms.IntegerField))
-        self.assertIn('lesson_id', transfer_form.fields)
-        lesson_id_field = transfer_form.fields['lesson_id']
-        self.assertTrue(isinstance(lesson_id_field, forms.IntegerField))
+        self.assertIn('transfer_id', transfer_form.fields)
+        transfer_id_field = transfer_form.fields['transfer_id']
+        self.assertTrue(isinstance(transfer_id_field, forms.CharField))
 
     def test_form_saves_correctly(self):
         transfer_form = TransferForm(self.school.id, data=self.form_input)
@@ -57,8 +53,8 @@ class TransferFormTestCase(TestCase):
         self.assertEqual(transfer_count_before + 1, transfer_count_after)
         saved_transfer = Transfer.objects.latest('id')
         self.assertEqual(saved_transfer.amount, self.form_input['amount'])
-        self.assertEqual(saved_transfer.user_id, self.form_input['user_id'])
-        self.assertEqual(saved_transfer.lesson_id, self.form_input['lesson_id'])
+        self.assertEqual(saved_transfer.user_id, 1)
+        self.assertEqual(saved_transfer.lesson_id, 1)
 
     def test_form_uses_model_amount_validation(self):
         self.form_input['amount'] = -1.001
@@ -71,8 +67,7 @@ class TransferFormTestCase(TestCase):
         transfer_form.save()
         second_form_input = {
             'amount': 100.00,
-            'user_id': 1,
-            'lesson_id': 2
+            'transfer_id': '1-2',
         }
         second_lesson = Lesson.objects.get(id=2)
         second_lesson.fulfilled = True
@@ -83,8 +78,8 @@ class TransferFormTestCase(TestCase):
         self.assertEqual(transfer_count_before + 2, transfer_count_after)
         saved_second_transfer = Transfer.objects.latest('id')
         self.assertEqual(saved_second_transfer.amount, second_form_input['amount'])
-        self.assertEqual(saved_second_transfer.user_id, second_form_input['user_id'])
-        self.assertEqual(saved_second_transfer.lesson_id, second_form_input['lesson_id'])
+        self.assertEqual(saved_second_transfer.user_id, 1)
+        self.assertEqual(saved_second_transfer.lesson_id, 2)
 
     def test_student_can_make_multiple_transfers_for_same_lesson(self):
         transfer_form = TransferForm(self.school.id, data=self.form_input)
@@ -92,8 +87,7 @@ class TransferFormTestCase(TestCase):
         transfer_form.save()
         second_form_input = {
             'amount': 100.00,
-            'user_id': 1,
-            'lesson_id': 1
+            'transfer_id': '1-1',
         }
         second_transfer_form = TransferForm(self.school.id, data=second_form_input)
         second_transfer_form.save()
@@ -101,20 +95,20 @@ class TransferFormTestCase(TestCase):
         self.assertEqual(transfer_count_before + 2, transfer_count_after)
         saved_second_transfer = Transfer.objects.latest('id')
         self.assertEqual(saved_second_transfer.amount, second_form_input['amount'])
-        self.assertEqual(saved_second_transfer.user_id, second_form_input['user_id'])
-        self.assertEqual(saved_second_transfer.lesson_id, second_form_input['lesson_id'])
+        self.assertEqual(saved_second_transfer.user_id, 1)
+        self.assertEqual(saved_second_transfer.lesson_id, 1)
 
     def test_invalid_if_user_not_found(self):
-        self.form_input['user_id'] = 999
+        self.form_input['transfer_id'] = '999-1'
         form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())
 
     def test_invalid_if_lesson_not_found(self):
-        self.form_input['lesson_id'] = 999
+        self.form_input['transfer_id'] = '1-999'
         form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())
 
     def test_invalid_if_lesson_not_booked_by_user(self):
-        self.form_input['lesson_id'] = 3
+        self.form_input['transfer_id'] = '1-3'
         form = TransferForm(self.school.id, data=self.form_input)
         self.assertFalse(form.is_valid())

@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
 
-from lessons.forms import RegisterForm, ChildCreateForm, AdminModifyForm
+from lessons.forms import RegisterForm, ChildCreateForm
 from lessons.models import User, School
 from msms.hash import encode
 

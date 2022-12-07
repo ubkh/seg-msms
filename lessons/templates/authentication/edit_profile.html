@@ -1,46 +1,15 @@
 {% extends 'base/base.html' %}
+{% block head %}<title>Edit Profile - Kangaroo Music</title>{% endblock %}
 {% block body %}
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="card shadow">
-                    <div class="card-title text-center border-bottom">
-                        <h2 class="p-3"><b>EDIT</b></h2>
-                    </div>
-                    <div class="card-body">
-                        {% for message in messages %}
-                            <p style="color: red;">
-                                <b>{{ message }}</b>
-                            </p>
-                        {% endfor %}
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <div class="mb-4">
-                                    <label class="form-label">{{ field.label }}</label>
-                                    {% for error in field.errors %}
-                                        <p style="color: red;">
-                                            <strong>{{ error }}</strong>
-                                        </p>
-                                    {% endfor %}
-                                    <input type="{{ field.field.widget.input_type }}"
-                                           class="form-control"
-                                           value="{{ field.value|default:'' }}"
-                                           name="{{ field.name }}"
-                                           id="id_{{ field.name }}"
-                                    />
-                                    <p class="help-text">{{ field.help_text }} </p>
-                                </div>
-                            {% endfor %}
-                            <div class="d-grid">
-                                <a class="btn btn-primary" href="{% url 'password_change' %}">Change Password</a>
-                            </div>
-                            <br>
-                            <div class="d-grid">
-                                <input type="submit" value="Edit Profile" class="btn btn-primary">
-                            </div>
-                        </form>
-                    </div>
+            <div class="card shadow">
+                <div class="card-title text-center border-bottom">
+                    <h2 class="p-3"><b>Account Details</b></h2>
+                </div>
+                {% include 'partials/form.html' with form=form %}
+                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                    &nbsp;<a href="{% url 'password_change' user.id %}"><b>Change your password here</b></a>&nbsp;
                 </div>
             </div>
         </div>

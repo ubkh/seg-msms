@@ -22,7 +22,6 @@ class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     def form_valid(self, form):
         super().form_valid(form)
         term = form.save()
-        print("ohhhhhhhh")
         if Term.objects.filter(school_id=self.kwargs['school']).count() == 1:
             school_instance = get_object_or_404(School, pk=self.kwargs['school'])
             setattr(school_instance, 'current_term', term)

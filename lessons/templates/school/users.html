@@ -1,25 +1,42 @@
 {% extends 'base/school_base.html' %}
+{% block head %}<title>Users - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
 <div class="container">
-    <h1>Music School Management System Administrator Panel</h1>
-    <hr>
+    <h1><b>Members</b></h1>
+    <hr class="border border-dark border-2 opacity-100">
     <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management system.</p>
     <h2>Student List</h2>
+
     <div class="list-group">
-        {% for student in students %}
-            <a href="{% url 'manage_member' school.id student.id %}"
+        {% for admission in school_admissions.all %}
+            <a href="{% url 'manage_member' school.id admission.client.id %}"
                class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
-                    {% if student.is_active == True %}
-                        <h5 class="mb-1">{{ student.first_name }} {{ student.last_name }}</h5>
-                    {% endif %}
-                    {% if student.is_active == False %}
-                        <h5 class="mb-1">{{ student.first_name }} {{ student.last_name }} BANNED</h5>
+                    {% if admission.groups.count %}
+                        {% if admission.is_active %}
+                            <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }}</h5>
+                        {% else %}
+                            <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }} BANNED</h5>
+                        {% endif %}
+                    {% else %}
+                        <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }} LEFT</h5>
                     {% endif %}
                 </div>
-                <p class="mb-1">{{ student.email }}</p>
+                <p class="mb-1 text-muted">{{ admission.client.email }}</p>
+                {% for child in admission.groups.all %}
+                        <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
+                {% endfor %}
+                {% if admission.client.children.count %}
+                    <p>
+                    <span>Children: </span>
+                    {% for child in admission.client.children.all %}
+                        <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
+                    {% endfor %}
+                    </p>
+                {% endif %}
             </a>
         {% endfor %}
     </div>
+
 </div>
 {% endblock %}

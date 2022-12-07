@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
         # Create Teacher
         User.objects.filter(email="sylvia.plath@example.org").delete()
-        teacher_user = User.objects.create_teacher(
+        teacher_user = User.objects.create_user(
             email="sylvia.plath@example.org",
             first_name="Sylvia",
             last_name="Plath",
@@ -57,7 +57,6 @@ class Command(BaseCommand):
             password="Password123",
         )
         teacher_user.set_group_user()
-        teacher_user.set_group_teacher()
         school.set_group_teacher(teacher_user)
 
         # Create Administrator
@@ -121,7 +120,7 @@ class Command(BaseCommand):
             email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
             instrument = random.sample(INSTRUMENTS, k=random.randint(1, len(INSTRUMENTS)))
             password = User.objects.make_random_password()
-            teacher_user = User.objects.create_teacher(
+            teacher_user = User.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,

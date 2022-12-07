@@ -1,3 +1,7 @@
+"""
+Tests that will be used to test the Child Create form.
+"""
+
 from django.test import TestCase
 from django import forms
 
@@ -7,7 +11,7 @@ from lessons.models import User
 
 class ChildCreateFormTestCase(TestCase):
     """
-    Unit tests that will be used to test the Registration form.
+    Unit tests that will be used to test the Child Create form.
     """
 
     def setUp(self):
