@@ -121,5 +121,11 @@ class EditUserView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
     def handle_no_permission(self):
         return redirect('home')
 
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
+class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'authentication/change_password.html'
+    success_url = reverse_lazy('home')
 
 

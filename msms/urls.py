@@ -65,6 +65,7 @@ urlpatterns = [
     path('login/', views.log_in, name='login'),
     path('log_out/', views.log_out, name='log_out'),
     path('teacher_register/', views.teacher_register, name='teacher_register'),
+    path('password_change/', views.ChangePasswordView.as_view(), name='password_change'),
 
     # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),
