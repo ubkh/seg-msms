@@ -1,8 +1,11 @@
 """
 Forms that will be used in the music school management system.
 """
+import re
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 from lessons.models import User, Lesson, Transfer, School
 
@@ -14,35 +17,49 @@ class TransferForm(forms.ModelForm):
 
     def __init__(self, school, *args, **kwargs):
         self.school = school
+        self.transfer_pattern = re.compile(r'^[0-9]+-[0-9]+$')
         super(TransferForm, self).__init__(*args, **kwargs)
 
-    user_id = forms.IntegerField()
-    lesson_id = forms.IntegerField()
+    transfer_id = forms.CharField(
+        validators=[RegexValidator(
+            regex=re.compile(r'^[0-9]+-[0-9]+$'),
+            message="Transfer must be in the format XXXX-YYYY where X is a user reference number and Y is the lesson "
+                    "reference number.",
+        )]
+    )
 
     def clean(self):
-        super().clean()
-        user_id = self.cleaned_data.get('user_id')
+        cleaned_data = super(TransferForm, self).clean()
+        transfer_number = str(self.cleaned_data.get('transfer_id'))
+
+        if not re.fullmatch(self.transfer_pattern, transfer_number):
+            raise ValidationError(message="")
+
+        user_id, invoice_id = re.split(r'\D+', transfer_number)
+
         user = User.objects.filter(pk=user_id).first()
-        lesson_id = self.cleaned_data.get('lesson_id')
-        lesson = Lesson.objects.filter(pk=lesson_id).first()
+        lesson = Lesson.objects.filter(pk=invoice_id).first()
         if user and lesson:
             if user != lesson.student:
-                self.add_error('amount', 'This student has not booked this lesson. You should refund this transfer.')
+                self.add_error('transfer_id', 'This student has not booked this lesson. You should refund this transfer.')
             else:
                 if not lesson.fulfilled:
-                    self.add_error('lesson_id', "This lesson has not been fulfilled yet.")
+                    self.add_error('transfer_id', "This lesson has not been fulfilled yet.")
                 if lesson.school.id != self.school:
-                    self.add_error('lesson_id', f"This lesson is not managed by this school")
+                    self.add_error('transfer_id', "This lesson is not managed by this school")
         if not user:
-            self.add_error('user_id', 'This user could not be found. You should refund this transfer.')
+            self.add_error('transfer_id', 'This user could not be found. You should refund this transfer.')
         if not lesson:
-            self.add_error('lesson_id', 'This lesson could not be found. You should refund this transfer.')
+            self.add_error('transfer_id', 'This lesson could not be found. You should refund this transfer.')
+        return cleaned_data
 
     def save(self):
         super().save(commit=False)
+        transfer_number = str(self.cleaned_data.get('transfer_id'))
+        user_id, invoice_id = re.split(r'\D+', transfer_number)
         transfer = Transfer.objects.create(
-            user=User.objects.get(pk=self.cleaned_data.get('user_id')),
-            lesson=Lesson.objects.get(pk=self.cleaned_data.get('lesson_id')),
+            user=User.objects.get(pk=user_id),
+            lesson=Lesson.objects.get(pk=invoice_id),
             school=School.objects.get(pk=self.school),
             amount=self.cleaned_data.get('amount')
         )

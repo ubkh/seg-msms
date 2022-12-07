@@ -65,7 +65,6 @@ urlpatterns = [
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('<hashid:pk>/profile/', views.EditUserView.as_view(), name='edit_profile'),
-    # ('edit_profile/<hashid:pk>/', views.EditUserView.as_view(), name='edit_profile'),
 
     # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),
