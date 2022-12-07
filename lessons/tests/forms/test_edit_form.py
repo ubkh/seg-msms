@@ -1,5 +1,5 @@
 """
-Tests that will be used to test the Registration form.
+Tests that will be used to test the Edit form.
 """
 
 from django import forms
@@ -9,9 +9,9 @@ from lessons.models import User
 from lessons.forms import EditUserForm
 
 
-class RegisterFormTestCase(TestCase):
+class EditFormTestCase(TestCase):
     """
-    Unit tests that will be used to test the Registration form.
+    Unit tests that will be used to test the Edit form.
     """
 
     def setUp(self):
@@ -25,11 +25,11 @@ class RegisterFormTestCase(TestCase):
         }
         return form_input
 
-    def test_register_form_is_valid(self):
+    def test_edit_form_is_valid(self):
         register_form = EditUserForm(data=self.form_input)
         self.assertTrue(register_form.is_valid())
 
-    def test_register_form_contains_required_fields(self):
+    def test_edit_form_contains_required_fields(self):
         register_form = EditUserForm()
         self.assertIn('first_name', register_form.fields)
         first_name_field = register_form.fields['first_name']
