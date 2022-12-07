@@ -16,7 +16,7 @@ class LessonModifyForm(forms.ModelForm):
     Model form used for students who wish to request a new lesson or change their preferences
     for an existing lesson request.
     """
-    teacher = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
+    teacher = forms.ModelChoiceField(queryset=User.objects.filter(admission__groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
     class Meta:
         model = Lesson
         fields = ['title', 'instrument', 'teacher', 'day', 'time', 'number_of_lessons', 'interval', 'duration', 'information']

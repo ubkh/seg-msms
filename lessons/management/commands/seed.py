@@ -129,7 +129,6 @@ class Command(BaseCommand):
             )
             print(f'Seeding Teacher User {i}', end='\r')
             teacher_user.set_group_user()
-            teacher_user.set_group_teacher()
             school.set_group_teacher(teacher_user)
 
         # Generate 3 random Super-Admins
