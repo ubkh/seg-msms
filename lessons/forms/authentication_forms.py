@@ -70,10 +70,6 @@ class EditUserForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-    delete_account = forms.BooleanField(
-        label="Would you like to delete this account?",
-        required=False
-    )
 
 class AdminModifyForm(forms.ModelForm):
     """
