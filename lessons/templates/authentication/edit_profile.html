@@ -8,6 +8,9 @@
                     <h2 class="p-3"><b>Account Details</b></h2>
                 </div>
                 {% include 'partials/form.html' with form=form %}
+                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                    &nbsp;<a href="{% url 'password_change' user.id %}"><b>Change your password here</b></a>&nbsp;
+                </div>
             </div>
         </div>
     </div>

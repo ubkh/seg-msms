@@ -13,7 +13,7 @@ from lessons.helpers import login_prohibited
 from lessons.models import User
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin, GroupRestrictedMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -103,6 +103,7 @@ class EditUserView(GroupRestrictedMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('home')
+
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'authentication/change_password.html'

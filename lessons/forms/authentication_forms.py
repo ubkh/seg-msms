@@ -15,7 +15,7 @@ class LoginForm(forms.Form):
 
 class EditUserForm(forms.ModelForm):
     """
-    Model form to modify an existing administrator by a director.
+    Model form to modify an existing user.
     """
 
     class Meta:

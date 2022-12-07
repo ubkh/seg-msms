@@ -10,7 +10,7 @@ from lessons.models import User, School, Admission
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
-class ManageStudentView(SchoolGroupRestrictedMixin, FormView): # SchoolObjectMixin
+class ManageStudentView(SchoolGroupRestrictedMixin, FormView):  # SchoolObjectMixin
     template_name = "authentication/manage_student.html"
     form_class = ManageMemberForm
     http_method_names = ['get', 'post']
