@@ -112,3 +112,13 @@ class Lesson(models.Model):
 
     def get_absolute_url(self):
         return reverse('booking_invoice', kwargs=[self.id])
+
+
+class ScheduledLesson(models.Model):
+    lesson = models.ForeignKey(
+        Lesson,
+        blank=False,
+        on_delete=models.CASCADE # check this
+    )
+    start = models.DateTimeField(blank=False)
+    end = models.DateTimeField(blank=False)
