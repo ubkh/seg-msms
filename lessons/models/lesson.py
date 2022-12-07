@@ -88,6 +88,25 @@ class Lesson(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 
+    @property
+    def total_paid(self):
+        transfer_list = apps.get_model('lessons.Transfer').objects.filter(lesson=self.id)
+        total_paid = 0
+        for transfer in transfer_list:
+            total_paid += transfer.amount
+        return total_paid
+
+    @property
+    def payment_status(self):
+        if self.total_paid == 0:
+            return "Unpaid"
+        elif self.total_paid < self.price:
+            return "Partially Paid"
+        elif self.total_paid == self.price:
+            return "Paid"
+        elif self.total_paid > self.price:
+            return "Overpaid"
+
     def __str__(self):
         return self.title
 

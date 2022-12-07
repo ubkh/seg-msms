@@ -14,7 +14,7 @@ from django.views.generic import CreateView, UpdateView, ListView
 
 from lessons.forms import LessonModifyForm, LessonFulfillForm, LessonRequestForm
 from lessons.helpers import lesson_fulfilled_restricted
-from lessons.models import Lesson, User, School, Term
+from lessons.models import Lesson, User, School, Term, Transfer
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
@@ -169,7 +169,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
 
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions / DetailView
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
@@ -184,4 +184,5 @@ class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Req
     def get_context_data(self, **kwargs):
         context = super(LessonInvoiceView, self).get_context_data(**kwargs)
         context['lessons'] = Lesson.objects.filter(id=self.kwargs['pk'])
+        context['transfers'] = Transfer.objects.filter(lesson=self.kwargs['pk'])
         return context
