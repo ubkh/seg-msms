@@ -1,4 +1,4 @@
-# Team *Kangaroo* Small Group project
+# Team Kangaroo Small Group project
 
 ## Team members
 The members of the team are:
@@ -13,9 +13,9 @@ The project is called `msms` (Music School Management System).  It currently con
 **A project description can be found in the `PROJECT.md` file.**
 
 ## Deployed version of the application
-The deployed version of the application can be found at *<[enter URL here](URL)>*.
+The deployed version of the application can be found at *<[http://matyog.pythonanywhere.com](this page)>*.
 
-## Installation instructions
+## Installation and execution instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
 
 ```
@@ -45,24 +45,13 @@ Run all tests with:
 ```
 $ python3 manage.py test
 ```
-## Deployment instructions
 
-Migrate models into database schema:
-(You may need to run ```makemigrations``` first.)
-
-```
-$ python3 manage.py migrate
-```
-
-Run the server:
+Run the server with:
 
 ```
 $ python3 manage.py runserver
 ```
 
-*The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*
-
 ## Sources
 The packages used by this application are specified in `requirements.txt`
 
-*Declare other sources here.*
