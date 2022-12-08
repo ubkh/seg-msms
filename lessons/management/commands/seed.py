@@ -134,7 +134,7 @@ class Command(BaseCommand):
 
         norma_school, created = School.objects.get_or_create(
             name="The Norma Noe School of Music",
-            director=director_user,
+            director=teacher_user,
             description=self.faker.text(max_nb_chars=1000)
         )
         setattr(norma_school, 'current_term', t)
