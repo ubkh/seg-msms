@@ -103,3 +103,8 @@ class ScheduledLesson(models.Model):
     )
     start = models.DateTimeField(blank=False)
     end = models.DateTimeField(blank=False)
+    # timetable_day = models.ForeignKey(
+    #     TimetableDay,
+    #     blank=False,
+    #     on_delete=models.CASCADE
+    # )

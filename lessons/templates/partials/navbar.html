@@ -39,10 +39,10 @@
 
                     <div class="vr"></div>
                     <span class="navbar-text">&nbsp&nbspLogged in as: {{ user.first_name }} {{ user.last_name }}&nbsp&nbsp</span>
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'log_out' %}">Log Out</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm d-flex align-items-center" role="button" href="{% url 'log_out' %}">Log Out</a>
                 {% else %}
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'login' %}">Log In</a>
-                    <a class="btn btn-outline-light mx-1 btn-sm" role="button" href="{% url 'register' %}">Register</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm d-flex align-items-center" role="button" href="{% url 'login' %}">Log In</a>
+                    <a class="btn btn-outline-light mx-1 btn-sm d-flex align-items-center" role="button" href="{% url 'register' %}">Register</a>
                 {% endif %}
             </div>
         </div>

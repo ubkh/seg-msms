@@ -1,0 +1,36 @@
+{% extends 'base/school_base.html' %}
+{% block school_body %}
+    <div class="container">
+        <h1><b>Timetable</b></h1>
+        <p>View upcoming lessons here.</p>
+        <hr>
+    </div>
+    <div class="container-fluid">
+        {% regroup schedule by start|date:"l, M d" as schedule_group %}
+        
+        <div class="row align-items-start">
+            {% for s in schedule_group %}
+                &nbsp;
+                <div class="col me-1">
+                    <div class="row">
+                        <p class="text-center">{{ s.grouper|slice:":3" }}, {{ s.grouper|slice:"8:" }}</p>
+                    </div>
+                    {% for sl in s.list %}
+                        <div class="row">
+                            <div class="col card border-dark mb-2 px-0 py-0">
+                                <div class="card-body">
+                                    <h6 class="card-title"><b>{{ sl.lesson|truncatechars:10 }}</b></h6>
+                                    <h7 class="card-subtitle mb-2 text-muted">{{ sl.start|date:"G:i" }} to {{ sl.end|date:"G:i" }}</h7>
+                                    <span class="badge bg-dark">{{ sl.lesson.teacher }}</span> <br>
+                                    <span class="badge text-dark" style="background-color: lightgray;">{{ sl.lesson.instrument }}</span>
+                                    <!-- <a href="#" class="stretched-link"></a> -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    &nbsp;
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

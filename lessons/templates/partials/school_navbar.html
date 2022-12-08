@@ -8,6 +8,7 @@
 
         {% if group.name == 'Client' %}
             <a href="{% url 'client_lessons' school.id %}" class="list-group-item list-group-item-action">Lessons</a>
+            <a href="{% url 'timetable' school.id %}" class="list-group-item list-group-item-action">Timetable</a>
             <a href="{% url 'client_transactions' school.id %}" class="list-group-item list-group-item-action">Transactions</a>
         {% endif %}
 
