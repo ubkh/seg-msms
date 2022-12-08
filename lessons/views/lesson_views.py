@@ -162,9 +162,11 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
         data = form.save(commit=False)
         data.price = (data.duration / 60) * data.number_of_lessons * 10
+        # ensure end_date and start_date fields are always filled in
+        # even if a term is selected by the user
         if data.end_date == None and self.this_term != None:
             data.end_date = self.this_term.end_date
-        if data.start_type == "Term":
+        if data.start_type == "Term" and self.this_term != None:
             term = Term.objects.get(pk=data.start_term_id)
             data.start_date = term.start_date
         data.fulfilled = True
@@ -193,7 +195,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
             sl = ScheduledLesson.objects.create(
                 lesson = Lesson.objects.get(pk=lesson.id),
                 start = make_aware(current),
-                end = make_aware(current + duration)
+                end = make_aware(current + duration),
             )
 
             current += interval

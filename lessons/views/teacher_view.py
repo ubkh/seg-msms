@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from lessons.models import Lesson
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
-class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+class TeacherTimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     """
     View that displays all teacher lessons.
     """
@@ -16,7 +16,7 @@ class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
     allowed_group = "Teacher"
 
     def get_context_data(self, **kwargs):
-        context = super(TimetableView, self).get_context_data(**kwargs)
+        context = super(TeacherTimetableView, self).get_context_data(**kwargs)
         context['lessons'] = context['lessons'].order_by('-fulfilled')
         return context
 

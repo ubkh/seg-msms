@@ -7,3 +7,4 @@ from .term_views import *
 from .school_views import *
 from .director_views import *
 from .teacher_view import *
+from .timetable_views import *

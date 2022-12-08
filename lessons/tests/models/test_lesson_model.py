@@ -222,37 +222,11 @@ class LessonModelTestCase(TestCase):
         self._assert_lesson_is_valid(self.other_lesson)
 
     """
-    Test Number Of Lessons Field
-    """
-
-    def test_number_of_lessons_cannot_be_zero(self):
-        self.lesson.number_of_lessons = 0
-        self._assert_lesson_is_invalid(self.lesson)
-
-    def test_number_of_lessons_cannot_be_negative(self):
-        self.lesson.number_of_lessons = -1
-        self._assert_lesson_is_invalid(self.lesson)
-
-    def test_number_of_lessons_1_minimum(self):
-        self.lesson.number_of_lessons = 1
-        self._assert_lesson_is_valid(self.lesson)
-
-    def test_number_of_lessons_can_be_the_same(self):
-        self.lesson.number_of_lessons = 1
-        self.other_lesson.number_of_lessons = 1
-        self._assert_lesson_is_valid(self.lesson)
-        self._assert_lesson_is_valid(self.other_lesson)
-
-    """
     Test Interval
     """
 
     def test_interval_cannot_be_zero(self):
         self.lesson.interval = 0
-        self._assert_lesson_is_invalid(self.lesson)
-
-    def test_interval_cannot_be_negative(self):
-        self.lesson.number_of_lessons = -1
         self._assert_lesson_is_invalid(self.lesson)
 
     def test_interval_1_minimum(self):
