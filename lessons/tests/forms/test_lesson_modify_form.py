@@ -3,7 +3,7 @@ Unit tests of the Request form
 """
 
 import datetime
-from unittest import skip
+
 
 from django.forms import TypedChoiceField
 from django.test import TestCase
@@ -26,14 +26,22 @@ class LessonModifyFormTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')
         self.school = School.objects.get(id=1)
+        teacher_user = User.objects.create_user(
+            email="sylvia.plath@example.org",
+            first_name="Albert",
+            last_name="Camus",
+            instrument=["Piano", "Violin"],
+            password="Password123",
+        )
+        teacher_user.set_group_user()
+        self.school.set_group_teacher(teacher_user)
         self.form_input = {
             'student': self.user,
             'title': 'Music Lesson',
             'day': 'Monday',
-            'instrument': ['Piano'],
-            'teacher': 'Albert Camus',
+            'instrument': 'Piano',
+            'teacher': teacher_user,
             'time': '13:00',
-            'number_of_lessons': 2,
             'interval': 1,
             'duration': 60,
             'information': 'New Lesson',
@@ -57,7 +65,6 @@ class LessonModifyFormTestCase(TestCase):
         teacher_field = form.fields['teacher']
         self.assertTrue(isinstance(teacher_field, forms.ChoiceField))
 
-    @skip("Broken due to instrument field")
     def test_form_saves_correctly(self):
         form = LessonModifyForm(data=self.form_input)
         lesson_count_before = Lesson.objects.count()
@@ -73,15 +80,10 @@ class LessonModifyFormTestCase(TestCase):
         self.assertEqual(saved_lesson.instrument, self.form_input['instrument'])
         self.assertEqual(saved_lesson.teacher, self.form_input['teacher'])
         self.assertEqual(saved_lesson.time, datetime.time(13,0))
-        self.assertEqual(saved_lesson.number_of_lessons, self.form_input['number_of_lessons'])
         self.assertEqual(saved_lesson.interval, self.form_input['interval'])
         self.assertEqual(saved_lesson.duration, self.form_input['duration'])
         self.assertEqual(saved_lesson.information, self.form_input['information'])
 
-    def test_form_uses_number_of_lessons_validation(self):
-        self.form_input['number_of_lessons'] = -1
-        form = LessonModifyForm(data=self.form_input)
-        self.assertFalse(form.is_valid())
 
     def test_form_uses_day_validation(self):
         self.form_input['day'] = 'Wrong_Day'
