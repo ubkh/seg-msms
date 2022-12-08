@@ -1,5 +1,5 @@
 """
-Models that will be used in the music school management system.
+User model that will be used in the music school management system to authenticate clients.
 """
 
 import re
@@ -8,8 +8,19 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 from multiselectfield import MultiSelectField
+
 from lessons.models.mixins import GroupRegistrationMixin
 
+
+INSTRUMENTS = [
+    ('Piano', 'Piano'),
+    ('Guitar', 'Guitar'),
+    ('Drums', 'Drums'),
+    ('Violin', 'Violin'),
+    ('Trumpet', 'Trumpet'),
+    ('Flute', 'Flute'),
+    ('Harp', 'Harp'),
+]
 
 class UserManager(BaseUserManager):
     """
@@ -17,9 +28,6 @@ class UserManager(BaseUserManager):
     """
 
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
-        """
-        Create a generic user according to its attributes.
-        """
         if not email:
             raise ValueError("Users must have an email address")
         user = self.model(
@@ -37,12 +45,6 @@ class UserManager(BaseUserManager):
         Create a standard user.
         """
         return self._create_user(email, password, False, False, **extra_fields)
-    
-    def create_teacher(self, email, password, **extra_fields):
-        """
-        Create a standard teacher.
-        """
-        return self._create_user(email, password, True, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
         """
@@ -55,6 +57,7 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
     """
     User model used for authentication.
     """
+    
     email = models.EmailField(
         verbose_name="Email",
         max_length=254,
@@ -92,21 +95,12 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
         on_delete=models.CASCADE
     )
     is_staff = models.BooleanField(default=False)
-    INSTRUMENTS = [
-        ('Piano', 'Piano'),
-        ('Guitar','Guitar'),
-        ('Drums','Drums'),
-        ('Violin','Violin'),
-        ('Trumpet','Trumpet'),
-        ('Flute','Flute'),
-        ('Harp','Harp'),
-    ]
     instrument = MultiSelectField(
-        verbose_name="What can you teach?",
-        max_length=1000, 
-        choices=INSTRUMENTS, 
-        default='Piano', 
+        verbose_name="Interested in teaching? Select the following instruments that could be taught.",
+        max_length=1000,
+        choices=INSTRUMENTS,
         null=False,
+        blank=True
     )
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, verbose_name='Active Account')

@@ -1,27 +1,30 @@
-{% load widget_tweaks %}
+<div class="card-body">
 
-{% for field in form %}
-    <div class="mb-3 form-floating">
-        {% if form.is_bound %}
+    {% for message in messages %}
+        <p style="color: red;">
+            <b>{{ message }}</b>
+        </p>
+    {% endfor %}
 
-            {% if field.errors %}
-                {% render_field field class="form-control is-invalid" placeholder="{{ field.label_tag }}" %}
-                <label>{{ field.label_tag }}</label>
-            {% else %}
-                {% render_field field class="form-control is-valid" placeholder="{{ field.label_tag }}" %}
-                <label>{{ field.label_tag }}</label>
-            {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
 
-        {% else %}
+        {% for field in form %}
+            <div class="mb-4">
+                <label class="form-label">{{ field.label }}</label>
+                {% for error in field.errors %}
+                    <p style="color: red;">
+                        <strong>{{ error }}</strong>
+                    </p>
+                {% endfor %}
+                {{ field }}
+                <p class="help-text">{{ field.help_text }} </p>
+            </div>
+        {% endfor %}
 
-            {% render_field field class="form-control" placeholder="{{ field.label_tag }}" %}
-            <label>{{ field.label_tag }}</label>
-
-        {% endif %}
-        <div class="invalid-feedback">
-            {% for error in field.errors %}
-                {{ error }}
-            {% endfor %}
+        <div class="d-grid">
+            <input type="submit" value="✓" class="btn btn-success">
         </div>
-    </div>
-{% endfor %}
+
+    </form>
+</div>

@@ -13,6 +13,11 @@ from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
 class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
+    """
+    View that displays the term page and term forms. If a valid 
+    form is submitted the user is redirected to the term page.
+    """
+
     model = Term
     template_name = "terms/terms.html"
     form_class = TermForm
@@ -22,7 +27,6 @@ class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
     def form_valid(self, form):
         super().form_valid(form)
         term = form.save()
-        print("ohhhhhhhh")
         if Term.objects.filter(school_id=self.kwargs['school']).count() == 1:
             school_instance = get_object_or_404(School, pk=self.kwargs['school'])
             setattr(school_instance, 'current_term', term)
@@ -41,6 +45,11 @@ class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
 
 
 class TermEditView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+    """
+    View that displays the edit term page and edit term forms. If a valid 
+    form is submitted the user is redirected to the term page.
+    """
+
     model = Term
     template_name = "terms/edit_term.html"
     form_class = TermForm

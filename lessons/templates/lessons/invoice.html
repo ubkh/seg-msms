@@ -1,12 +1,12 @@
 {% extends 'base/school_base.html' %}
+{% block head %}<title>Invoice - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
     <div class="container">
-        <h1>Booking Invoice:</h1>
+        <h1><b>Booking Invoice</b></h1>
+        <hr class="border border-dark border-2 opacity-100">
         {% for curLesson in lessons %}
             <div>
                 <h2>Bill To:</h2>
-                <br>
-
                 {% if curLesson.student.parent %}
                     <h4>{{ curLesson.student.parent.first_name }} {{ curLesson.student.parent.last_name }}</h4>
                     <h4>{{ curLesson.student.parent.email }}</h4>
@@ -16,57 +16,77 @@
                 {% endif %}
 
                 <br>
-                <h2>Invoice Number: {{curLesson.student.id}}-{{curLesson.id}}</h2>
+                <h2>Invoice Number: {{ curLesson.student.id }}-{{ curLesson.id }}</h2>
                 <hr>
             </div>
             <div>
-                <h2>Title: {{curLesson.title}}</h2>
-                <h3>Instrument: {{curLesson.instrument}}</h3>
+                <h4>Title: {{ curLesson.title }}</h4>
+                <h4>Instrument: {{ curLesson.instrument }}</h4>
+                {% if curLesson.information %}
+                    <h4>Information: {{ curLesson.information }}</h4>
+                {% endif %}
                 <br>
                 <div class="container">
                     <div class="row border border-dark">
-                      <div class="col-sm bg-secondary border border-dark">
-                        <h4>Day</h4>
-                      </div>
-                      <div class="col-sm bg-secondary border border-dark">
-                        <h4>Time</h4>
-                      </div>
-                      <div class="col-sm bg-secondary border border-dark">
-                        <h4>Number Of Lessons</h4>
-                      </div>
-                      <div class="col-sm bg-secondary border border-dark">
-                        <h4>Interval</h4>
-                      </div>
-                      <div class="col-sm bg-secondary border border-dark">
-                        <h4>Duration</h4>
-                      </div>
-                      <div class="w-100"></div>
-                      <div class="col-sm bg-info border border-dark">
-                        <h5>{{curLesson.day}}</h5>
-                      </div>
-                      <div class="col-sm bg-info border border-dark">
-                        <h5>{{curLesson.time}}</h5>
-                      </div>
-                      <div class="col-sm bg-info border border-dark">
-                        <h5>{{curLesson.number_of_lessons}}</h5>
-                      </div>
-                      <div class="col-sm bg-info border border-dark">
-                        <h5>{{curLesson.interval}} Week/s</h5>
-                      </div>
-                      <div class="col-sm bg-info border border-dark">
-                        <h5>{{curLesson.duration}} Minute/s</h5>
-                      </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Day</h4>
+                        </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Time</h4>
+                        </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Term</h4>
+                        </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Number Of Lessons</h4>
+                        </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Interval</h4>
+                        </div>
+                        <div class="col-sm bg-secondary border border-dark">
+                            <h4>Duration</h4>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.day }}</h5>
+                        </div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.time }}</h5>
+                        </div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.start_term }}</h5>
+                        </div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.number_of_lessons }}</h5>
+                        </div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.interval }} Week/s</h5>
+                        </div>
+                        <div class="col-sm border border-dark">
+                            <h5>{{ curLesson.duration }} Minute/s</h5>
+                        </div>
 
                     </div>
-                  </div>
-                  <br>
-                <h3>Information: {{curLesson.information}}</h3>
+                </div>
+                <br>
             </div>
 
             <div>
-                <hr>
-                <h1>Amount Due: £{{curLesson.price}}</h1>
+                <h4>Amount Due: £{{ curLesson.price }}</h4>
             </div>
+
+            <hr>
+
+            <h1><b>Transfers</b></h1>
+            <hr class="border border-dark border-2 opacity-100">
+
+            <h4>Total paid: £ {{ curLesson.total_paid }}</h4>
+            <h4>Total paid: {{ curLesson.payment_status }}</h4>
+
+        {% endfor %}
+
+        {% for transfer in transfers %}
+            {% include 'partials/transfer.html' with transfer=transfer %}
         {% endfor %}
     </div>
 {% endblock %}

@@ -1,15 +1,9 @@
 {% extends 'base/base.html' %}
+
+{% block sidebar %}
+    {% include 'partials/school_navbar.html' %}
+{% endblock %}
+
 {% block body %}
-    {% include 'partials/navbar.html' %}
-    <div class="row py-5">
-        <div class="col">
-            {% include 'partials/school_navbar.html' %}
-        </div>
-        <div class="col-6">
-            {% block school_body %} {% endblock %}
-        </div>
-        <div class="col">
-            <!-- Empty -->
-        </div>
-    </div>
+    {% block school_body %} {% endblock %}
 {% endblock %}

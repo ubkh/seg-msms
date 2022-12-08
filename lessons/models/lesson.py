@@ -1,5 +1,5 @@
 """
-Models that will be used in the music school management system.
+Lesson model that will be used in the music school management system.
 """
 from django.apps import apps
 from django.urls import reverse
@@ -11,23 +11,23 @@ from lessons.models import User
 from lessons.models.term import Term
 
 DAYS_OF_WEEK = [
-    ('Monday','Monday'),
-    ('Tuesday','Tuesday'),
-    ('Wednesday','Wednesday'),
-    ('Thursday','Thursday'),
-    ('Friday','Friday'),
-    ('Saturday','Saturday'),
-    ('Sunday','Sunday'),
+    ('Monday', 'Monday'),
+    ('Tuesday', 'Tuesday'),
+    ('Wednesday', 'Wednesday'),
+    ('Thursday', 'Thursday'),
+    ('Friday', 'Friday'),
+    ('Saturday', 'Saturday'),
+    ('Sunday', 'Sunday'),
 ]
 
 INSTRUMENTS = [
     ('Piano', 'Piano'),
-    ('Guitar','Guitar'),
-    ('Drums','Drums'),
-    ('Violin','Violin'),
-    ('Trumpet','Trumpet'),
-    ('Flute','Flute'),
-    ('Harp','Harp'),
+    ('Guitar', 'Guitar'),
+    ('Drums', 'Drums'),
+    ('Violin', 'Violin'),
+    ('Trumpet', 'Trumpet'),
+    ('Flute', 'Flute'),
+    ('Harp', 'Harp'),
 ]
 
 START_TYPES = [
@@ -35,10 +35,12 @@ START_TYPES = [
     ('Date', 'By Date')
 ]
 
+
 class Lesson(models.Model):
     """
     Lesson model used to represent a fulfilled or unfulfilled lesson.
     """
+    
     fulfilled = models.BooleanField(default=False)
     student = models.ForeignKey(
         User,
@@ -66,7 +68,7 @@ class Lesson(models.Model):
         validators=[MinValueValidator(1)]
     )
     interval = models.PositiveIntegerField(
-        default=1, 
+        default=1,
         validators=[MinValueValidator(1), MaxValueValidator(4)],
         verbose_name="Interval (weeks)"
     )
@@ -88,6 +90,31 @@ class Lesson(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 
+    @property
+    def total_paid(self):
+        """
+        Calculate the total paid amount of all transfers that relate to this lesson.
+        """
+        transfer_list = apps.get_model('lessons.Transfer').objects.filter(lesson=self.id)
+        total_paid = 0
+        for transfer in transfer_list:
+            total_paid += transfer.amount
+        return total_paid
+
+    @property
+    def payment_status(self):
+        """
+        Return a suitable status message of the paid amount of a transfer.
+        """
+        if self.total_paid == 0:
+            return "Unpaid"
+        elif self.total_paid < self.price:
+            return "Partially Paid"
+        elif self.total_paid == self.price:
+            return "Paid"
+        elif self.total_paid > self.price:
+            return "Overpaid"
+
     def __str__(self):
         return self.title
 
@@ -99,12 +126,7 @@ class ScheduledLesson(models.Model):
     lesson = models.ForeignKey(
         Lesson,
         blank=False,
-        on_delete=models.CASCADE # check this
+        on_delete=models.CASCADE  # check this
     )
     start = models.DateTimeField(blank=False)
     end = models.DateTimeField(blank=False)
-    # timetable_day = models.ForeignKey(
-    #     TimetableDay,
-    #     blank=False,
-    #     on_delete=models.CASCADE
-    # )

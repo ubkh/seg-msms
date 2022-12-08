@@ -1,11 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
-from lessons.models import User, Term
-from django.contrib.auth.models import Group
+from django.core.management.base import BaseCommand
 import datetime
 from faker import Faker
 import random
 
-from lessons.models.school import School
+from lessons.models import User, Lesson, School, Term
 
 
 class Command(BaseCommand):
@@ -49,7 +47,7 @@ class Command(BaseCommand):
 
         # Create Teacher
         User.objects.filter(email="sylvia.plath@example.org").delete()
-        teacher_user = User.objects.create_teacher(
+        teacher_user = User.objects.create_user(
             email="sylvia.plath@example.org",
             first_name="Sylvia",
             last_name="Plath",
@@ -57,7 +55,6 @@ class Command(BaseCommand):
             password="Password123",
         )
         teacher_user.set_group_user()
-        teacher_user.set_group_teacher()
         school.set_group_teacher(teacher_user)
 
         # Create Administrator
@@ -70,6 +67,38 @@ class Command(BaseCommand):
         )
         administrator_user.set_group_user()
         school.set_group_administrator(administrator_user)
+
+        # Unfullfilled Lesson
+        Lesson.objects.create(
+            title="Piano Lesson",
+            instrument="Piano",
+            teacher=teacher_user,
+            day="Monday",
+            time="03:00",
+            number_of_lessons="5",
+            interval="1",
+            duration="30",
+            information="I have no prior experience.",
+            fulfilled=False,
+            student=student_user,
+            school=school,
+        )
+
+        # Fullfilled Lesson
+        Lesson.objects.create(
+            title="Violin Lesson",
+            instrument="Violin",
+            teacher=teacher_user,
+            day="Friday",
+            time="05:00",
+            number_of_lessons="20",
+            interval="1",
+            duration="60",
+            information="I have minor experience.",
+            fulfilled=True,
+            student=student_user,
+            school=school,
+        )
 
         # Generate 50 random students
         for i in range(50):
@@ -121,7 +150,7 @@ class Command(BaseCommand):
             email = f'{first_name}.{last_name}@{self.faker.domain_name()}'
             instrument = random.sample(INSTRUMENTS, k=random.randint(1, len(INSTRUMENTS)))
             password = User.objects.make_random_password()
-            teacher_user = User.objects.create_teacher(
+            teacher_user = User.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -130,7 +159,6 @@ class Command(BaseCommand):
             )
             print(f'Seeding Teacher User {i}', end='\r')
             teacher_user.set_group_user()
-            teacher_user.set_group_teacher()
             school.set_group_teacher(teacher_user)
 
         # Generate 3 random Super-Admins

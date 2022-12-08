@@ -3,13 +3,21 @@ Unit tests of the Request form
 """
 
 import datetime
+from unittest import skip
+
+from django.forms import TypedChoiceField
 from django.test import TestCase
 from django import forms
+from django.utils.regex_helper import Choice
+
 from lessons.forms import LessonRequestForm
 from lessons.models import Lesson, User, School
 
 
 class RequestFormTestCase(TestCase):
+    """
+    Unit tests that will be used to test the Registration form.
+    """
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
         'lessons/tests/fixtures/default_school.json'
@@ -50,7 +58,7 @@ class RequestFormTestCase(TestCase):
         teacher_field = form.fields['teacher']
         self.assertTrue(isinstance(teacher_field, forms.ChoiceField))
 
-    """ Currently doesnt pass will look into it later
+    @skip("Broken due to instrument field")
     def test_form_saves_correctly(self):
         form = LessonRequestForm(data=self.form_input, user=self.user)
         lesson_count_before = Lesson.objects.count()
@@ -70,7 +78,6 @@ class RequestFormTestCase(TestCase):
         self.assertEqual(saved_lesson.interval, self.form_input['interval'])
         self.assertEqual(saved_lesson.duration, self.form_input['duration'])
         self.assertEqual(saved_lesson.information, self.form_input['information'])
-    """
 
     def test_form_uses_number_of_lessons_validation(self):
         self.form_input['number_of_lessons'] = -1

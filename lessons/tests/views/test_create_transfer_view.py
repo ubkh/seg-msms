@@ -32,8 +32,7 @@ class CreateTransferViewTestCase(TestCase):
     def _create_form_input(self):
         form_input = {
             'amount': 100.00,
-            'user_id': 2,
-            'lesson_id': 3
+            'transfer_id': "2-3",
         }
         return form_input
 
@@ -51,7 +50,7 @@ class CreateTransferViewTestCase(TestCase):
 
     def test_unsuccessful_transfer(self):
         self.client.login(email=self.user.email, password="Password123")
-        self.form_input['user_id'] = 999
+        self.form_input['transfer_id'] = "999-1"
         transfer_count_before = Transfer.objects.count()
         response = self.client.post(self.url, self.form_input)
         transfer_count_after = Transfer.objects.count()
@@ -72,5 +71,5 @@ class CreateTransferViewTestCase(TestCase):
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         saved_user = Transfer.objects.latest('id')
         self.assertEqual(saved_user.amount, self.form_input['amount'])
-        self.assertEqual(saved_user.user_id, self.form_input['user_id'])
-        self.assertEqual(saved_user.lesson_id, self.form_input['lesson_id'])
+        self.assertEqual(saved_user.user_id, 2)
+        self.assertEqual(saved_user.lesson_id, 3)

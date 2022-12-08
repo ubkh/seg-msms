@@ -8,12 +8,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from lessons.forms import LoginForm, RegisterForm, TeacherRegisterForm, EditUserForm
+from lessons.forms import LoginForm, RegisterForm, EditUserForm
 from lessons.helpers import login_prohibited
 from lessons.models import User
-from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
+from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin, GroupRestrictedMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -30,7 +30,7 @@ def index(request):
 
 
 @login_prohibited
-def register(request):
+def register_view(request):
     """
     View that displays the registration page and registration forms. If a valid 
     form is submitted the user is redirected to the home page, else they are 
@@ -51,28 +51,6 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'authentication/register.html', {'form': form})
-
-
-@login_prohibited
-def teacher_register(request):
-    """
-    View that displays the teacher's registration page and registration forms. If a valid 
-    form is submitted the user is redirected to the home page, else they are 
-    directed to resubmit the form again.
-    """
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('home'))
-
-    if request.method == "POST":
-        form = TeacherRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.set_group_teacher()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = TeacherRegisterForm()
-    return render(request, 'teachers/teacher_register.html', {'form': form})
 
 
 @login_prohibited
@@ -103,29 +81,49 @@ def log_in(request):
 
 
 def log_out(request):
+    """
+    Logs out users and redirects them to the index page.
+    """
     logout(request)
     return redirect('index')
 
 
-class EditUserView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):
+class EditUserView(GroupRestrictedMixin, UpdateView):
+    """
+    View that displays the edit page and edit forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+
     model = User
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
     http_method_names = ['get', 'post']
+    allowed_group = "User"
 
+    """
+    Check if the data in the edit form is valid.
+    """
     def form_valid(self, form):
         super().form_valid(form)
         form.save()
+        if form.cleaned_data['delete_account']:
+            self.request.user.is_active = False
+            self.request.user.save()
+            logout(self.request)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('school_home', kwargs={'school': self.school_id})
-
-    def handle_no_permission(self):
-        return redirect('home')
+        return reverse('home')
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    """
+    View that displays the edit password page and edit password forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+
     template_name = 'authentication/change_password.html'
     success_url = reverse_lazy('home')
 

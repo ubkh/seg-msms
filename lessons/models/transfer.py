@@ -1,5 +1,5 @@
 """
-Models that will be used in the music school management system.
+Transfer model that will be used to track payments from students in music school management system.
 """
 from decimal import Decimal
 
@@ -11,7 +11,7 @@ from lessons.models import User, Lesson
 
 class Transfer(models.Model):
     """
-    ~
+    Transfer model used to track transactions from clients.
     """
 
     user = models.ForeignKey(

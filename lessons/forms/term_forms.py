@@ -8,6 +8,10 @@ from django.db.models import Q
 from lessons.models import Term
 
 class TermForm(forms.ModelForm):
+    """
+    Model form used to create term dates.
+    """
+
     class Meta:
         model = Term
         fields = ['start_date', 'end_date']
@@ -23,6 +27,10 @@ class TermForm(forms.ModelForm):
         }
 
     def clean(self):
+        """
+        Validate that data in the term form is correct.
+        """
+
         cleaned = super(TermForm, self).clean()
         start = cleaned.get('start_date')
         end = cleaned.get('end_date')

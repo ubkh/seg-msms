@@ -1,47 +1,20 @@
 {% extends 'base/base.html' %}
+{% block head %}<title>Log In - Kangaroo Music</title>{% endblock %}
 {% block body %}
     <div class="container">
         <div class="row justify-content-center mt-5">
             <div class="col-lg-4 col-md-6 col-sm-6">
-              <div class="card shadow">
-                <div class="card-title text-center border-bottom">
-                  <h2 class="p-3"><b>LOGIN</b></h2>
-                </div>
-                <div class="card-body">
-                  {% for message in messages %}
-                    <p style="color: red;">
-                        <b>{{ message }}</b>
-                    </p>
-                  {% endfor %}
-                  <form action="{% url 'login' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ next }}">
-                    {% for field in form %}
-                      <div class="mb-4">
-                        <label class="form-label">{{ field.label }}</label>
-                        {% for error in field.errors %}
-                            <p style="color: red;">
-                                <strong>{{ error }}</strong>
-                            </p>
-                        {% endfor %}
-                        <input type="{{ field.field.widget.input_type }}" 
-                               class="form-control" 
-                               name="{{ field.name }}"
-                               id="id_{{ field.name }}" 
-                               value="{{ field.value|default:'' }}"
-                        />
-                        <p class="help-text">{{ field.help_text }} </p>
-                      </div>
-                    {% endfor %}
-                    <div class="d-grid">
-                      <input type="submit" value="Login" class="btn btn-primary">
+                <div class="card shadow">
+                    <div class="card-title text-center border-bottom">
+                        <h2 class="p-3"><b>LOGIN</b></h2>
                     </div>
-                  </form>
+
+                    {% include 'partials/form.html' with form=form %}
+
+                    <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
+                        Don't have an account?&nbsp;<a href="{% url 'register' %}"><b>Register</b></a>&nbsp;one!
+                    </div>
                 </div>
-                <div class="card-footer border-0 bg-light d-flex py-3 justify-content-center">
-                  Don't have an account?&nbsp;<a href="{% url 'register' %}"><b>Register</b></a>&nbsp;one!
-                </div>
-              </div>
             </div>
         </div>
     </div>

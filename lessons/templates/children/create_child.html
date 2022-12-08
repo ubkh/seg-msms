@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
+{% block head %}<title>Create Child - Kangaroo Music</title>{% endblock %}
 {% block body %}
-    {% include 'partials/navbar.html' %}
     <div class="container">
         <div class="row justify-content-center mt-5">
             <div class="col-lg-4 col-md-6 col-sm-6">
@@ -8,15 +8,7 @@
                     <div class="card-title text-center border-bottom">
                         <h2 class="p-3"><b>Create Child</b></h2>
                     </div>
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            {% include 'partials/form.html' with form=form %}
-                            <div class="d-grid">
-                                <input type="submit" value="Create Child" class="btn btn-primary">
-                            </div>
-                        </form>
-                    </div>
+                    {% include 'partials/form.html' with form=form %}
                 </div>
             </div>
         </div>
