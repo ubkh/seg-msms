@@ -16,8 +16,8 @@
         {% endif %}
 
         {% if group.name == 'Administrator' %}
-            <a href="{% url 'school_bookings' school.id %}" class="list-group-item list-group-item-action">School Bookings</a>
-            <a href="{% url 'school_transfers' school.id %}" class="list-group-item list-group-item-action">School Transfers</a>
+            <a href="{% url 'school_bookings' school.id %}" class="list-group-item list-group-item-action">Bookings</a>
+            <a href="{% url 'school_transfers' school.id %}" class="list-group-item list-group-item-action">Transfers</a>
             <a href="{% url 'terms' school.id %}" class="list-group-item list-group-item-action">Terms</a>
         {% endif %}
 

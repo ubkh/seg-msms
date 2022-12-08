@@ -2,7 +2,7 @@
 {% block head %}<title>Bookings - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
     <div class="container">
-        <h1><b>Student Lessons</b></h1>
+        <h1><b>Lessons & Bookings</b></h1>
         <hr class="border border-dark border-2 opacity-100">
     </div>
     <br>
@@ -15,6 +15,7 @@
                 {% endif %}
             {% endfor %}
         </ul>
+        &nbsp;
         <ul class="list-group list-group-light">
             <h5>Fulfilled Lessons</h5>
             {% for l in lessons %}
