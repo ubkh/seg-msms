@@ -45,12 +45,7 @@ class InvoiceViewTestCase(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertContains(response, self.lesson.price)
-
-    def test_invoice_contains_number_of_lessons(self):
-        self.client.login(email=self.user.email, password="Password123")
-        response = self.client.get(self.url)
-        self.assertContains(response, self.lesson.number_of_lessons)
-
+        
     def test_invoice_contains_duration(self):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
