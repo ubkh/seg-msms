@@ -23,6 +23,6 @@ class DisplayTeacherTimetableViewTestCase(TestCase):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'teachers/timetable.html')
+        self.assertTemplateUsed(response, 'timetable/timetable.html')
         self.assertContains(response, self.user.first_name)
         self.assertContains(response, self.user.last_name)

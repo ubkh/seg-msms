@@ -21,7 +21,7 @@ class ChangePasswordViewTestCase(TestCase):
         }
 
     def test_change_password_url(self):
-        self.assertEqual(self.url, f'/{encode(self.user.id)}/profile/password_change/')
+        self.assertEqual(self.url, f'/profile/{encode(self.user.id)}/password_change/')
 
     def test_get_change_password(self):
         self.client.login(email=self.user.email, password="Password123")

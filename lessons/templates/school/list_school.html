@@ -4,11 +4,10 @@
     <div class="container">
         <h1><b>Music Schools</b></h1>
         <blockquote class="blockquote">
-            <p style="text-align: justify">Welcome! You can see a list of available schools in the system!</p>
+            <p style="text-align: justify">Welcome! Here you will find a list of available schools in the system.</p>
         </blockquote>
         <hr class="border border-dark border-2 opacity-100">
         <h2>School List</h2>
-        <hr>
 
         <div class="list-group">
             {% for school in schools %}
@@ -29,15 +28,17 @@
         <form method="get">
 
             <div class="form-group row">
-                <label for="search" class="col-sm-2 col-form-label">Search</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" value="{{ search }}" name="search" placeholder="Search">
+                    <label for="search" class="col-sm-2 col-form-label">Search</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" value="{{ search }}" name="search" placeholder="Search">
+                    </div>
                 </div>
             </div>
             <br>
 
             <div class="form-group row">
-                <div class="col-sm-2">Show enrolled schools</div>
+                <div class="col-sm-10">Show enrolled schools</div>
                 <div class="col-sm-10">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="enrolled" {% if enrolled %}

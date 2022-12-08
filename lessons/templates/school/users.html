@@ -3,9 +3,9 @@
 {% block school_body %}
     <div class="container">
         <h1><b>Members</b></h1>
+        <p>Manage student bookings within the management system.</p>
         <hr class="border border-dark border-2 opacity-100">
-        <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management
-            system.</p>
+        
         <h2>Student List</h2>
 
         <div class="list-group">
@@ -48,17 +48,21 @@
         <form method="get">
 
             <div class="form-group row">
-                <label for="search" class="col-sm-2 col-form-label">First Name</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                    <label for="search">First Name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                    </div>
                 </div>
             </div>
             <br>
 
             <div class="form-group row">
-                <label for="search" class="col-sm-2 col-form-label">Last Name</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                    <label for="search">Last Name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                    </div>
                 </div>
             </div>
             <br>

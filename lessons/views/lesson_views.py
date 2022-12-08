@@ -64,7 +64,11 @@ class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateVie
     def form_valid(self, form):
         super().form_valid(form)
         lesson = form.save(commit=False)
-        lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
+        number_of_lessons = ScheduledLesson.objects.filter(
+            lesson=lesson
+        ).count()
+        lesson.price = (lesson.duration / 60) * number_of_lessons * 10
+        
         lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -95,14 +99,21 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Re
         super().form_valid(form)
         if self.request.user == form.instance.student or self.request.user == form.instance.student.parent:
             lesson = form.save(commit=False)
-            lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
+            number_of_lessons = ScheduledLesson.objects.filter(
+                lesson=lesson
+            ).count()
+            lesson.price = (lesson.duration / 60) * number_of_lessons * 10
             lesson.save()
         else:
             administrators = User.objects.filter(groups__name='Administrator')
             for admin in administrators:
                 if self.request.user == admin:
                     lesson = form.save(commit=False)
-                    lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
+                    number_of_lessons = ScheduledLesson.objects.filter(
+                        lesson=lesson
+                    ).count()
+                    lesson.price = (lesson.duration / 60) * number_of_lessons * 10
+
                     lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -169,7 +180,6 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
         super().form_valid(form)
 
         data = form.save(commit=False)
-        data.price = (data.duration / 60) * data.number_of_lessons * 100
 
         # ensure end_date and start_date fields are always filled in
         # even if a term is selected by the user
@@ -182,10 +192,10 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
         self.calculateSchedule(data)
 
-        number_of_lessons = ScheduledLesson.objects.filter(
+        data.number_of_lessons = ScheduledLesson.objects.filter(
             lesson=data
         ).count()
-        data.price = (data.duration / 60) * number_of_lessons * 10
+        data.price = (data.duration / 60) * data.number_of_lessons * 10
         form.save()
         return HttpResponseRedirect(self.get_success_url())
 

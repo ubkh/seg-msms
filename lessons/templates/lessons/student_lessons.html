@@ -2,13 +2,14 @@
 {% block head %}<title>Lessons - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
 
+
     <div class="container">
         <h1><b>Lessons</b></h1>
+        <p>Sign up to lessons here and view any pending requests or bookings you may have for you or your children.</p>
         <hr class="border border-dark border-2 opacity-100">
-        <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can sign up to lessons here and view any pending
-            requests or bookings you may have for you or your children.</p>
         <a class="btn btn-primary" href="{% url 'request_lesson' school.id %}">Request Lesson</a>
     </div>
+    &nbsp;
     &nbsp;
     <div class="accordion" id="accordionExample">
         <div class="accordion-item">
@@ -33,7 +34,7 @@
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Fulfilled Lessons.
+                    Fulfilled Lessons
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
