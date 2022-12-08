@@ -12,6 +12,10 @@ from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
 class TransactionsListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """ 
+    View that displays all user transactions to the user and their payment status.
+    """
+
     model = Transfer
     template_name = "transfer/client_transfers.html"
     context_object_name = "transfers"
@@ -30,6 +34,10 @@ class TransactionsListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListVi
 
 
 class SchoolTransferListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """ 
+    View that displays all user transactions and their payment status to an administrator.
+    """
+
     model = Transfer
     template_name = "transfer/transfers.html"
     context_object_name = "transfers"
@@ -43,6 +51,10 @@ class SchoolTransferListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, List
 
 
 class TransferCreateView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
+    """ 
+    View that displays the create transaction form to an administrator.
+    """
+
     model = Transfer
     template_name = "transfer/record_transfer.html"
     form_class = TransferForm

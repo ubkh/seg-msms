@@ -11,6 +11,7 @@ from multiselectfield import MultiSelectField
 
 from lessons.models.mixins import GroupRegistrationMixin
 
+
 INSTRUMENTS = [
     ('Piano', 'Piano'),
     ('Guitar', 'Guitar'),
@@ -20,7 +21,6 @@ INSTRUMENTS = [
     ('Flute', 'Flute'),
     ('Harp', 'Harp'),
 ]
-
 
 class UserManager(BaseUserManager):
     """
@@ -57,6 +57,7 @@ class User(PermissionsMixin, GroupRegistrationMixin, AbstractBaseUser):
     """
     User model used for authentication.
     """
+    
     email = models.EmailField(
         verbose_name="Email",
         max_length=254,

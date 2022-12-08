@@ -4,6 +4,10 @@ from lessons.models import School
 
 
 class SchoolCreateForm(forms.ModelForm):
+    """
+    Model form used to create new schools
+    """
+
     class Meta:
         model = School
         fields = ['name', 'description']
@@ -14,6 +18,10 @@ class SchoolCreateForm(forms.ModelForm):
 
 
 class SchoolManageForm(forms.ModelForm):
+    """
+    Model form used to modify or delete a schools
+    """
+
     class Meta:
         model = School
         fields = ['name', 'description']

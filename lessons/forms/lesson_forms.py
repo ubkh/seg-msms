@@ -8,14 +8,12 @@ from django.shortcuts import get_object_or_404
 
 from lessons.models import Lesson, User, Term, School
 
-from datetime import datetime
-
 
 class LessonModifyForm(forms.ModelForm):
     """
-    Model form used for students who wish to request a new lesson or change their preferences
-    for an existing lesson request.
+    Model form used for students who wish to modify a lesson
     """
+    
     teacher = forms.ModelChoiceField(queryset=User.objects.filter(admission__groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
     class Meta:
         model = Lesson
@@ -49,12 +47,20 @@ class LessonModifyForm(forms.ModelForm):
             'information': forms.Textarea(attrs={'class': "form-control"})
         }
 
+
     def form_valid(self, form):
+        """
+        Check if the data in the modify lesson form is valid.
+        """
         form.instance.student = self.request.user
         return super().form_valid(form)
 
 
 class LessonRequestForm(LessonModifyForm):
+    """
+    Model form used for students who wish to request a new lesson
+    """
+
     class Meta(LessonModifyForm.Meta):
         model = Lesson
         fields = ['student'] + LessonModifyForm.Meta.fields
@@ -68,7 +74,11 @@ class LessonRequestForm(LessonModifyForm):
         self.fields['student'].queryset = User.objects.filter(Q(id=self.user.id) | Q(parent=self.user))
         self.fields['student'].empty_label = None
 
+
     def form_valid(self, form):
+        """
+        Check if the data in the request lesson form is valid.
+        """
         form.instance.student = self.request.user
         return super().form_valid(form)
 
@@ -124,6 +134,9 @@ class LessonFulfillForm(forms.ModelForm):
     field_order = ['start_type', 'start_date', 'start_term', 'end_date']
 
     def clean(self):
+        """
+        Validate that data in the term form is correct. If an errors occurs, return what went wrong.
+        """
         super().clean()
         if self.fields['end_date'] == None:
             print(self.data)
@@ -132,6 +145,9 @@ class LessonFulfillForm(forms.ModelForm):
                 
 
     def form_valid(self, form):
+        """
+        Check if the data in the fullfilled lesson form is valid.
+        """
         form.instance.student = self.request.user
         return super().form_valid(form)
 
