@@ -3,8 +3,10 @@
 {% block body %}
     <div class="container">
         <h1><b>Manage your Children</b></h1>
+        <hr class="border border-dark border-2 opacity-100">
+
         <a class="btn btn-primary" href="{% url 'create_child' %}">Create child</a>
-        <hr>
+        <h1></h1>
         <h2>Children</h2>
         <div class="list-group">
             {% for child in children %}
