@@ -14,7 +14,11 @@ class LessonModifyForm(forms.ModelForm):
     Model form used for students who wish to modify a lesson
     """
     
-    teacher = forms.ModelChoiceField(queryset=User.objects.filter(admission__groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
+    teacher = forms.ModelChoiceField(
+        queryset=None,
+        widget=forms.Select(attrs={'class': "form-select"}),
+        empty_label="Select a teacher")
+
     class Meta:
         model = Lesson
         fields = ['title', 'instrument', 'teacher', 'day', 'time', 'interval', 'duration', 'information']
@@ -42,6 +46,16 @@ class LessonModifyForm(forms.ModelForm):
             'information': forms.Textarea(attrs={'class': "form-control"})
         }
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        self.school = kwargs.pop('school')
+        super(LessonModifyForm, self).__init__(*args, **kwargs)
+        school_users = User.objects.filter(
+            Q(enrolled_school=self.school)
+            & Q(admission__groups__name='Teacher')
+            & ~Q(id=self.user.id))
+        self.fields['teacher'].queryset = school_users
+        self.fields['teacher'].empty_label = "No teachers are available!"
 
     def form_valid(self, form):
         """
@@ -64,7 +78,6 @@ class LessonRequestForm(LessonModifyForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
         super(LessonRequestForm, self).__init__(*args, **kwargs)
         self.fields['student'].queryset = User.objects.filter(Q(id=self.user.id) | Q(parent=self.user))
         self.fields['student'].empty_label = None

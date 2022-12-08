@@ -57,6 +57,7 @@ class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateVie
 
     def get_form_kwargs(self, **kwargs):
         form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
         form_kwargs['user'] = self.request.user
         return form_kwargs
 
@@ -82,6 +83,13 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Re
     template_name = "lessons/modify_lesson.html"
     form_class = LessonModifyForm
     http_method_names = ['get', 'post']
+
+    def get_form_kwargs(self, **kwargs):
+        form_kwargs = super(LessonModifyView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
+        form_kwargs['user'] = self.request.user
+        return form_kwargs
+
 
     def form_valid(self, form):
         super().form_valid(form)
@@ -200,8 +208,9 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
             current += interval
 
+
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions / DetailView
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
