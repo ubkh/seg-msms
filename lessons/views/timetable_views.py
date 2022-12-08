@@ -8,6 +8,10 @@ from lessons.models import School
 from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
+    """
+    View that displays all lessons that have been scheduled for the current term.
+    """
+
     model = ScheduledLesson
     template_name = "timetable/timetable.html"
     context_object_name = "schedule"
@@ -17,6 +21,7 @@ class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
         school = School.objects.get(pk=self.kwargs['school'])
         term = school.get_update_current_term
         if term:
+            # get all scheduled lessons that follow these constraints
             return ScheduledLesson.objects.filter(
                 Q(lesson__school=school.id),
                 Q(lesson__student=self.request.user),
@@ -31,12 +36,6 @@ class TimetableView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView):
                 Q(lesson__student=self.request.user),
                 
         ).order_by('start')
-
-    def get_context_data(self, **kwargs):
-        context = super(TimetableView, self).get_context_data(**kwargs)
-        # context['schedule'] = context['schedule'].order_by('start')
-        school = School.objects.get(pk=self.kwargs['school'])
-        return context
 
     def handle_no_permission(self):
         return redirect('home')
