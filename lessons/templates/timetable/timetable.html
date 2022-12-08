@@ -21,7 +21,8 @@
                                 <div class="card-body">
                                     <h6 class="card-title"><b>{{ sl.lesson|truncatechars:13 }}</b></h6>
                                     <h7 class="card-subtitle mb-2 text-muted">{{ sl.start|date:"G:i" }} to {{ sl.end|date:"G:i" }}</h7> <br>
-                                    <span class="badge bg-dark">{{ sl.lesson.teacher }}</span> <br>
+                                    <span class="badge bg-dark">Teacher: {{ sl.lesson.teacher }}</span> <br>
+                                    <span class="badge bg-dark">Student: {{ sl.lesson.student }}</span> <br>
                                     <span class="badge text-dark" style="background-color: lightgray;">{{ sl.lesson.instrument }}</span>
                                     <!-- <a href="#" class="stretched-link"></a> -->
                                 </div>
