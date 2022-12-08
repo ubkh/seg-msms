@@ -3,9 +3,11 @@
 {% block school_body %}
 <div class="container">
     <h1><b>Transfers</b></h1>
+    <p>View transfers within the management system.</p>
     <hr class="border border-dark border-2 opacity-100">
-    <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can view transfers within the management system.</p>
+
     <a class="btn btn-primary" href="{% url 'create_transfer' school.id %}">Add Transaction</a>
+    <h1></h1>
     <h2>Transfer List</h2>
     <div class="list-group">
         {% for transfer in transfers %}
