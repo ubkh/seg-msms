@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView
@@ -16,6 +17,23 @@ class HomeView(LoginRequiredMixin, ListView):
     model = School
     template_name = "school/list_school.html"
     context_object_name = "schools"
+
+    def get_queryset(self):
+        search_query = self.request.GET.get('search', "")
+        show_enrolled = self.request.GET.get('enrolled', False)
+        if show_enrolled:
+            context = School.objects.filter(Q(name__contains=search_query),
+                                            Q(admission__client=self.request.user),
+                                            Q(admission__groups__name__contains=""))
+        else:
+            context = School.objects.filter(Q(name__contains=search_query))
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', "")
+        context['enrolled'] = self.request.GET.get('enrolled', False)
+        return context
 
 
 class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, FormView):

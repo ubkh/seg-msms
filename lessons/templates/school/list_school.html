@@ -1,23 +1,58 @@
 {% extends 'base/base.html' %}
 {% block head %}<title>Schools - Kangaroo Music</title>{% endblock %}
 {% block body %}
-<div class="container">
-    <h1><b>Music Schools</b></h1>
-    <blockquote class="blockquote">
-        <p style="text-align: justify">Welcome! You can see a list of available schools in the system!</p>
-    </blockquote>
-    <hr class="border border-dark border-2 opacity-100">
-    <h2>School List</h2>
-    <div class="list-group">
-        {% for school in schools %}
-            <a href="{% url 'school_home' school.id %}"
-               class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ school.name }}</h5>
-                </div>
-                <p class="mb-1">{{ admin.email }}</p>
-            </a>
-        {% endfor %}
+    <div class="container">
+        <h1><b>Music Schools</b></h1>
+        <blockquote class="blockquote">
+            <p style="text-align: justify">Welcome! You can see a list of available schools in the system!</p>
+        </blockquote>
+        <hr class="border border-dark border-2 opacity-100">
+        <h2>School List</h2>
+        <hr>
+
+        <div class="list-group">
+            {% for school in schools %}
+                <a href="{% url 'school_home' school.id %}"
+                   class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ school.name }}</h5>
+                    </div>
+                    <p class="mb-1">{{ admin.email }}</p>
+                </a>
+            {% endfor %}
+        </div>
     </div>
-</div>
+{% endblock %}
+
+{% block sidebar %}
+    <div class="border rounded p-3 mb-2 bg-white mx-5">
+        <form method="get">
+
+            <div class="form-group row">
+                <label for="search" class="col-sm-2 col-form-label">Search</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" value="{{ search }}" name="search" placeholder="Search">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-2">Show enrolled schools</div>
+                <div class="col-sm-10">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="enrolled" {% if enrolled %}
+                               checked {% endif %}>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <input class="btn btn-primary" type="submit" name="submit"/>
+                </div>
+            </div>
+        </form>
+
+    </div>
 {% endblock %}

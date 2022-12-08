@@ -85,12 +85,11 @@ def log_out(request):
     return redirect('index')
 
 
-class EditUserView(GroupRestrictedMixin, UpdateView):
+class EditUserView(UpdateView):
     model = User
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
     http_method_names = ['get', 'post']
-    allowed_group = "User"
 
     def form_valid(self, form):
         super().form_valid(form)

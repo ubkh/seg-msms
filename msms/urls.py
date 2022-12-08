@@ -59,11 +59,11 @@ urlpatterns = [
     path('home/', views.HomeView.as_view(), name='home'),
     path('school/<int:school>/', include(school_urlpatterns)),
 
-    path('register/', views.register_view, name='register'),  # RegisterView
+    path('register/', views.register_view, name='register'),
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
-    path('<hashid:pk>/profile/edit', views.EditUserView.as_view(), name='edit_profile'),
-    path('<hashid:pk>/profile/password_change', views.ChangePasswordView.as_view(), name='password_change'),
+    path('<hashid:pk>/profile/edit/', views.EditUserView.as_view(), name='edit_profile'),
+    path('<hashid:pk>/profile/password_change/', views.ChangePasswordView.as_view(), name='password_change'),
 
     # Adult-user
     path('children/', views.ChildListView.as_view(), name='children'),
