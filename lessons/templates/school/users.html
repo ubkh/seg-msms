@@ -38,6 +38,38 @@
                 {% endif %}
             {% endfor %}
         </div>
+    </div>
+{% endblock %}
+
+
+
+{% block searchbar %}
+    <div class="border rounded p-3 mb-2 bg-white mx-5">
+        <form method="get">
+
+            <div class="form-group row">
+                <label for="search" class="col-sm-2 col-form-label">First Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="search" class="col-sm-2 col-form-label">Last Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <input class="btn btn-primary" type="submit" name="submit"/>&nbsp;
+                    <a class="btn btn-primary" href="{% url 'members' school.id %}" role="button">Reset</a>
+                </div>
+            </div>
+        </form>
 
     </div>
 {% endblock %}

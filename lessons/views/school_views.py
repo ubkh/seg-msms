@@ -22,9 +22,9 @@ class HomeView(LoginRequiredMixin, ListView):
         search_query = self.request.GET.get('search', "")
         show_enrolled = self.request.GET.get('enrolled', False)
         if show_enrolled:
-            context = School.objects.filter(Q(name__contains=search_query),
-                                            Q(admission__client=self.request.user),
-                                            Q(admission__groups__name__contains=""))
+            context = School.objects.filter(Q(name__contains=search_query) &
+                                            Q(admission__client=self.request.user) &
+                                            Q(admission__groups__name__contains="")).distinct()
         else:
             context = School.objects.filter(Q(name__contains=search_query))
         return context

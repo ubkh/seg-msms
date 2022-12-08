@@ -24,7 +24,7 @@
     </div>
 {% endblock %}
 
-{% block sidebar %}
+{% block searchbar %}
     <div class="border rounded p-3 mb-2 bg-white mx-5">
         <form method="get">
 
@@ -49,7 +49,8 @@
 
             <div class="form-group row">
                 <div class="col-sm-10">
-                    <input class="btn btn-primary" type="submit" name="submit"/>
+                    <input class="btn btn-primary" type="submit" name="submit"/>&nbsp;
+                    <a class="btn btn-primary" href="{% url 'home' %}" role="button">Reset</a>
                 </div>
             </div>
         </form>

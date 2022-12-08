@@ -80,4 +80,17 @@ class SchoolUserListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView
     allowed_group = "Super-administrator"
 
     def get_queryset(self):
-        return Admission.objects.filter(Q(school=self.school_instance), ~Q(school=self.school_instance, groups__name='Director'))
+        first_name_query = self.request.GET.get('search_first_name', "")
+        last_name_query = self.request.GET.get('search_last_name', "")
+        context = Admission.objects.filter(Q(school=self.school_instance),
+                                           Q(client__first_name__contains=first_name_query),
+                                           Q(client__last_name__contains=last_name_query),
+                                           ~Q(school=self.school_instance, groups__name='Director'))
+        return context
+
+
+    def get_context_data(self, **kwargs):
+        context = super(SchoolUserListView, self).get_context_data(**kwargs)
+        context['search_first_name'] = self.request.GET.get('search_first_name', "")
+        context['search_last_name'] = self.request.GET.get('search_last_name', "")
+        return context
