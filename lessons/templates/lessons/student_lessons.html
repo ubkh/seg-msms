@@ -2,30 +2,53 @@
 {% block head %}<title>Lessons - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
 
-<div class="container">
-    <h1><b>Lessons</b></h1>
-    <p>Sign up to lessons here and view any pending requests or bookings you may have for you or your children.</p>
-    <hr class="border border-dark border-2 opacity-100">
-    <a class="btn btn-primary" href="{% url 'request_lesson' school.id %}">Request Lesson</a>
-</div>
-&nbsp;
-<div class="mt-2 container">
-    <ul class="list-group list-group-light">
-        <h5>Unfulfilled Lessons</h5>
-        {% for l in lessons %}
-            {% if l.fulfilled is False %}
-                {% include 'partials/student_lesson.html' with l=l %}
-            {% endif %}
-        {% endfor %}
-    </ul>
+
+    <div class="container">
+        <h1><b>Lessons</b></h1>
+        <p>Sign up to lessons here and view any pending requests or bookings you may have for you or your children.</p>
+        <hr class="border border-dark border-2 opacity-100">
+        <a class="btn btn-primary" href="{% url 'request_lesson' school.id %}">Request Lesson</a>
+    </div>
     &nbsp;
-    <ul class="list-group list-group-light">
-        <h5>Fulfilled Lessons</h5>
-        {% for l in lessons %}
-            {% if l.fulfilled is True %}
-                {% include 'partials/student_lesson.html' with l=l %}
-            {% endif %}
-        {% endfor %}
-    </ul>
-</div>
+    &nbsp;
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                    Unfulfilled Lessons
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    {% for l in lessons %}
+                        {% if l.fulfilled is False %}
+                            {% include 'partials/student_lesson.html' with l=l %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Fulfilled Lessons
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    {% for l in lessons %}
+                        {% if l.fulfilled is True %}
+                            {% include 'partials/student_lesson.html' with l=l %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+
