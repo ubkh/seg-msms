@@ -17,17 +17,22 @@ class LessonModifyForm(forms.ModelForm):
     teacher = forms.ModelChoiceField(
         queryset=None,
         widget=forms.Select(attrs={'class': "form-select"}),
-        empty_label="Select a teacher")
+        )
 
     class Meta:
         model = Lesson
-        fields = ['title', 'instrument', 'teacher', 'day', 'time', 'interval', 'duration', 'information']
+        fields = ['title', 'instrument', 'number_of_lessons', 'teacher', 'day', 'time', 'interval', 'duration', 'information']
         widgets = {
             'instrument': forms.Select(attrs={'class': "form-select"}),
             'day': forms.Select(attrs={'class': "form-select"}),
             'time': forms.TimeInput(format='%H:%M', attrs={
                 'class': "form-control timepicker",
                 'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
             }),
             'interval': forms.TextInput(attrs={
                 'class': "form-control",
@@ -55,7 +60,11 @@ class LessonModifyForm(forms.ModelForm):
             & Q(admission__groups__name='Teacher')
             & ~Q(id=self.user.id))
         self.fields['teacher'].queryset = school_users
-        self.fields['teacher'].empty_label = "No teachers are available!"
+        if not school_users.count():
+            self.fields['teacher'].empty_label = "There are no teachers available."
+        else:
+            self.fields['teacher'].empty_label = "Select a teacher."
+
 
     def form_valid(self, form):
         """
@@ -97,13 +106,18 @@ class LessonFulfillForm(forms.ModelForm):
     """
     class Meta:
         model = Lesson
-        fields = ['day', 'time', 'duration', 'interval', 'start_type', 'start_date', 'start_term', 'end_date']
+        fields = ['day', 'time', 'number_of_lessons', 'duration', 'interval', 'start_type', 'start_date', 'start_term', 'end_date']
         widgets = {
            'day': forms.Select(attrs={'class': "form-select"}),
            'start_term': forms.Select(attrs={'class': "form-select"}),
            'time': forms.TimeInput(format='%H:%M', attrs={
                 'class': "form-control timepicker",
                 'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
             }),
             'interval': forms.TextInput(attrs={
                 'class': "form-control",

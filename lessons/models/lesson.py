@@ -62,6 +62,11 @@ class Lesson(models.Model):
         default=''
     )
     time = models.TimeField(default=timezone.now)
+    number_of_lessons = models.PositiveIntegerField(
+        default=1,
+        verbose_name="Number of Lessons",
+        validators=[MinValueValidator(1)]
+    )
     interval = models.PositiveIntegerField(
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(4)],
