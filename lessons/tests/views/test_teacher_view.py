@@ -12,12 +12,12 @@ class DisplayTeacherViewTestCase(TestCase):
 
     def setUp(self):
         self.school = School.objects.get(id=1)
-        self.url = reverse('timetable', kwargs={'school': self.school.id})
+        self.url = reverse('teacher_timetable', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='camus@kangaroo.com')
         self.school.set_group_teacher(self.user)
 
     def test_teacher_url(self):
-        self.assertEqual(self.url, f'/school/{self.school.id}/timetable/')
+        self.assertEqual(self.url, f'/school/{self.school.id}/teacher/timetable/')
 
     def test_get_teacher(self):
         self.client.login(email=self.user.email, password="Password123")
