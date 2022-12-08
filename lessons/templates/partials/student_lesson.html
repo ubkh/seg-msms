@@ -8,7 +8,11 @@
         {% endif %}
 
         <div class="mb-2">
-            <b>{{ l.title }}</b> with {{ l.teacher }} for {{ l.duration }}m - £{{ l.price|floatformat:2 }}
+            {% if l.fulfilled %}
+                <b>{{ l.title }}</b> with {{ l.teacher }} for {{ l.duration }}m - £{{ l.price|floatformat:2 }}
+            {% else %}
+                <b>{{ l.title }}</b> with {{ l.teacher }} for {{ l.duration }}m
+            {% endif %}
             {% if l.information %}
                 - <span class="text-muted">{{ l.information|truncatechars:140 }}</span>
             {% endif %}
