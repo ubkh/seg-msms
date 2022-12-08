@@ -48,17 +48,21 @@
         <form method="get">
 
             <div class="form-group row">
-                <label for="search" class="col-sm-2 col-form-label">First Name</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                    <label for="search">First Name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                    </div>
                 </div>
             </div>
             <br>
 
             <div class="form-group row">
-                <label for="search" class="col-sm-2 col-form-label">Last Name</label>
                 <div class="col-sm-10">
-                    <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                    <label for="search">Last Name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                    </div>
                 </div>
             </div>
             <br>
