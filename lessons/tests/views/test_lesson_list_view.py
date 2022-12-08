@@ -6,42 +6,36 @@ from django.test import TestCase
 from django.urls import reverse
 
 from lessons.forms import RegisterForm
-from lessons.models import User, School
+from lessons.models import User, School, Lesson
 
 
-@skip("View is deprecated.")
-class DisplayAdministratorViewTestCase(TestCase):
+class LessonListViewTestCase(TestCase):
 
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
-        'lessons/tests/fixtures/other_user.json',
-        'lessons/tests/fixtures/default_school.json'
+        'lessons/tests/fixtures/default_school.json',
+        'lessons/tests/fixtures/other_user.json'
     ]
 
     def setUp(self):
         self.school = School.objects.get(id=1)
-        self.url = reverse('administrators', kwargs={'school': self.school.id})
+        self.url = reverse('client_lessons', kwargs={'school': self.school.id})
         self.user = User.objects.get(email='foo@kangaroo.com')
-        self.user.set_group_super_administrator()
-        # super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        # self.user.groups.add(super_administrator_group)
-        self.administrator = User.objects.get(email='doe@kangaroo.com')
-        self.administrator.set_group_administrator()
-        # administrator_group, created = Group.objects.get_or_create(name='Administrator')
-        # self.administrator.groups.add(administrator_group)
+        self.school.set_group_client(self.user)
+        self.other_user = User.objects.get(email='doe@kangaroo.com')
 
-    def test_display_administrator_url(self):
-        self.assertEqual(self.url, f'/school/{self.school.id}/administrators/')
+    def test_lesson_list_url(self):
+        self.assertEqual(self.url, f'/school/{self.school.id}/lessons/')
 
-    def test_get_administrators(self):
+    def test_get_lessons_list(self):
         self.client.login(email=self.user.email, password="Password123")
+        first_lesson = Lesson(school=self.school, student=self.user, teacher=self.other_user, title="Lesson One")
+        first_lesson.save()
+        second_lesson = Lesson(school=self.school, student=self.user, teacher=self.other_user, title="Lesson Tow")
+        second_lesson.save()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'administrators/administrators.html')
-        self.assertEqual(len(response.context['administrators']), 2)
-        self.assertContains(response, self.administrator.email)
-        self.assertContains(response, self.administrator.first_name)
-        self.assertContains(response, self.administrator.last_name)
-        user = User.objects.get(email=self.administrator.email)
-        modify_administrator_url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': user.pk})
-        self.assertContains(response, modify_administrator_url)
+        self.assertTemplateUsed(response, 'lessons/student_lessons.html')
+        self.assertEqual(len(response.context['lessons']), 2)
+        self.assertContains(response, first_lesson.title)
+        self.assertContains(response, second_lesson.title)

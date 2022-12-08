@@ -26,7 +26,7 @@ school_urlpatterns = [
 
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
-    path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
+    path('lesson/request/', views.LessonRequestView.as_view(), name='request_lesson'),
     path('lesson/<hashid:pk>/modify/', views.LessonModifyView.as_view(), name='modify_lesson'),
     path('lesson/<hashid:pk>/invoice/', views.LessonInvoiceView.as_view(), name='booking_invoice'),
 
@@ -37,7 +37,7 @@ school_urlpatterns = [
 
     # Administrator
     path('bookings/', views.BookingListView.as_view(), name='school_bookings'),
-    path('lesson/<hashid:pk>/fulfill', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
+    path('lesson/<hashid:pk>/fulfill/', views.LessonFulfillView.as_view(), name='fulfill_lesson'),
 
     path('transfers/', views.SchoolTransferListView.as_view(), name='school_transfers'),
     path('transfer/create/', views.TransferCreateView.as_view(), name='create_transfer'),
