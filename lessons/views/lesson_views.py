@@ -164,7 +164,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
         data.price = (data.duration / 60) * data.number_of_lessons * 10
         if data.end_date == None and self.this_term != None:
             data.end_date = self.this_term.end_date
-        if data.start_type == "Term":
+        if data.start_type == "Term" and self.this_term != None:
             term = Term.objects.get(pk=data.start_term_id)
             data.start_date = term.start_date
         data.fulfilled = True
@@ -180,6 +180,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
         return redirect('home')
 
     def calculateSchedule(self, lesson):
+        school = get_object_or_404(School, pk=self.kwargs['school'])
         duration = timedelta(minutes=lesson.duration)
         interval = timedelta(weeks=lesson.interval)
         date = lesson.start_date
@@ -193,7 +194,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
             sl = ScheduledLesson.objects.create(
                 lesson = Lesson.objects.get(pk=lesson.id),
                 start = make_aware(current),
-                end = make_aware(current + duration)
+                end = make_aware(current + duration),
             )
 
             current += interval

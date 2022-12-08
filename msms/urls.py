@@ -33,7 +33,7 @@ school_urlpatterns = [
 
     path('transactions/', views.TransactionsListView.as_view(), name='client_transactions'),
 
-    # Teacher
+    # 
     path('timetable/', views.TimetableView.as_view(), name='timetable'),
 
     # Administrator
