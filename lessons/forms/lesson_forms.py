@@ -155,10 +155,11 @@ class LessonFulfillForm(forms.ModelForm):
         Validate that data in the term form is correct. If an errors occurs, return what went wrong.
         """
         super().clean()
-        start_type = self.cleaned_data['start_type']
-        if start_type=="Date" and self.fields['start_date'].initial == None:
-            raise forms.ValidationError("Start date cannot be blank!")
-            
+        start_type = self.cleaned_data.get('start_type')
+        if start_type != None:
+            if start_type=="Date" and self.fields['start_date'].initial == None:
+                raise forms.ValidationError("Start date cannot be blank!")
+                
         if self.fields['end_date'] == None:
             print(self.data)
             if Term.objects.filter(school_id=self.data['school']).count() < 1:
