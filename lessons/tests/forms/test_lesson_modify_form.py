@@ -33,7 +33,6 @@ class LessonModifyFormTestCase(TestCase):
             'instrument': ['Piano'],
             'teacher': 'Albert Camus',
             'time': '13:00',
-            'number_of_lessons': 2,
             'interval': 1,
             'duration': 60,
             'information': 'New Lesson',
@@ -73,15 +72,9 @@ class LessonModifyFormTestCase(TestCase):
         self.assertEqual(saved_lesson.instrument, self.form_input['instrument'])
         self.assertEqual(saved_lesson.teacher, self.form_input['teacher'])
         self.assertEqual(saved_lesson.time, datetime.time(13,0))
-        self.assertEqual(saved_lesson.number_of_lessons, self.form_input['number_of_lessons'])
         self.assertEqual(saved_lesson.interval, self.form_input['interval'])
         self.assertEqual(saved_lesson.duration, self.form_input['duration'])
         self.assertEqual(saved_lesson.information, self.form_input['information'])
-
-    def test_form_uses_number_of_lessons_validation(self):
-        self.form_input['number_of_lessons'] = -1
-        form = LessonModifyForm(data=self.form_input)
-        self.assertFalse(form.is_valid())
 
     def test_form_uses_day_validation(self):
         self.form_input['day'] = 'Wrong_Day'
