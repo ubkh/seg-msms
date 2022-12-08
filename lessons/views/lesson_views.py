@@ -57,13 +57,14 @@ class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateVie
 
     def get_form_kwargs(self, **kwargs):
         form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
         form_kwargs['user'] = self.request.user
         return form_kwargs
 
     def form_valid(self, form):
         super().form_valid(form)
         lesson = form.save(commit=False)
-        lesson.price = (lesson.duration / 60) * 10
+        lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
         lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -83,18 +84,25 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Re
     form_class = LessonModifyForm
     http_method_names = ['get', 'post']
 
+    def get_form_kwargs(self, **kwargs):
+        form_kwargs = super(LessonModifyView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
+        form_kwargs['user'] = self.request.user
+        return form_kwargs
+
+
     def form_valid(self, form):
         super().form_valid(form)
         if self.request.user == form.instance.student or self.request.user == form.instance.student.parent:
             lesson = form.save(commit=False)
-            lesson.price = (lesson.duration / 60) * 10
+            lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
             lesson.save()
         else:
             administrators = User.objects.filter(groups__name='Administrator')
             for admin in administrators:
                 if self.request.user == admin:
                     lesson = form.save(commit=False)
-                    lesson.price = (lesson.duration / 60) * 10
+                    lesson.price = (lesson.duration / 60) * lesson.number_of_lessons * 100
                     lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -161,6 +169,7 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
         super().form_valid(form)
 
         data = form.save(commit=False)
+        data.price = (data.duration / 60) * data.number_of_lessons * 100
 
         # ensure end_date and start_date fields are always filled in
         # even if a term is selected by the user
@@ -205,8 +214,9 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
             current += interval
 
+
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions / DetailView
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """

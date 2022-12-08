@@ -14,16 +14,25 @@ class LessonModifyForm(forms.ModelForm):
     Model form used for students who wish to modify a lesson
     """
     
-    teacher = forms.ModelChoiceField(queryset=User.objects.filter(admission__groups__name='Teacher'), widget=forms.Select(attrs={'class': "form-select"}), empty_label="Select a teacher")
+    teacher = forms.ModelChoiceField(
+        queryset=None,
+        widget=forms.Select(attrs={'class': "form-select"}),
+        )
+
     class Meta:
         model = Lesson
-        fields = ['title', 'instrument', 'teacher', 'day', 'time', 'interval', 'duration', 'information']
+        fields = ['title', 'instrument', 'number_of_lessons', 'teacher', 'day', 'time', 'interval', 'duration', 'information']
         widgets = {
             'instrument': forms.Select(attrs={'class': "form-select"}),
             'day': forms.Select(attrs={'class': "form-select"}),
             'time': forms.TimeInput(format='%H:%M', attrs={
                 'class': "form-control timepicker",
                 'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
             }),
             'interval': forms.TextInput(attrs={
                 'class': "form-control",
@@ -41,6 +50,20 @@ class LessonModifyForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': "form-control"}),
             'information': forms.Textarea(attrs={'class': "form-control"})
         }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        self.school = kwargs.pop('school')
+        super(LessonModifyForm, self).__init__(*args, **kwargs)
+        school_users = User.objects.filter(
+            Q(enrolled_school=self.school)
+            & Q(admission__groups__name='Teacher')
+            & ~Q(id=self.user.id))
+        self.fields['teacher'].queryset = school_users
+        if not school_users.count():
+            self.fields['teacher'].empty_label = "There are no teachers available."
+        else:
+            self.fields['teacher'].empty_label = "Select a teacher."
 
 
     def form_valid(self, form):
@@ -64,7 +87,6 @@ class LessonRequestForm(LessonModifyForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
         super(LessonRequestForm, self).__init__(*args, **kwargs)
         self.fields['student'].queryset = User.objects.filter(Q(id=self.user.id) | Q(parent=self.user))
         self.fields['student'].empty_label = None
@@ -84,13 +106,18 @@ class LessonFulfillForm(forms.ModelForm):
     """
     class Meta:
         model = Lesson
-        fields = ['day', 'time', 'duration', 'interval', 'start_type', 'start_date', 'start_term', 'end_date']
+        fields = ['day', 'time', 'number_of_lessons', 'duration', 'interval', 'start_type', 'start_date', 'start_term', 'end_date']
         widgets = {
            'day': forms.Select(attrs={'class': "form-select"}),
            'start_term': forms.Select(attrs={'class': "form-select"}),
            'time': forms.TimeInput(format='%H:%M', attrs={
                 'class': "form-control timepicker",
                 'type': 'time'
+            }),
+            'number_of_lessons': forms.TextInput(attrs={
+                'class': "form-control",
+                'type': 'number',
+                'min': '1'
             }),
             'interval': forms.TextInput(attrs={
                 'class': "form-control",

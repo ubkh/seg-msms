@@ -34,6 +34,7 @@ class LessonFulfillFormTestCase(TestCase):
             'time': '13:00',
             'interval': 1,
             'duration': 60,
+            'number_of_lessons': 1,
             'information': 'New Lesson',
         }
 
