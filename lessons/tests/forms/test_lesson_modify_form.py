@@ -44,11 +44,12 @@ class LessonModifyFormTestCase(TestCase):
             'time': '13:00',
             'interval': 1,
             'duration': 60,
+            'number_of_lessons': 1,
             'information': 'New Lesson',
         }
 
     def test_form_contains_required_fields(self):
-        form = LessonModifyForm()
+        form = LessonModifyForm(user=self.user, school=self.school)
         self.assertIn('title', form.fields)
         self.assertIn('day', form.fields)
         self.assertIn('instrument', form.fields)
@@ -66,7 +67,7 @@ class LessonModifyFormTestCase(TestCase):
         self.assertTrue(isinstance(teacher_field, forms.ChoiceField))
 
     def test_form_saves_correctly(self):
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         lesson_count_before = Lesson.objects.count()
         lesson = form.save(commit=False)
         lesson.student = self.user
@@ -86,25 +87,25 @@ class LessonModifyFormTestCase(TestCase):
 
     def test_form_uses_day_validation(self):
         self.form_input['day'] = 'Wrong_Day'
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_instrument_validation(self):
         self.form_input['instrument'] = 'Wrong_Instrument'
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_teacher_validation(self):
         self.form_input['teacher'] = 'Wrong_teacher'
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_interval_validation(self):
         self.form_input['interval'] = -1
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         self.assertFalse(form.is_valid())
 
     def test_form_uses_duration_validation(self):
         self.form_input['duration'] = -1.5
-        form = LessonModifyForm(data=self.form_input)
+        form = LessonModifyForm(data=self.form_input, user=self.user, school=self.school)
         self.assertFalse(form.is_valid())
