@@ -33,8 +33,10 @@ school_urlpatterns = [
 
     path('transactions/', views.TransactionsListView.as_view(), name='client_transactions'),
 
-    # 
     path('timetable/', views.TimetableView.as_view(), name='timetable'),
+
+    # Teacher
+    path('teacher/timetable/', views.TeacherTimetableView.as_view(), name='teacher_timetable'),
 
     # Administrator
     path('bookings/', views.BookingListView.as_view(), name='school_bookings'),
