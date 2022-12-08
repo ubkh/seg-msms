@@ -81,16 +81,28 @@ def log_in(request):
 
 
 def log_out(request):
+    """
+    Logs out users and redirects them to the index page.
+    """
     logout(request)
     return redirect('index')
 
 
 class EditUserView(UpdateView):
+    """
+    View that displays the edit page and edit forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+
     model = User
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
     http_method_names = ['get', 'post']
 
+    """
+    Check if the data in the edit form is valid.
+    """
     def form_valid(self, form):
         super().form_valid(form)
         form.save()
@@ -105,6 +117,12 @@ class EditUserView(UpdateView):
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    """
+    View that displays the edit password page and edit password forms. If a valid 
+    form is submitted the user is redirected to the home page, else they are 
+    directed to resubmit the form again.
+    """
+
     template_name = 'authentication/change_password.html'
     success_url = reverse_lazy('home')
 

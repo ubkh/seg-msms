@@ -11,6 +11,9 @@ from lessons.views.mixins import GroupRestrictedMixin
 
 
 class ChildListView(GroupRestrictedMixin, ListView):
+    """
+    View that displays a list of children to an adult user.
+    """
 
     model = User
     template_name = "children/children.html"
@@ -25,6 +28,10 @@ class ChildListView(GroupRestrictedMixin, ListView):
 
 
 class ChildCreateView(GroupRestrictedMixin, CreateView):
+    """
+    View that displays the child registration page and form. If a valid 
+    form is submitted the user is redirected to the children list page.
+    """
 
     model = User
     template_name = "children/create_child.html"

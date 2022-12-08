@@ -5,9 +5,12 @@ Models that will be used in the music school management system.
 from django.db import models
 from django.urls import reverse
 
-from lessons.models import User
 
 class Term(models.Model):
+    """
+    The Term date specifies a start and end date for a corresponding school.
+    """
+
     start_date = models.DateField()
     end_date = models.DateField()
     school = models.ForeignKey(

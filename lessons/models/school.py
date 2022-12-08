@@ -13,6 +13,7 @@ class School(AdmissionMixin, models.Model):
     """
     The School model holds shared state for a particular school.
     """
+    
     name = models.CharField(max_length=30, blank=False)
     director = models.ForeignKey(
         User,

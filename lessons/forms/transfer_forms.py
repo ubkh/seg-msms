@@ -43,7 +43,7 @@ class TransferForm(forms.ModelForm):
 
     def clean(self):
         """
-        Validate that data in the transfer form is correct. If not errors are return specifying what went wrong.
+        Validate that data in the transfer form is correct. If an errors occurs return what went wrong.
         """
         cleaned_data = super(TransferForm, self).clean()
         transfer_number = str(self.cleaned_data.get('transfer_id'))

@@ -11,6 +11,7 @@ class Admission(models.Model):
     Admission models that associates a user with a school and contains information about a users group with in a
     school.
     """
+    
     school = models.ForeignKey('School', on_delete=models.CASCADE)
     client = models.ForeignKey('User', on_delete=models.CASCADE, related_name='admission')
     groups = models.ManyToManyField(Group)
