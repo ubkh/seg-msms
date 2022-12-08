@@ -2,6 +2,11 @@
     <div class="ms-2 me-auto">
         <span class="badge badge-secondary mb-2"
               style="background-color: black;"> {{ l.student.first_name }} {{ l.student.last_name }}</span>
+
+        {% if l.fulfilled %}
+            <span class="badge rounded-pill bg-primary mb-2">{{ l.payment_status }}</span>
+        {% endif %}
+
         <div class="fw-bold mb-2">{{ l.title }} - {{ l.instrument }}</div>
         <p class="text-muted mb-2">{{ l.information }}</p>
     </div>
