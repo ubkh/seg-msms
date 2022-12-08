@@ -14,6 +14,8 @@ The project is called `msms` (Music School Management System).  It currently con
 
 ## Deployed version of the application
 The deployed version of the application can be found at *[this page](https://matyog.pythonanywhere.com)*.
+The Django administrative interface can be accessed at *[this page](https://matyog.pythonanywhere.com)* using credentials e-mail as `admin@example.org` and password as `abc`. 
+The project administrative interface as outlined in the specification can be accessed at *[this page](https://matyog.pythonanywhere.com)*. 
 
 ## Installation and execution instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
