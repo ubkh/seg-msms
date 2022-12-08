@@ -1,42 +1,75 @@
 {% extends 'base/school_base.html' %}
 {% block head %}<title>Users - Kangaroo Music</title>{% endblock %}
 {% block school_body %}
-<div class="container">
-    <h1><b>Members</b></h1>
-    <hr class="border border-dark border-2 opacity-100">
-    <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management system.</p>
-    <h2>Student List</h2>
+    <div class="container">
+        <h1><b>Members</b></h1>
+        <hr class="border border-dark border-2 opacity-100">
+        <p>Welcome {{ user.first_name }} {{ user.last_name }}! You can manage student bookings within the management
+            system.</p>
+        <h2>Student List</h2>
 
-    <div class="list-group">
-        {% for admission in school_admissions.all %}
-            <a href="{% url 'manage_member' school.id admission.client.id %}"
-               class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    {% if admission.groups.count %}
-                        {% if admission.is_active %}
-                            <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }}</h5>
-                        {% else %}
-                            <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }} BANNED</h5>
+        <div class="list-group">
+            {% for admission in school_admissions.all %}
+                {% if admission.groups.count %}
+                    <a href="{% url 'manage_member' school.id admission.client.id %}"
+                       class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+
+                            {% if admission.is_active %}
+                                <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }}</h5>
+                            {% else %}
+                                <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }}
+                                    (BANNED)</h5>
+                            {% endif %}
+                        </div>
+                        <p class="mb-1 text-muted">{{ admission.client.email }}</p>
+                        {% for child in admission.groups.all %}
+                            <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
+                        {% endfor %}
+                        {% if admission.client.children.count %}
+                            <p>
+                                <span>Children: </span>
+                                {% for child in admission.client.children.all %}
+                                    <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
+                                {% endfor %}
+                            </p>
                         {% endif %}
-                    {% else %}
-                        <h5 class="mb-1">{{ admission.client.first_name }} {{ admission.client.last_name }} LEFT</h5>
-                    {% endif %}
-                </div>
-                <p class="mb-1 text-muted">{{ admission.client.email }}</p>
-                {% for child in admission.groups.all %}
-                        <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
-                {% endfor %}
-                {% if admission.client.children.count %}
-                    <p>
-                    <span>Children: </span>
-                    {% for child in admission.client.children.all %}
-                        <span class="mb-1 px-1 border rounded-1">{{ child }}</span>
-                    {% endfor %}
-                    </p>
+                    </a>
                 {% endif %}
-            </a>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
+{% endblock %}
 
-</div>
+
+
+{% block searchbar %}
+    <div class="border rounded p-3 mb-2 bg-white mx-5">
+        <form method="get">
+
+            <div class="form-group row">
+                <label for="search" class="col-sm-2 col-form-label">First Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" value="{{ search_first_name }}" name="search_first_name" placeholder="Search">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="search" class="col-sm-2 col-form-label">Last Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" value="{{ search_last_name }}" name="search_last_name" placeholder="Search">
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <input class="btn btn-primary" type="submit" name="submit"/>&nbsp;
+                    <a class="btn btn-primary" href="{% url 'members' school.id %}" role="button">Reset</a>
+                </div>
+            </div>
+        </form>
+
+    </div>
 {% endblock %}

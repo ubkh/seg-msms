@@ -4,7 +4,7 @@ from django.urls import reverse
 from lessons.models import User, School
 
 
-class DisplayTeacherViewTestCase(TestCase):
+class DisplayTeacherTimetableViewTestCase(TestCase):
     fixtures = [
         'lessons/tests/fixtures/default_teacher.json',
         'lessons/tests/fixtures/default_school.json'

@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import Group
 from django.test import TestCase
@@ -6,22 +8,17 @@ from django.urls import reverse
 from lessons.forms import RegisterForm
 from lessons.models import User, School
 
-"""
-View is deprecated.
 
-class CreateAdministratorViewTestCase(TestCase):
+class DirectorCreateViewTestCase(TestCase):
     fixtures = [
         'lessons/tests/fixtures/default_user.json',
-        'lessons/tests/fixtures/default_school.json'
     ]
 
     def setUp(self):
-        self.form_input = self._create_form_input()
-        self.school = School.objects.get(id=1)
-        self.url = reverse('create_administrator', kwargs={'school': self.school.id})
+        self.url = reverse('create_director')
         self.user = User.objects.get(email='foo@kangaroo.com')
-        super_administrator_group, created = Group.objects.get_or_create(name='Super-administrator')
-        self.user.groups.add(super_administrator_group)
+        self.user.set_group_system_administrator()
+        self.form_input = self._create_form_input()
 
     def _create_form_input(self):
         form_input = {
@@ -33,15 +30,15 @@ class CreateAdministratorViewTestCase(TestCase):
         }
         return form_input
 
-    def test_create_administrator_url(self):
-        administrator_url = f"/school/{self.school.id}/administrators/create/"
-        self.assertEqual(self.url, administrator_url)
+    def test_create_director_url(self):
+        director_url = f"/director/create/"
+        self.assertEqual(self.url, director_url)
 
-    def test_get_create_administrator(self):
+    def test_get_create_director(self):
         self.client.login(email=self.user.email, password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'authentication/register.html')
+        self.assertTemplateUsed(response, 'authentication/create_director.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertFalse(form.is_bound)
@@ -54,7 +51,7 @@ class CreateAdministratorViewTestCase(TestCase):
         user_count_after = User.objects.count()
         self.assertEqual(user_count_before, user_count_after)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'authentication/register.html')
+        self.assertTemplateUsed(response, 'authentication/create_director.html')
         form = response.context['form']
         self.assertTrue(isinstance(form, RegisterForm))
         self.assertTrue(form.is_bound)
@@ -65,11 +62,11 @@ class CreateAdministratorViewTestCase(TestCase):
         response = self.client.post(self.url, self.form_input, follow=True)
         user_count_after = User.objects.count()
         self.assertEqual(user_count_before + 1, user_count_after)
-        response_url = reverse('administrators', kwargs={'school': self.school.id})
+        response_url = reverse('home')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'administrators/administrators.html')
-        saved_user = User.objects.get(email=self.form_input['email'])
-        self.assertEqual(saved_user.first_name, self.form_input['first_name'])
-        self.assertEqual(saved_user.last_name, self.form_input['last_name'])
-        self.assertTrue(check_password('Password123', saved_user.password))  
-"""
+        self.assertTemplateUsed(response, 'school/list_school.html')
+        saved_director = User.objects.get(email=self.form_input['email'])
+        self.assertEqual(saved_director.first_name, self.form_input['first_name'])
+        self.assertEqual(saved_director.last_name, self.form_input['last_name'])
+        self.assertTrue(saved_director.groups.filter(name='Director').exists())
+        self.assertTrue(check_password('Password123', saved_director.password))

@@ -82,8 +82,11 @@
 
         {% endfor %}
 
-        {% for transfer in transfers %}
-            {% include 'partials/transfer.html' with transfer=transfer %}
-        {% endfor %}
+        <div class="list-group">
+            {% for transfer in transfers %}
+                {% include 'partials/transfer.html' with transfer=transfer %}
+            {% endfor %}
+        </div>
+
     </div>
 {% endblock %}

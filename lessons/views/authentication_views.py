@@ -88,7 +88,7 @@ def log_out(request):
     return redirect('index')
 
 
-class EditUserView(GroupRestrictedMixin, UpdateView):
+class EditUserView(UpdateView):
     """
     View that displays the edit page and edit forms. If a valid 
     form is submitted the user is redirected to the home page, else they are 
@@ -99,7 +99,6 @@ class EditUserView(GroupRestrictedMixin, UpdateView):
     template_name = "authentication/edit_profile.html"
     form_class = EditUserForm
     http_method_names = ['get', 'post']
-    allowed_group = "User"
 
     """
     Check if the data in the edit form is valid.

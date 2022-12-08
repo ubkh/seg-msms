@@ -15,7 +15,7 @@ class School(AdmissionMixin, models.Model):
     """
     
     name = models.CharField(max_length=30, blank=False)
-    director = models.OneToOneField(
+    director = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         blank=False,
