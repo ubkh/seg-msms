@@ -13,7 +13,7 @@ The project is called `msms` (Music School Management System).  It currently con
 **A project description can be found in the `PROJECT.md` file.**
 
 ## Deployed version of the application
-The deployed version of the application can be found at *[this page](http://matyog.pythonanywhere.com)*.
+The deployed version of the application can be found at *[this page](https://matyog.pythonanywhere.com)*.
 
 ## Installation and execution instructions
 To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
