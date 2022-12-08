@@ -15,7 +15,7 @@ class EditViewTestCase(TestCase):
 
     def setUp(self):
         self.form_input = self._create_form_input()
-        self.url = reverse('edit_profiel')
+        self.url = reverse('edit_profile')
         self.user = User.objects.get(email='doe@kangaroo.com')
 
     def _create_form_input(self):

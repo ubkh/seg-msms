@@ -48,6 +48,7 @@ class SchoolCreateView(GroupRestrictedMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.director = self.request.user
+        print(form.instance.director)
         school = form.save()
         school.set_group_director(self.request.user)
         return super().form_valid(form)

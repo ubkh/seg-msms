@@ -24,7 +24,6 @@ register_converter(HashIDConverter, "hashid")
 school_urlpatterns = [
     path('', views.SchoolHomeView.as_view(), name='school_home'),
 
-
     # Client
     path('lessons/', views.LessonListView.as_view(), name='client_lessons'),
     path('lesson/request', views.LessonRequestView.as_view(), name='request_lesson'),
@@ -52,7 +51,6 @@ school_urlpatterns = [
 
     # Director
     path('manage/', views.SchoolManageView.as_view(), name='manage_school')
-
 ]
 
 urlpatterns = [
@@ -64,7 +62,6 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),  # RegisterView
     path('log_in/', views.log_in, name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
-    path('<hashid:pk>/profile/', views.EditUserView.as_view(), name='edit_profile'),
     path('<hashid:pk>/profile/edit', views.EditUserView.as_view(), name='edit_profile'),
     path('<hashid:pk>/profile/password_change', views.ChangePasswordView.as_view(), name='password_change'),
 
@@ -76,5 +73,5 @@ urlpatterns = [
     path('school/create/', views.SchoolCreateView.as_view(), name='create_school'),
 
     # System-administrator
-    path('director/create', views.DirectorCreateView.as_view(), name='create_director')
+    path('director/create/', views.DirectorCreateView.as_view(), name='create_director')
 ]

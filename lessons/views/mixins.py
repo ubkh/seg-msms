@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import get_object_or_404, redirect
 
 from lessons.models import School, Admission
@@ -12,6 +13,9 @@ class GroupRestrictedMixin(LoginRequiredMixin):
     allowed_group = None
 
     def dispatch(self, *args, **kwargs):
+        if self.allowed_group is None:
+            raise ImproperlyConfigured("Please set an allowed system group.")
+
         if not self.request.user.groups.filter(name=self.allowed_group).exists():
             return self.handle_no_permission()
         return super().dispatch(*args, **kwargs)
@@ -21,9 +25,12 @@ class SchoolGroupRestrictedMixin(LoginRequiredMixin):
     allowed_group = None
 
     def dispatch(self, *args, **kwargs):
+        if self.allowed_group is None:
+            raise ImproperlyConfigured("Please set an allowed school group.")
+
         if self.request.user.is_anonymous:
             return self.handle_no_permission()
-        school = School.objects.get(id=self.kwargs['school'])
+        school = get_object_or_404(School, id=self.kwargs['school'])
         try:
             admission = Admission.objects.get(school=school, client=self.request.user)
         except Admission.DoesNotExist:

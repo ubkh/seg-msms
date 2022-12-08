@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import Group
 from django.test import TestCase
@@ -6,9 +8,8 @@ from django.urls import reverse
 from lessons.forms import RegisterForm
 from lessons.models import User, School
 
-"""
-View is deprecated.
 
+@skip("View is deprecated.")
 class DisplayAdministratorViewTestCase(TestCase):
 
     fixtures = [
@@ -44,5 +45,3 @@ class DisplayAdministratorViewTestCase(TestCase):
         user = User.objects.get(email=self.administrator.email)
         modify_administrator_url = reverse('modify_administrator', kwargs={'school': self.school.id, 'pk': user.pk})
         self.assertContains(response, modify_administrator_url)
-
-"""
