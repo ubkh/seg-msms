@@ -13,12 +13,19 @@ from lessons.views.mixins import SchoolObjectMixin
 
 
 class HomeView(LoginRequiredMixin, ListView):
+    """ 
+    View that displays the home page to join a school.
+    """
     model = School
     template_name = "school/list_school.html"
     context_object_name = "schools"
 
 
 class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, FormView):
+    """ 
+    View that displays the home page of a specific school.
+    """
+
     model = School
     template_name = "school/home.html"
     pk_url_kwarg = 'school'
@@ -40,6 +47,12 @@ class SchoolHomeView(LoginRequiredMixin, SchoolObjectMixin, FormView):
 
 
 class SchoolCreateView(GroupRestrictedMixin, CreateView):
+    """ 
+    View that displays the create school page. Is only able to be
+    accessed by a director. If the form is valid, a new school
+    director is promote.
+    """
+
     model = School
     template_name = "school/create_school.html"
     form_class = SchoolCreateForm
@@ -57,6 +70,10 @@ class SchoolCreateView(GroupRestrictedMixin, CreateView):
 
 
 class SchoolManageView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+    """ 
+    View that displays the manage school page.
+    """
+
     model = School
     template_name = "school/manage_school.html"
     form_class = SchoolManageForm

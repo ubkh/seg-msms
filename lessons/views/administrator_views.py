@@ -11,6 +11,11 @@ from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
 class ManageStudentView(SchoolGroupRestrictedMixin, FormView):  # SchoolObjectMixin
+    """
+    View that displays the manage student page and forms. Allowing for the 
+    promotion of users. If a valid form is submitted the user is redirected to the members page.
+    """
+
     template_name = "authentication/manage_student.html"
     form_class = ManageMemberForm
     http_method_names = ['get', 'post']
@@ -74,6 +79,7 @@ class SchoolUserListView(SchoolGroupRestrictedMixin, SchoolObjectMixin, ListView
     """
     View that displays a list of users to the administrator.
     """
+    
     model = User
     template_name = "school/users.html"
     context_object_name = "school_admissions"

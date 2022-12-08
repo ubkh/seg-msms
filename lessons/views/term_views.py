@@ -13,6 +13,11 @@ from lessons.views.mixins import SchoolObjectMixin, SchoolGroupRestrictedMixin
 
 
 class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
+    """
+    View that displays the term page and term forms. If a valid 
+    form is submitted the user is redirected to the term page.
+    """
+
     model = Term
     template_name = "terms/terms.html"
     form_class = TermForm
@@ -40,6 +45,11 @@ class TermsView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateView):
 
 
 class TermEditView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateView):
+    """
+    View that displays the edit term page and edit term forms. If a valid 
+    form is submitted the user is redirected to the term page.
+    """
+
     model = Term
     template_name = "terms/edit_term.html"
     form_class = TermForm

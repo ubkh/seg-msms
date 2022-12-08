@@ -5,7 +5,7 @@
         <div class="fw-bold mb-2">{{ l.title }} - {{ l.instrument }}</div>
         <p class="text-muted mb-2">{{ l.information }}</p>
     </div>
-    <i class="bi bi-person-fill" style="padding-right: 5px;"></i> {{ l.Teacher }} &nbsp;
+    <i class="bi bi-person-fill" style="padding-right: 5px;"></i> {{ l.teacher }} &nbsp;
     <i class="bi bi-clock-fill" style="padding-right: 5px;"></i>{{ l.duration }}m&nbsp;
     &nbsp;
     <a class="btn btn-light btn-sm" href="{% url 'modify_lesson' school.id l.id %}"><div class="bi bi-pencil"> Modify</div></a>
@@ -13,6 +13,6 @@
     {% if l.fulfilled %}
         <a class="btn btn-light btn-sm" href="{% url 'booking_invoice' school.id l.id %}"><div class="bi bi-receipt"> Invoice & Transfers</div></a>
     {% else %}
-        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' school.id l.id %}"><div class="bi bi-receipt"> Fulfil</div></a>
+        <a class="btn btn-light btn-sm" href="{% url 'fulfill_lesson' school.id l.id %}"><div class="bi bi-receipt"> Fulfill</div></a>
     {% endif %}
 </li>

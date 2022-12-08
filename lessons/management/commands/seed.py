@@ -1,11 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
-from lessons.models import User, Term
-from django.contrib.auth.models import Group
+from django.core.management.base import BaseCommand
 import datetime
 from faker import Faker
 import random
 
-from lessons.models.school import School
+from lessons.models import User, Lesson, School, Term
 
 
 class Command(BaseCommand):
@@ -69,6 +67,38 @@ class Command(BaseCommand):
         )
         administrator_user.set_group_user()
         school.set_group_administrator(administrator_user)
+
+        # Unfullfilled Lesson
+        Lesson.objects.create(
+            title="Piano Lesson",
+            instrument="Piano",
+            teacher=teacher_user,
+            day="Monday",
+            time="03:00",
+            number_of_lessons="5",
+            interval="1",
+            duration="30",
+            information="I have no prior experience.",
+            fulfilled=False,
+            student=student_user,
+            school=school,
+        )
+
+        # Fullfilled Lesson
+        Lesson.objects.create(
+            title="Violin Lesson",
+            instrument="Violin",
+            teacher=teacher_user,
+            day="Friday",
+            time="05:00",
+            number_of_lessons="20",
+            interval="1",
+            duration="60",
+            information="I have minor experience.",
+            fulfilled=True,
+            student=student_user,
+            school=school,
+        )
 
         # Generate 50 random students
         for i in range(50):

@@ -5,7 +5,7 @@ Forms relating to authentication that will be used in the music school managemen
 from django import forms
 from django.core.validators import RegexValidator
 
-from lessons.models import User, School, Admission
+from lessons.models import User
 
 
 class RegisterForm(forms.ModelForm):
@@ -43,7 +43,7 @@ class RegisterForm(forms.ModelForm):
 
     def clean(self):
         """
-        Check if the data in the registration form is valid.
+        Validate that data in the registration form is correct, if not display an error.
         """
         super().clean()
         password = self.cleaned_data.get('password')
@@ -53,7 +53,7 @@ class RegisterForm(forms.ModelForm):
 
     def save(self):
         """
-        Save the teacher's registration details on to a database.
+        Save the user's registration details on to a database.
         """
         super().save(commit=False)
         user = User.objects.create_user(
@@ -77,7 +77,7 @@ class LoginForm(forms.Form):
 
 class EditUserForm(forms.ModelForm):
     """
-    Model form to modify an existing user.
+    Model form to modify or delete an existing user.
     """
 
     class Meta:

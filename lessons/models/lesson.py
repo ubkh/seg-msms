@@ -40,6 +40,7 @@ class Lesson(models.Model):
     """
     Lesson model used to represent a fulfilled or unfulfilled lesson.
     """
+    
     fulfilled = models.BooleanField(default=False)
     student = models.ForeignKey(
         User,

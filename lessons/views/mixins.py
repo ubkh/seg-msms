@@ -18,6 +18,10 @@ class GroupRestrictedMixin(LoginRequiredMixin):
 
 
 class SchoolGroupRestrictedMixin(LoginRequiredMixin):
+    """
+    Mixin that only allows a specified group to access a view to users that are logged in to a certain school.
+    """
+
     allowed_group = None
 
     def dispatch(self, *args, **kwargs):
@@ -37,7 +41,7 @@ class SchoolGroupRestrictedMixin(LoginRequiredMixin):
 
 
 class SchoolObjectMixin:
-
+    
     def dispatch(self, request, *args, **kwargs):
         self.school_id = self.kwargs['school']
         self.school_instance = get_object_or_404(School, id=self.school_id)
