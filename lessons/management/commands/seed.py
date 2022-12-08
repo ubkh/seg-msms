@@ -87,7 +87,7 @@ class Command(BaseCommand):
             last_name="Doe",
             password="Password123",
         )
-        student_user.set_group_user()
+        student_user.set_group_adult_user()
         school.set_group_client(student_user)
 
         alice_doe = User.objects.create_user(
@@ -114,7 +114,7 @@ class Command(BaseCommand):
             last_name="Pickles",
             password="Password123",
         )
-        administrator_user.set_group_user()
+        administrator_user.set_group_adult_user()
         school.set_group_administrator(administrator_user)
 
         # Create Teacher
@@ -126,7 +126,8 @@ class Command(BaseCommand):
             instrument=["Piano", "Violin"],
             password="Password123",
         )
-        teacher_user.set_group_user()
+        teacher_user.set_group_adult_user()
+        teacher_user.set_group_director()
         school.set_group_teacher(teacher_user)
         l = self.create_lesson(student_user, teacher_user, school, t, True)
         Transfer.objects.create(user=student_user, lesson=l, school=school, amount=l.price)
@@ -137,6 +138,14 @@ class Command(BaseCommand):
             director=teacher_user,
             description=self.faker.text(max_nb_chars=1000)
         )
+
+        t = Term.objects.create(id=7,start_date=datetime.date(2022, 9, 1), end_date=datetime.date(2022, 10, 21), school=norma_school)
+        Term.objects.create(id=8,start_date=datetime.date(2022, 10, 31), end_date=datetime.date(2022, 12, 16), school=norma_school)
+        Term.objects.create(id=9,start_date=datetime.date(2023, 1, 3), end_date=datetime.date(2023, 2, 10), school=norma_school)
+        Term.objects.create(id=10,start_date=datetime.date(2023, 2, 20), end_date=datetime.date(2023, 3, 31), school=norma_school)
+        Term.objects.create(id=11,start_date=datetime.date(2023, 4, 17), end_date=datetime.date(2023, 5, 26), school=norma_school)
+        Term.objects.create(id=12,start_date=datetime.date(2023, 6, 5), end_date=datetime.date(2023, 7, 21), school=norma_school)
+
         setattr(norma_school, 'current_term', t)
         norma_school.set_group_director(teacher_user)
         norma_school.set_group_administrator(student_user)
@@ -170,7 +179,7 @@ class Command(BaseCommand):
             )
             teacher_list.append(teacher_user)
             print(f'Seeding Teacher User {i}', end='\r')
-            teacher_user.set_group_user()
+            teacher_user.set_group_adult_user()
             school.set_group_teacher(teacher_user)
 
             l = self.create_lesson(bob_doe, teacher_user, school, teacher_list[0], True)
@@ -194,7 +203,7 @@ class Command(BaseCommand):
             )
             user_list.append(student_user)
             print(f'Seeding User {i}', end='\r')
-            student_user.set_group_user()
+            student_user.set_group_adult_user()
             school.set_group_client(student_user)
             if random.random() < 0.7:
                 l = self.create_lesson(student_user, random.choice(teacher_list), school, t, True)
@@ -245,7 +254,7 @@ class Command(BaseCommand):
             )
             teacher_list.append(teacher_user)
             print(f'Seeding Teacher User {i}', end='\r')
-            teacher_user.set_group_user()
+            teacher_user.set_group_adult_user()
             norma_school.set_group_teacher(teacher_user)
 
 
@@ -264,7 +273,7 @@ class Command(BaseCommand):
             )
             user_list.append(student_user)
             print(f'Seeding User {i}', end='\r')
-            student_user.set_group_user()
+            student_user.set_group_adult_user()
             norma_school.set_group_client(student_user)
             if random.random() < 0.7:
                 l = self.create_lesson(student_user, random.choice(teacher_list), norma_school, t, True)
@@ -310,7 +319,7 @@ class Command(BaseCommand):
                 password=password
             )
             print(f'Seeding Admin User {i}', end='\r')
-            admin_user.set_group_user()
+            admin_user.set_group_adult_user()
             school.set_group_administrator(admin_user)
 
 
