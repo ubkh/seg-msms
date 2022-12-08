@@ -84,7 +84,6 @@ class LessonModifyFormTestCase(TestCase):
         self.assertEqual(saved_lesson.duration, self.form_input['duration'])
         self.assertEqual(saved_lesson.information, self.form_input['information'])
 
-
     def test_form_uses_day_validation(self):
         self.form_input['day'] = 'Wrong_Day'
         form = LessonModifyForm(data=self.form_input)
