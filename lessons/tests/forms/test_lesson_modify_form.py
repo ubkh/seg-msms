@@ -45,7 +45,6 @@ class LessonModifyFormTestCase(TestCase):
         self.assertIn('day', form.fields)
         self.assertIn('instrument', form.fields)
         self.assertIn('time', form.fields)
-        self.assertIn('number_of_lessons', form.fields)
         self.assertIn('interval', form.fields)
         self.assertIn('duration', form.fields)
         self.assertIn('information', form.fields)
