@@ -8,7 +8,7 @@
     <br>
     <div class="mt-2 container">
         <ul class="list-group list-group-light">
-            <h5>Awaiting to be fulfilled.</h5>
+            <h5>Awaiting to be fulfilled</h5>
             {% for l in lessons %}
                 {% if l.fulfilled is False %}
                     {% include 'partials/lesson.html' with l=l %}
@@ -16,7 +16,7 @@
             {% endfor %}
         </ul>
         <ul class="list-group list-group-light">
-            <h5>Fulfilled Lessons.</h5>
+            <h5>Fulfilled Lessons</h5>
             {% for l in lessons %}
                 {% if l.fulfilled is True %}
                     {% include 'partials/lesson.html' with l=l %}

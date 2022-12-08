@@ -57,6 +57,7 @@ class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateVie
 
     def get_form_kwargs(self, **kwargs):
         form_kwargs = super(LessonRequestView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
         form_kwargs['user'] = self.request.user
         return form_kwargs
 
@@ -67,6 +68,7 @@ class LessonRequestView(SchoolGroupRestrictedMixin, SchoolObjectMixin, CreateVie
             lesson=lesson
         ).count()
         lesson.price = (lesson.duration / 60) * number_of_lessons * 10
+        
         lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -86,6 +88,13 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Re
     form_class = LessonModifyForm
     http_method_names = ['get', 'post']
 
+    def get_form_kwargs(self, **kwargs):
+        form_kwargs = super(LessonModifyView, self).get_form_kwargs(**kwargs)
+        form_kwargs['school'] = self.school_instance
+        form_kwargs['user'] = self.request.user
+        return form_kwargs
+
+
     def form_valid(self, form):
         super().form_valid(form)
         if self.request.user == form.instance.student or self.request.user == form.instance.student.parent:
@@ -104,6 +113,7 @@ class LessonModifyView(LoginRequiredMixin, SchoolObjectMixin, UpdateView):  # Re
                         lesson=lesson
                     ).count()
                     lesson.price = (lesson.duration / 60) * number_of_lessons * 10
+
                     lesson.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -182,10 +192,10 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
         self.calculateSchedule(data)
 
-        number_of_lessons = ScheduledLesson.objects.filter(
+        data.number_of_lessons = ScheduledLesson.objects.filter(
             lesson=data
         ).count()
-        data.price = (data.duration / 60) * number_of_lessons * 10
+        data.price = (data.duration / 60) * data.number_of_lessons * 10
         form.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -214,8 +224,9 @@ class LessonFulfillView(SchoolGroupRestrictedMixin, SchoolObjectMixin, UpdateVie
 
             current += interval
 
+
 @method_decorator(lesson_fulfilled_restricted, name='dispatch')
-class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):  # Required Permissions / DetailView
+class LessonInvoiceView(LoginRequiredMixin, SchoolObjectMixin, ListView):
     """
     View that displays to the User details of a booking after it has been confirmed by and Admin
     """
