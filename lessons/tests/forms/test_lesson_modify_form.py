@@ -3,7 +3,7 @@ Unit tests of the Request form
 """
 
 import datetime
-from unittest import skip
+
 
 from django.forms import TypedChoiceField
 from django.test import TestCase
@@ -26,12 +26,21 @@ class LessonModifyFormTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.get(first_name='Foo')
         self.school = School.objects.get(id=1)
+        teacher_user = User.objects.create_user(
+            email="sylvia.plath@example.org",
+            first_name="Albert",
+            last_name="Camus",
+            instrument=["Piano", "Violin"],
+            password="Password123",
+        )
+        teacher_user.set_group_user()
+        self.school.set_group_teacher(teacher_user)
         self.form_input = {
             'student': self.user,
             'title': 'Music Lesson',
             'day': 'Monday',
-            'instrument': ['Piano'],
-            'teacher': 'Albert Camus',
+            'instrument': 'Piano',
+            'teacher': teacher_user,
             'time': '13:00',
             'interval': 1,
             'duration': 60,
@@ -56,7 +65,6 @@ class LessonModifyFormTestCase(TestCase):
         teacher_field = form.fields['teacher']
         self.assertTrue(isinstance(teacher_field, forms.ChoiceField))
 
-    @skip("Broken due to instrument field")
     def test_form_saves_correctly(self):
         form = LessonModifyForm(data=self.form_input)
         lesson_count_before = Lesson.objects.count()
